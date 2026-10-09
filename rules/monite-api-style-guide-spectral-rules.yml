@@ -1,0 +1,47 @@
+# harvested from https://github.com/team-monite/api-style-guide/blob/6b3d64c03345a46a5bd643a7e93d15b49716332f/spectral/monite.all.yaml on 2026-10-09 — a Spectral ruleset published in the provider's own GitHub repository (team-monite/api-style-guide); found by GitHub code search, fetched verbatim
+x-method: harvested
+x-stamped: 2026-10-09
+x-source-url: https://github.com/team-monite/api-style-guide/blob/6b3d64c03345a46a5bd643a7e93d15b49716332f/spectral/monite.all.yaml
+extends:
+  - "spectral:oas"
+  - monite.openapi-structure.yaml
+  - monite.section1-general.yaml
+  - monite.section2-language.yaml
+  - monite.section3-security.yaml
+  - monite.section4-data-types.yaml
+  - monite.section5-uri.yaml
+  - monite.section6-rest.yaml
+  - monite.section7-json.yaml
+  - monite.section8-requests.yaml
+  - monite.section9-responses.yaml
+  - monite.section10-headers.yaml
+#  - monite.section11-webhooks.yaml
+#  - monite.section12-hypermedia.yaml
+  - monite.section13-performance.yaml
+#  - monite.section14-pagination.yaml
+  - monite.section15-versioning.yaml
+#  - monite.section16-deprecation.yaml
+
+
+documentationUrl: https://github.com/team-monite/api-style-guide
+
+#aliases:
+#  HeaderNames:
+#    - "$..parameters.[?(@.in === 'header')].name"
+#  Info:
+#    - "$..info"
+#  InfoDescription:
+#    - "#Info.description"
+#  Paths:
+#    - "$.paths[*]~"
+#  Tags:
+#    - "$.tags[*]"
+
+rules:
+  # https://meta.stoplight.io/docs/spectral/docs/reference/openapi-rules.md#oas3-schema
+  oas3-schema: true
+
+  path-keys-no-trailing-slash: error
+
+
+

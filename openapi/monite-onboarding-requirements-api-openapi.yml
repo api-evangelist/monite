@@ -1,0 +1,379 @@
+openapi: 3.2.0
+info:
+  title: Monite Onboarding requirements API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Onboarding requirements across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Onboarding requirements
+paths:
+  /entities/{entity_id}/onboarding_requirements:
+    get:
+      tags:
+      - Onboarding requirements
+      summary: Get onboarding requirements
+      description: Deprecated. Use `GET /onboarding_requirements` instead. Check the information required to complete the onboarding process.
+      operationId: get_entities_id_onboarding_requirements
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: entity_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingRequirementsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      deprecated: true
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /onboarding_requirements:
+    get:
+      tags:
+      - Onboarding requirements
+      summary: Get onboarding requirements
+      description: Get onboarding requirements for the entity
+      operationId: get_onboarding_requirements
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetOnboardingRequirementsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    RequirementsError:
+      properties:
+        code:
+          type: string
+        reason:
+          type: string
+        requirement:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - reason
+      - requirement
+    VerificationError:
+      properties:
+        code:
+          type: string
+        details:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - details
+    PaymentMethodRequirements:
+      properties:
+        current_deadline:
+          type: string
+          format: date-time
+        currently_due:
+          items:
+            type: string
+          type: array
+        eventually_due:
+          items:
+            type: string
+          type: array
+        past_due:
+          items:
+            type: string
+          type: array
+        pending_verification:
+          items:
+            type: string
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - currently_due
+      - eventually_due
+      - past_due
+      - pending_verification
+    OnboardingVerificationError:
+      properties:
+        code:
+          type: string
+        details:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - details
+    SingleOnboardingRequirementsResponse:
+      properties:
+        disabled_reason:
+          type: string
+        payment_method:
+          type: string
+        requirements:
+          $ref: '#/components/schemas/PaymentMethodRequirements'
+        requirements_errors:
+          items:
+            $ref: '#/components/schemas/OnboardingRequirementsError'
+          type: array
+        verification_errors:
+          items:
+            $ref: '#/components/schemas/OnboardingVerificationError'
+          type: array
+        verification_status:
+          $ref: '#/components/schemas/OnboardingVerificationStatusEnum'
+      additionalProperties: false
+      type: object
+      required:
+      - payment_method
+      - requirements
+      - requirements_errors
+      - verification_errors
+      - verification_status
+    OnboardingRequirementsError:
+      properties:
+        code:
+          type: string
+        reason:
+          type: string
+        requirement:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - reason
+      - requirement
+    VerificationStatusEnum:
+      type: string
+      enum:
+      - enabled
+      - disabled
+      - pending
+    PaymentRequirements:
+      properties:
+        current_deadline:
+          type: string
+          format: date-time
+        currently_due:
+          items:
+            type: string
+          type: array
+        eventually_due:
+          items:
+            type: string
+          type: array
+        pending_verification:
+          items:
+            type: string
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - currently_due
+      - eventually_due
+      - pending_verification
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    OnboardingVerificationStatusEnum:
+      type: string
+      enum:
+      - enabled
+      - disabled
+      - pending
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AccountDisabledReason:
+      type: string
+      enum:
+      - requirements.past_due
+      - requirements.pending_verification
+      - listed
+      - platform_paused
+      - rejected.fraud
+      - rejected.listed
+      - rejected.terms_of_service
+      - rejected.other
+      - under_review
+      - other
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    GetOnboardingRequirementsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SingleOnboardingRequirementsResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    OnboardingRequirementsResponse:
+      properties:
+        disabled_reason:
+          $ref: '#/components/schemas/AccountDisabledReason'
+        requirements:
+          $ref: '#/components/schemas/PaymentRequirements'
+        requirements_errors:
+          items:
+            $ref: '#/components/schemas/RequirementsError'
+          type: array
+        verification_errors:
+          items:
+            $ref: '#/components/schemas/VerificationError'
+          type: array
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+      additionalProperties: false
+      type: object
+      required:
+      - requirements
+      - requirements_errors
+      - verification_errors
+      - verification_status
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

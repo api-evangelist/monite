@@ -1,0 +1,965 @@
+openapi: 3.2.0
+info:
+  title: Monite Approval requests API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Approval requests across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Approval requests
+paths:
+  /approval_requests:
+    get:
+      tags:
+      - Approval requests
+      summary: Get approval requests
+      operationId: get_approval_requests
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ApprovalRequestCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: object_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: object_id__in
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/ApprovalRequestStatus'
+        name: status
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/ApprovalRequestStatus'
+          type: array
+        name: status__in
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: user_id
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: role_id
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/ObjectType'
+        name: object_type
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/ObjectType'
+          type: array
+        name: object_type__in
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Approval requests
+      summary: Create an approval request
+      operationId: post_approval_requests
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApprovalRequestCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /approval_requests/{approval_request_id}:
+    get:
+      tags:
+      - Approval requests
+      summary: Get an approval request by ID
+      operationId: get_approval_requests_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: approval_request_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /approval_requests/{approval_request_id}/approve:
+    post:
+      tags:
+      - Approval requests
+      summary: Approve an approval request
+      operationId: post_approval_requests_id_approve
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: approval_request_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /approval_requests/{approval_request_id}/cancel:
+    post:
+      tags:
+      - Approval requests
+      summary: Cancel an approval request
+      operationId: post_approval_requests_id_cancel
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: approval_request_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /approval_requests/{approval_request_id}/reject:
+    post:
+      tags:
+      - Approval requests
+      summary: Reject an approval request
+      operationId: post_approval_requests_id_reject
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: approval_request_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    ApprovalRequestCreateRequest:
+      anyOf:
+      - $ref: '#/components/schemas/ApprovalRequestCreateByRoleRequest'
+      - $ref: '#/components/schemas/ApprovalRequestCreateByUserRequest'
+      additionalProperties: false
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ObjectType:
+      type: string
+      enum:
+      - account
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - audit_trail
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - counterpart_vat_id
+      - delivery_note
+      - einvoicing
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_token
+      - entity_user
+      - entity_user_token
+      - entity_vat_ids
+      - export
+      - mailbox
+      - monitescript_process
+      - ocr_task
+      - onboarding
+      - overdue_reminder
+      - partner
+      - partner_internal_config
+      - partner_settings
+      - partner_token
+      - payable
+      - payable_line_item
+      - payables_credit_note
+      - payables_purchase_order
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_record
+      - payment_reminder
+      - person
+      - product
+      - project
+      - receivable
+      - reconciliation
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - todo_task_mute
+      - transaction
+      - webhook
+      - workflow
+      - workflow_pipeline
+    ApprovalRequestCreateByRoleRequest:
+      properties:
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        required_approval_count:
+          type: integer
+          minimum: 1.0
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - object_id
+      - object_type
+      - required_approval_count
+      - role_ids
+    ApprovalRequestStatus:
+      type: string
+      enum:
+      - waiting
+      - approved
+      - rejected
+      - canceled
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ApprovalRequestResourceWithMetadata:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        approved_by:
+          items:
+            type: string
+            format: uuid
+          type: array
+        created_by:
+          type: string
+          format: uuid
+          description: ID of the user who created the approval request
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        rejected_by:
+          type: string
+          format: uuid
+        required_approval_count:
+          type: integer
+          minimum: 1.0
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+        status:
+          $ref: '#/components/schemas/ApprovalRequestStatus'
+        user_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - approved_by
+      - created_by
+      - object_id
+      - object_type
+      - required_approval_count
+      - role_ids
+      - status
+      - user_ids
+    ApprovalRequestResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ApprovalRequestCreateByUserRequest:
+      properties:
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        required_approval_count:
+          type: integer
+          minimum: 1.0
+        user_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - object_id
+      - object_type
+      - required_approval_count
+      - user_ids
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ApprovalRequestCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,3508 @@
+openapi: 3.2.0
+info:
+  title: Monite Credit notes API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Credit notes across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Credit notes
+paths:
+  /payable_credit_notes:
+    get:
+      tags:
+      - Credit notes
+      summary: Get credit notes
+      operationId: get_payable_credit_notes
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CreditNoteCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__icontains
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: has_file
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: based_on
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by_entity_user_id
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+        name: status
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+          type: array
+        name: status__in
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+          type: array
+        name: status__not_in
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/OriginEnum'
+        name: origin
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/CurrencyEnum'
+        name: currency
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: project_id__in
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNotePaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Credit notes
+      summary: Create a credit note
+      operationId: post_payable_credit_notes
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/upload_from_file:
+    post:
+      tags:
+      - Credit notes
+      summary: Upload a credit note from a file
+      description: Upload an incoming credit note (payable) in PDF, PNG, or JPEG format and scan its contents. The maximum file size is 20MB.
+      operationId: post_payable_credit_notes_upload_from_file
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreditNoteUploadFile'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Error uploading the file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/validations:
+    get:
+      tags:
+      - Credit notes
+      summary: Get credit note validations
+      description: Get credit notes validations.
+      operationId: get_payable_credit_notes_validations
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteValidationsResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - Credit notes
+      summary: Update credit note validations
+      description: Update credit notes validations.
+      operationId: put_payable_credit_notes_validations
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteValidationsResource'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteValidationsResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/validations/reset:
+    post:
+      tags:
+      - Credit notes
+      summary: Reset credit note validations
+      description: Reset credit notes validations.
+      operationId: post_payable_credit_notes_validations_reset
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteValidationsResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}:
+    get:
+      tags:
+      - Credit notes
+      summary: Get a credit note by ID
+      operationId: get_payable_credit_notes_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Credit notes
+      summary: Update a credit note
+      operationId: patch_payable_credit_notes_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Credit notes
+      summary: Delete a credit note
+      operationId: delete_payable_credit_notes_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/approve:
+    post:
+      tags:
+      - Credit notes
+      summary: Approve a credit note
+      description: Approve the credit note for appliance.
+      operationId: post_payable_credit_notes_id_approve
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/cancel:
+    post:
+      tags:
+      - Credit notes
+      summary: Cancel a credit note
+      description: Cancel the credit note that was not confirmed during the review.
+      operationId: post_payable_credit_notes_id_cancel
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/cancel_ocr:
+    post:
+      tags:
+      - Credit notes
+      summary: Cancel OCR of a credit note
+      description: Request to cancel the OCR processing of the specified credit note.
+      operationId: post_payable_credit_notes_id_cancel_ocr
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: 'Possible responses: `Action for {object_type} at permissions not found: {action}`, `Object type at permissions not found: {object_type}`, `Action {action} for {object_type} not allowed`, `Credit Note couldn''t be updated due to current state`, `The file cannot be attached because another file is already attached. Please note that only one file attachment is allowed.`'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/line_items:
+    get:
+      tags:
+      - Credit notes
+      summary: Get all line items of a credit note
+      operationId: get_payable_credit_notes_id_line_items
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CreditNoteLineItemCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__icontains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: description
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: description__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: description__icontains
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: unit_price__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: unit_price__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: unit_price__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: unit_price__lte
+        in: query
+      - required: false
+        schema:
+          type: number
+          minimum: 0.0
+        name: quantity__gt
+        in: query
+      - required: false
+        schema:
+          type: number
+          minimum: 0.0
+        name: quantity__lt
+        in: query
+      - required: false
+        schema:
+          type: number
+          minimum: 0.0
+        name: quantity__gte
+        in: query
+      - required: false
+        schema:
+          type: number
+          minimum: 0.0
+        name: quantity__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax_amount__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax_amount__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax_amount__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: tax_amount__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by_user_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: unit
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: unit__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: source
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: source_id
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Credit notes
+      summary: Add a new line item to a credit note
+      operationId: post_payable_credit_notes_id_line_items
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteLineItemCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - Credit notes
+      summary: Replace all line items of a credit note
+      operationId: put_payable_credit_notes_id_line_items
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteLineItemReplaceRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/line_items/{line_item_id}:
+    get:
+      tags:
+      - Credit notes
+      summary: Get a single line item of a credit note
+      operationId: get_payable_credit_notes_id_line_items_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: line_item_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Credit notes
+      summary: Update a line item of a credit note
+      operationId: patch_payable_credit_notes_id_line_items_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: line_item_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditNoteLineItemUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Credit notes
+      summary: Delete a line item from a credit note
+      operationId: delete_payable_credit_notes_id_line_items_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: line_item_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteLineItemPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/reject:
+    post:
+      tags:
+      - Credit notes
+      summary: Reject a credit note
+      description: Decline the credit note when an approver finds any mismatch or discrepancies.
+      operationId: post_payable_credit_notes_id_reject
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/submit_for_approval:
+    post:
+      tags:
+      - Credit notes
+      summary: Submit a credit note for approval
+      description: Start the approval process once the uploaded credit note is validated.
+      operationId: post_payable_credit_notes_id_submit_for_approval
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_credit_notes/{credit_note_id}/validate:
+    get:
+      tags:
+      - Credit notes
+      summary: Validate a credit note
+      operationId: get_payable_credit_notes_id_validate
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: credit_note_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditNoteValidationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
+    CreditNoteUpdateRequest:
+      properties:
+        based_on:
+          type: string
+          format: uuid
+          description: ID of the payable this credit note is based on. The credit note will be linked to this payable
+          example: 123e4567-e89b-12d3-a456-426614174000
+        based_on_document_id:
+          type: string
+          maxLength: 255
+          description: The document ID of the original payable
+          example: INV-2287
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's address
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_bank_account_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's bank account
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_vat_id_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's VAT registration
+          example: 123e4567-e89b-12d3-a456-426614174000
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency code of the credit note
+          example: EUR
+        description:
+          type: string
+          maxLength: 255
+          description: An arbitrary description of this credit note
+          example: Credit note for returned items from invoice INV-2287
+        document_id:
+          type: string
+          maxLength: 255
+          description: A unique credit note number assigned by the credit note issuer for tracking purposes
+          example: CN-2287
+        issued_at:
+          type: string
+          format: date
+          description: The date when the credit note was issued, in the YYYY-MM-DD format
+          example: '2024-01-15'
+        project_id:
+          type: string
+          format: uuid
+          description: The ID of the project this credit note belongs to
+          example: 123e4567-e89b-12d3-a456-426614174000
+        sender:
+          type: string
+          maxLength: 255
+          description: Email address of the sender
+          example: supplier@example.com
+        subtotal:
+          type: integer
+          minimum: 0.0
+          description: The subtotal amount before taxes
+          example: 1000
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: List of tag IDs associated with this credit note
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+        tax:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: The tax percentage applied to the subtotal
+          example: 20
+        tax_amount:
+          type: integer
+          minimum: 0.0
+          description: The calculated tax amount
+          example: 200
+        total_amount:
+          type: integer
+          minimum: 0.0
+          description: The total amount including taxes
+          example: 1200
+      additionalProperties: false
+      type: object
+      description: Schema for updating an existing credit note. All fields are optional.
+    TagReadSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/TagCategory'
+          description: The tag category.
+          example: department
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        description:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The tag description.
+          example: Tag for the Marketing Department
+        name:
+          type: string
+          description: The tag name.
+          example: Marketing
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - name
+      description: Represents a user-defined tag that can be assigned to resources to filter them.
+    CreditNoteResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the credit note
+          example: 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the credit note was created in the system
+          example: '2024-01-15T14:30:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time of the last update to the credit note
+          example: '2024-01-15T14:30:00Z'
+        based_on:
+          type: string
+          format: uuid
+          description: ID of the payable this credit note is based on
+          example: 123e4567-e89b-12d3-a456-426614174000
+        based_on_document_id:
+          type: string
+          maxLength: 255
+          description: The document ID of the original payable that this credit note refers to
+          example: INV-2287
+        counterpart:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawData'
+          description: Object representing de-normalized counterpart data
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's address
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_bank_account_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's bank account
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_raw:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawData'
+          description: Object representing counterpart data which was extracted by OCR. Used for informational purposes.
+        counterpart_vat_id_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's VAT registration
+          example: 123e4567-e89b-12d3-a456-426614174000
+        created_by_external_user_id:
+          type: string
+          maxLength: 255
+          description: External system's user ID for the creator
+          example: ext_user_123
+        created_by_external_user_name:
+          type: string
+          maxLength: 255
+          description: Name of the external user who created the credit note
+          example: John Doe
+        created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the credit note
+          example: 123e4567-e89b-12d3-a456-426614174000
+        currency:
+          type: string
+          maxLength: 5
+          description: The currency code
+          example: EUR
+        currency_exchange:
+          $ref: '#/components/schemas/CurrencyExchangeSchema'
+        description:
+          type: string
+          maxLength: 255
+          description: Description of the credit note
+          example: Credit note for returned items from invoice INV-2287
+        document_id:
+          type: string
+          maxLength: 255
+          description: The credit note's unique document number
+          example: CN-2287
+        entity_id:
+          type: string
+          format: uuid
+          description: The ID of the entity to which the credit note belongs
+          example: 123e4567-e89b-12d3-a456-426614174000
+        file_id:
+          type: string
+          format: uuid
+          description: The id of the credit note file stored in the file saver.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        file_url:
+          type: string
+          description: The URL of the credit note file stored in the file saver.
+        issued_at:
+          type: string
+          format: date
+          description: Date when the credit note was issued
+          example: '2024-01-15'
+        ocr_request_id:
+          type: string
+          format: uuid
+          description: ID of the OCR processing request
+          example: 123e4567-e89b-12d3-a456-426614174000
+        ocr_status:
+          type: string
+          maxLength: 10
+          description: Status of OCR processing
+          example: completed
+        origin:
+          type: string
+          maxLength: 128
+          description: The origin or source system of the credit note
+          example: SAP
+        project_id:
+          type: string
+          format: uuid
+          description: ID of the associated project
+          example: 123e4567-e89b-12d3-a456-426614174000
+        sender:
+          type: string
+          maxLength: 255
+          description: Email address of the sender
+          example: supplier@example.com
+        source_of_data:
+          type: string
+          maxLength: 128
+          description: How the data was input (ocr/user_specified)
+          example: user_specified
+        status:
+          type: string
+          maxLength: 30
+          description: The current status of the credit note in its lifecycle
+          example: submitted_for_approval
+        subtotal:
+          type: integer
+          description: The subtotal amount before taxes
+          example: 1000
+        tags:
+          items:
+            $ref: '#/components/schemas/TagReadSchema'
+          type: array
+          description: List of tags associated with this credit note
+          example:
+          - id: 123e4567-e89b-12d3-a456-426614174000
+            name: Department A
+            category: department
+        tax:
+          type: integer
+          description: The tax percentage
+          example: 20
+        tax_amount:
+          type: integer
+          description: The calculated tax amount
+          example: 200
+        total_amount:
+          type: integer
+          description: The total amount including taxes
+          example: 1200
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - entity_id
+      - origin
+      - source_of_data
+      - status
+      description: Schema for credit note response. Includes all fields that can be returned from the API.
+    CreditNoteLineItemCreateRequest:
+      properties:
+        description:
+          type: string
+          description: Detailed description of the line item
+          example: Premium version of Product XYZ with extended warranty
+        name:
+          type: string
+          description: Name or title of the line item
+          example: Product XYZ
+        quantity:
+          type: number
+          minimum: 0.0
+          description: Quantity of items
+          example: 2.0
+        tax:
+          type: integer
+          maximum: 10000.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
+        unit:
+          type: string
+          description: Unit of measurement
+          example: pieces
+        unit_price:
+          type: integer
+          description: Price per unit in smallest currency unit (e.g. cents)
+          example: 5000
+      additionalProperties: false
+      type: object
+      description: Schema for creating a new credit note line item.
+    CounterpartRawAddress:
+      properties:
+        city:
+          type: string
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
+      type: object
+      description: Address information.
+    CreditNoteFieldsAllowedForValidate:
+      type: string
+      enum:
+      - currency
+      - document_id
+      - issued_at
+      - tax_amount
+      - based_on
+      - total_amount
+      - subtotal
+      - description
+      - tax
+      - file_id
+      - counterpart_id
+      - counterpart_bank_account_id
+      - counterpart_address_id
+      - counterpart_vat_id_id
+      - line_items
+      - line_items.quantity
+      - line_items.unit_price
+      - line_items.tax
+      - line_items.unit
+      - line_items.name
+      - line_items.description
+      - line_items.subtotal
+      - line_items.total
+      - line_items.tax_amount
+    CreditNoteUploadFile:
+      properties:
+        file:
+          type: string
+          format: binary
+      type: object
+      required:
+      - file
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    OriginEnum:
+      type: string
+      enum:
+      - upload
+      - einvoicing
+    CreditNoteLineItemUpdateRequest:
+      properties:
+        description:
+          type: string
+          description: Detailed description of the line item
+          example: Premium version of Product XYZ with extended warranty
+        name:
+          type: string
+          description: Name or title of the line item
+          example: Product XYZ
+        quantity:
+          type: number
+          minimum: 0.0
+          description: Quantity of items
+          example: 2.0
+        tax:
+          type: integer
+          maximum: 10000.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
+        unit:
+          type: string
+          description: Unit of measurement
+          example: pieces
+        unit_price:
+          type: integer
+          description: Price per unit in smallest currency unit
+          example: 5000
+      additionalProperties: false
+      type: object
+      description: Schema for updating an existing credit note line item. All fields are optional.
+    CreditNoteLineItemCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+      - name
+      - total
+      - quantity
+      - unit_price
+    CreditNoteCreateRequest:
+      properties:
+        based_on:
+          type: string
+          format: uuid
+          description: ID of the payable this credit note is based on. The credit note will be linked to this payable
+          example: 123e4567-e89b-12d3-a456-426614174000
+        based_on_document_id:
+          type: string
+          maxLength: 255
+          description: The document ID of the original payable that this credit note refers to
+          example: INV-2287
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's address
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_bank_account_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's bank account
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart (vendor/supplier)
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_vat_id_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's VAT registration
+          example: 123e4567-e89b-12d3-a456-426614174000
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency code of the credit note
+          default: EUR
+          example: EUR
+        description:
+          type: string
+          maxLength: 255
+          description: An arbitrary description of this credit note
+          example: Credit note for returned items from invoice INV-2287
+        document_id:
+          type: string
+          maxLength: 255
+          description: A unique credit note number assigned by the credit note issuer for tracking purposes
+          example: CN-2287
+        issued_at:
+          type: string
+          format: date
+          description: The date when the credit note was issued, in the YYYY-MM-DD format
+          example: '2024-01-15'
+        project_id:
+          type: string
+          format: uuid
+          description: The ID of the project this credit note belongs to
+          example: 123e4567-e89b-12d3-a456-426614174000
+        sender:
+          type: string
+          maxLength: 255
+          description: The email address from which the credit note was received
+          example: supplier@example.com
+        subtotal:
+          type: integer
+          minimum: 0.0
+          description: The subtotal amount before taxes
+          example: 1000
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: List of tag IDs associated with this credit note
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+        tax:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: The tax percentage applied to the subtotal
+          example: 20
+        tax_amount:
+          type: integer
+          minimum: 0.0
+          description: The calculated tax amount
+          example: 200
+        total_amount:
+          type: integer
+          minimum: 0.0
+          description: The total amount including taxes
+          example: 1200
+      additionalProperties: false
+      type: object
+      required:
+      - document_id
+      - issued_at
+      description: Schema for creating a new credit note.
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    CreditNoteValidationsResource:
+      properties:
+        required_fields:
+          items:
+            $ref: '#/components/schemas/CreditNoteFieldsAllowedForValidate'
+          type: array
+      type: object
+      required:
+      - required_fields
+    CreditNoteLineItemPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteLineItemResponse'
+          type: array
+          description: List of credit note line items for the current page
+        next_pagination_token:
+          type: string
+          description: Token to retrieve the next page of results
+          example: eyJwYWdlIjoyfQ==
+        prev_pagination_token:
+          type: string
+          description: Token to retrieve the previous page of results
+          example: eyJwYWdlIjoxfQ==
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: A paginated list of credit note line items.
+    PayableCreditNoteStateEnum:
+      type: string
+      enum:
+      - new
+      - draft
+      - applied
+      - approved
+      - rejected
+      - canceled
+      - submitted_for_approval
+    CounterpartRawData:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawAddress'
+          description: The address of the vendor or supplier.
+        bank_account:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawBankAccount'
+          description: Object representing counterpart bank account.
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        name:
+          type: string
+          description: Vendor or supplier name.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+        tax_id:
+          type: string
+          description: The tax id of the counterpart.
+          example: DE12345678
+        vat_id:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawVatID'
+          description: VAT ID of the vendor or supplier which was used in the invoice.
+      type: object
+    CurrencyExchangeSchema:
+      properties:
+        default_currency_code:
+          type: string
+        rate:
+          type: number
+          exclusiveMinimum: 0.0
+        total:
+          type: number
+      additionalProperties: false
+      type: object
+      required:
+      - default_currency_code
+      - rate
+      - total
+    CreditNoteValidationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID assigned to this credit note.
+        validation_errors:
+          items:
+            type: object
+          type: array
+      type: object
+      required:
+      - id
+    CreditNoteCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    CreditNoteLineItemReplaceRequest:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteLineItemCreateRequest'
+          type: array
+          description: List of credit note line items to replace existing ones
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: Schema for replacing all line items of a credit note.
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    CounterpartRawVatID:
+      properties:
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        type:
+          type: string
+        value:
+          type: string
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    CreditNoteLineItemResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the line item
+          example: 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the line item was created
+          example: '2024-01-15T14:30:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the line item was last updated
+          example: '2024-01-15T14:30:00Z'
+        created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the line item
+          example: 123e4567-e89b-12d3-a456-426614174000
+        credit_note_id:
+          type: string
+          format: uuid
+          description: ID of the parent credit note
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+          description: Detailed description of the line item
+          example: Premium version of Product XYZ with extended warranty
+        name:
+          type: string
+          description: Name or title of the line item
+          example: Product XYZ
+        quantity:
+          type: number
+          minimum: 0.0
+          description: Quantity of items
+          example: 2.0
+        subtotal:
+          type: integer
+          description: Subtotal amount before tax
+          example: 10000
+        tax:
+          type: integer
+          minimum: 0.0
+          description: Tax percentage
+          example: 20
+        tax_amount:
+          type: integer
+          description: Tax amount
+          example: 2000
+        total:
+          type: integer
+          description: Total amount including tax
+          example: 12000
+        unit:
+          type: string
+          description: Unit of measurement
+          example: pieces
+        unit_price:
+          type: integer
+          description: Price per unit in smallest currency unit
+          example: 5000
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - credit_note_id
+      description: Schema for credit note line item response. Includes all fields that can be returned from the API.
+    CreditNotePaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteResponse'
+          type: array
+          description: List of credit notes for the current page
+        next_pagination_token:
+          type: string
+          description: Token to retrieve the next page of results
+          example: eyJwYWdlIjoyfQ==
+        prev_pagination_token:
+          type: string
+          description: Token to retrieve the previous page of results
+          example: eyJwYWdlIjoxfQ==
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: A paginated list of credit notes.
+    CounterpartRawBankAccount:
+      properties:
+        account_holder_name:
+          type: string
+          description: Vendor's bank account name.
+        account_number:
+          type: string
+          description: Vendor's bank account number, IBAN, or similar (if specified in the payable document).
+          example: '123456789012'
+        bic:
+          type: string
+          description: SWIFT code (BIC) of the vendor's bank.
+          example: DEUTDE2HXXX
+        iban:
+          type: string
+          description: required for non-GB bank accounts
+        routing_number:
+          type: string
+          description: required for US bank accounts
+        sort_code:
+          type: string
+          description: required for GB bank accounts
+      type: object
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

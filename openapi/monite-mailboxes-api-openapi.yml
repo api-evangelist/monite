@@ -1,0 +1,410 @@
+openapi: 3.2.0
+info:
+  title: Monite Mailboxes API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Mailboxes across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Mailboxes
+paths:
+  /mailboxes:
+    get:
+      tags:
+      - Mailboxes
+      summary: Get mailboxes
+      description: Get all mailboxes owned by Entity
+      operationId: get_mailboxes
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailboxDataResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Mailboxes
+      summary: Create a mailbox
+      description: Create a new mailbox
+      operationId: post_mailboxes
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailboxDomainRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailboxResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mailboxes/search:
+    post:
+      tags:
+      - Mailboxes
+      summary: Get mailboxes by IDs
+      description: Get all mailboxes owned by Entity
+      operationId: post_mailboxes_search
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MailboxMultipleEntitiesRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MailboxDataResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mailboxes/{mailbox_id}:
+    delete:
+      tags:
+      - Mailboxes
+      summary: Delete a mailbox
+      description: Delete mailbox
+      operationId: delete_mailboxes_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: mailbox_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    MailboxDomainRequest:
+      properties:
+        mailbox_domain_id:
+          type: string
+          format: uuid
+        mailbox_name:
+          type: string
+        related_object_type:
+          allOf:
+          - $ref: '#/components/schemas/MailboxObjectTypeEnum'
+          description: 'Related object type: payable and so on'
+      additionalProperties: false
+      type: object
+      required:
+      - mailbox_domain_id
+      - mailbox_name
+      - related_object_type
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    MailboxMultipleEntitiesRequest:
+      properties:
+        entity_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - entity_ids
+    MailboxObjectTypeEnum:
+      type: string
+      enum:
+      - payable
+      - receipt
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    MailboxDataResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/MailboxResponse'
+          type: array
+      type: object
+    MailboxResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Mailbox UUID
+        mailbox_domain_id:
+          type: string
+          format: uuid
+        mailbox_full_address:
+          type: string
+        mailbox_name:
+          type: string
+        related_object_type:
+          type: string
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - mailbox_full_address
+      - mailbox_name
+      - related_object_type
+      - status
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

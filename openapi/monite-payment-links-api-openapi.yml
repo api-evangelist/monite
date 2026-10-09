@@ -1,0 +1,998 @@
+openapi: 3.2.0
+info:
+  title: Monite Payment links API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Payment links across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Payment Links
+paths:
+  /payment_links:
+    post:
+      tags:
+      - Payment Links
+      summary: Create a payment link
+      operationId: post_payment_links
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePaymentLinkRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicPaymentLinkResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payment_links/{payment_link_id}:
+    get:
+      tags:
+      - Payment Links
+      summary: Get payment link by ID
+      operationId: get_payment_links_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: payment_link_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicPaymentLinkResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payment_links/{payment_link_id}/expire:
+    post:
+      tags:
+      - Payment Links
+      summary: Expire a payment link
+      operationId: post_payment_links_id_expire
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: payment_link_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicPaymentLinkResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    InvoiceFile:
+      properties:
+        mimetype:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
+      type: object
+      required:
+      - mimetype
+      - name
+      - url
+    MoniteAllPaymentMethodsTypes:
+      type: string
+      enum:
+      - sepa_credit
+      - us_ach
+      - blik
+      - card
+      - bacs_direct_debit
+      - bancontact
+      - eps
+      - giropay
+      - ideal
+      - p24
+      - sepa_debit
+      - sofort
+      - applepay
+      - googlepay
+      - affirm
+      - klarna
+    PayerAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    BankAccount:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the bank account.
+        account_holder_name:
+          type: string
+          description: The name of the person or business that owns this bank account.
+          examples:
+          - Bob Jones
+        account_number:
+          type: string
+          description: The bank account number. Typically used for UK and US bank accounts. US account numbers contain 9 to 12 digits. UK account numbers typically contain 8 digits.
+          examples:
+          - '12345678'
+        bic:
+          type: string
+          maxLength: 11
+          description: The BIC/SWIFT code of the bank.
+          examples:
+          - DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          examples:
+          - DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/references/currencies).
+          examples:
+          - EUR
+        display_name:
+          type: string
+          maxLength: 200
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'. Used only for entity bank accounts.
+          examples:
+          - Primary account
+        iban:
+          type: string
+          maxLength: 34
+          description: The IBAN of the bank account.
+          examples:
+          - DE74500700100100000900
+        is_default:
+          type: boolean
+          description: Indicates whether this bank account is the default one for its currency.
+          default: false
+        name:
+          type: string
+          maxLength: 200
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'. Used only for counterpart bank accounts.
+          examples:
+          - Primary account
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN). Typically used for US banks. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Typically used for UK banks.
+          examples:
+          - '123456'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who added this bank account, or `null` if it was added using a partner access token. Used only for entity bank accounts.
+      type: object
+      required:
+      - id
+    PaymentObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/PaymentObjectType'
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+    PaymentAccountType:
+      type: string
+      enum:
+      - entity
+      - counterpart
+    PaymentObjectType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    CreatePaymentLinkRequest:
+      properties:
+        amount:
+          type: integer
+          minimum: 1.0
+          description: The payment amount in [minor units](https://docs.monite.com/references/currencies#minor-units). Required if `object` is not specified.
+          example: 120550
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The payment currency. Required if `object` is not specified.
+          example: EUR
+        expires_at:
+          type: string
+          format: date-time
+        invoice:
+          allOf:
+          - $ref: '#/components/schemas/Invoice'
+          description: An object containing information about the invoice being paid. Used only if `object` is not specified.
+        object:
+          allOf:
+          - $ref: '#/components/schemas/PaymentObject'
+          description: If the invoice being paid is a payable or receivable stored in Monite, provide the `object` object containing the invoice type and ID. Otherwise, use the `amount`, `currency`, `payment_reference`, and (optionally) `invoice` fields to specify the invoice-related data.
+        payment_methods:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+        payment_reference:
+          type: string
+          description: A payment reference number that the recipient can use to identify the payer or purpose of the transaction. Required if `object` is not specified.
+          example: 011/7057/26072
+        recipient:
+          $ref: '#/components/schemas/PaymentAccountObject'
+        return_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
+          example: https://pay.example.com/complete
+      additionalProperties: false
+      type: object
+      required:
+      - payment_methods
+      - recipient
+    Invoice:
+      properties:
+        due_date:
+          type: string
+          format: date
+        file:
+          $ref: '#/components/schemas/InvoiceFile'
+        issue_date:
+          type: string
+          format: date
+      additionalProperties: false
+      type: object
+    PaymentIntent:
+      properties:
+        id:
+          type: string
+          format: uuid
+        updated_at:
+          type: string
+          format: date-time
+        application_fee_amount:
+          type: integer
+        object:
+          $ref: '#/components/schemas/PaymentObject'
+        provider:
+          type: string
+        selected_payment_method:
+          type: string
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - updated_at
+      - status
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    PaymentAccountObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    RecipientAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PublicPaymentLinkResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        expires_at:
+          type: string
+          format: date-time
+        invoice:
+          $ref: '#/components/schemas/Invoice'
+        payer:
+          $ref: '#/components/schemas/PayerAccountResponse'
+        payment_intent:
+          $ref: '#/components/schemas/PaymentIntent'
+        payment_intent_id:
+          type: string
+          format: uuid
+        payment_methods:
+          items:
+            type: string
+          type: array
+        payment_page_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+        payment_reference:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/RecipientAccountResponse'
+        return_url:
+          type: string
+          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
+          example: https://pay.example.com/complete
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - amount
+      - currency
+      - expires_at
+      - payment_intent_id
+      - payment_methods
+      - payment_page_url
+      - recipient
+      - status
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

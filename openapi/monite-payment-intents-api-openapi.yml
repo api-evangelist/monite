@@ -1,0 +1,1085 @@
+openapi: 3.2.0
+info:
+  title: Monite Payment intents API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Payment intents across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Payment Intents
+paths:
+  /payment_intents:
+    get:
+      tags:
+      - Payment Intents
+      summary: Get payment intents
+      operationId: get_payment_intents
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/PaymentIntentCursorFields'
+        name: sort
+        in: query
+      - description: ID of a payable or receivable invoice. If provided, returns only payment intents associated with the specified invoice.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: object_id
+        in: query
+      - description: A list of payable IDs and/or receivable IDs. If provided, returns only payment intents associated with the specified payable and receivable invoices. Valid but nonexistent IDs do not raise errors but produce no results.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: object_id__in
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentsListResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payment_intents/{payment_intent_id}:
+    get:
+      tags:
+      - Payment Intents
+      summary: Get payment intent by ID
+      operationId: get_payment_intents_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: payment_intent_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Payment Intents
+      summary: Update the payment intent amount
+      operationId: patch_payment_intents_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: payment_intent_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePaymentIntentPayload'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payment_intents/{payment_intent_id}/history:
+    get:
+      tags:
+      - Payment Intents
+      summary: Get the payment intent history
+      operationId: get_payment_intents_id_history
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: payment_intent_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntentHistoryResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    InvoiceFile:
+      properties:
+        mimetype:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
+      type: object
+      required:
+      - mimetype
+      - name
+      - url
+    MoniteAllPaymentMethodsTypes:
+      type: string
+      enum:
+      - sepa_credit
+      - us_ach
+      - blik
+      - card
+      - bacs_direct_debit
+      - bancontact
+      - eps
+      - giropay
+      - ideal
+      - p24
+      - sepa_debit
+      - sofort
+      - applepay
+      - googlepay
+      - affirm
+      - klarna
+    PaymentIntentResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        updated_at:
+          type: string
+          format: date-time
+        amount:
+          type: integer
+        application_fee_amount:
+          type: integer
+        batch_payment_id:
+          type: string
+          format: uuid
+        currency:
+          type: string
+        invoice:
+          $ref: '#/components/schemas/Invoice'
+        object:
+          $ref: '#/components/schemas/PaymentObject'
+        payer:
+          $ref: '#/components/schemas/PayerAccountResponse'
+        payment_link_id:
+          type: string
+          format: uuid
+        payment_methods:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+        payment_reference:
+          type: string
+        provider:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/RecipientAccountResponse'
+        selected_payment_method:
+          $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - updated_at
+      - amount
+      - currency
+      - payment_methods
+      - recipient
+      - status
+    PayerAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    BankAccount:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The ID of the bank account.
+        account_holder_name:
+          type: string
+          description: The name of the person or business that owns this bank account.
+          examples:
+          - Bob Jones
+        account_number:
+          type: string
+          description: The bank account number. Typically used for UK and US bank accounts. US account numbers contain 9 to 12 digits. UK account numbers typically contain 8 digits.
+          examples:
+          - '12345678'
+        bic:
+          type: string
+          maxLength: 11
+          description: The BIC/SWIFT code of the bank.
+          examples:
+          - DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          examples:
+          - DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/references/currencies).
+          examples:
+          - EUR
+        display_name:
+          type: string
+          maxLength: 200
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'. Used only for entity bank accounts.
+          examples:
+          - Primary account
+        iban:
+          type: string
+          maxLength: 34
+          description: The IBAN of the bank account.
+          examples:
+          - DE74500700100100000900
+        is_default:
+          type: boolean
+          description: Indicates whether this bank account is the default one for its currency.
+          default: false
+        name:
+          type: string
+          maxLength: 200
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'. Used only for counterpart bank accounts.
+          examples:
+          - Primary account
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN). Typically used for US banks. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Typically used for UK banks.
+          examples:
+          - '123456'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who added this bank account, or `null` if it was added using a partner access token. Used only for entity bank accounts.
+      type: object
+      required:
+      - id
+    PaymentIntentCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    PaymentObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/PaymentObjectType'
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+    PaymentIntentHistory:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        payment_intent_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - payment_intent_id
+      - status
+    PaymentAccountType:
+      type: string
+      enum:
+      - entity
+      - counterpart
+    PaymentObjectType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    PaymentIntentsListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentIntentResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    UpdatePaymentIntentPayload:
+      properties:
+        amount:
+          type: integer
+      additionalProperties: false
+      type: object
+      required:
+      - amount
+    Invoice:
+      properties:
+        due_date:
+          type: string
+          format: date
+        file:
+          $ref: '#/components/schemas/InvoiceFile'
+        issue_date:
+          type: string
+          format: date
+      additionalProperties: false
+      type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    PaymentIntentHistoryResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentIntentHistory'
+          type: array
+          description: Payment intent history
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    RecipientAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

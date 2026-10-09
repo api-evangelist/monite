@@ -1,0 +1,496 @@
+openapi: 3.2.0
+info:
+  title: Monite Webhook deliveries API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Webhook deliveries across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Webhook deliveries
+paths:
+  /webhooks:
+    get:
+      tags:
+      - Webhook deliveries
+      summary: Get the webhook delivery log
+      description: 'Returns an aggregated log of webhook delivery attempts. The data contains a list of triggered webhook events, how many times Monite tried to send each event to your server, the last HTTP status code returned by your webhook listener endpoint, and whether the final attempt to deliver that event was successful.
+
+
+        We guarantee access to webhook delivery data only from the last three months. Earlier data may be unavailable.
+
+
+        Note that if the same event type is included in multiple webhook subscriptions, the results will include several entries for each occurrence of this event - one entry per subscription.'
+      operationId: get_webhooks
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookDeliveryCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+      - name: object_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookObjectType'
+          - type: 'null'
+      - name: event_action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDeliveryPaginationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_deliveries:
+    get:
+      tags:
+      - Webhook deliveries
+      summary: Get the webhook delivery log
+      description: 'Returns an aggregated log of webhook delivery attempts. The data contains a list of triggered webhook events, how many times Monite tried to send each event to your server, the last HTTP status code returned by your webhook listener endpoint, and whether the final attempt to deliver that event was successful.
+
+
+        We guarantee access to webhook delivery data only from the last three months. Earlier data may be unavailable.
+
+
+        Note that if the same event type is included in multiple webhook subscriptions, the results will include several entries for each occurrence of this event - one entry per subscription.'
+      operationId: get_webhook_deliveries
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookDeliveryCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: event_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+      - name: object_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookObjectType'
+          - type: 'null'
+      - name: event_action
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookDeliveryPaginationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    WebhookDeliveryPaginationResource:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/WebhookDeliveryResource'
+          type: array
+          description: A set of webhooks returned per page
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    WebhookObjectType:
+      type: string
+      enum:
+      - account
+      - accounting_connection
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - batch_payment
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_user
+      - export
+      - overdue_reminder
+      - partner_settings
+      - payable
+      - payables_credit_note
+      - payables_purchase_order
+      - payable.line_item
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_reminder
+      - product
+      - project
+      - receivable
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - workflow
+      - workflow_pipeline
+      - ocr_task
+      - delivery_note
+      - receipt
+      - transaction
+    WebhookDeliveryResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        requests_made_count:
+          type: integer
+        response:
+          anyOf:
+          - type: string
+          - type: 'null'
+        response_status_code:
+          anyOf:
+          - type: integer
+          - type: 'null'
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+        was_successful:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - event_id
+      - requests_made_count
+      - url
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    WebhookDeliveryCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

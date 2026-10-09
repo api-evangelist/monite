@@ -1,0 +1,57 @@
+name: Monite API Changelog
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/intro/release-notes/changelog
+scheme: dated entries within date-based API versions (X-Monite-Version)
+current_version: '2024-05-25'
+release_notes: https://docs.monite.com/intro/release-notes/index
+note: Entries are dated changes within API version 2024-05-25; the page does not mark individual entries as breaking. Latest entry on the page is October 2, 2025.
+entries:
+- version: '2024-05-25'
+  date: '2025-10-02'
+  breaking: false
+  highlights: [New search_text parameter for partial, case-insensitive search across receivable text fields (GET /receivables, POST /receivables/search, GET /analytics/receivables)]
+- version: '2024-05-25'
+  date: '2025-09-24'
+  breaking: false
+  highlights: [New tax_status field on receivable line items (taxable, non-taxable, exempt), Attachments can be added and updated for receivables in any status]
+- version: '2024-05-25'
+  date: '2025-09-23'
+  breaking: false
+  highlights: [Manual enforcement of approval policies on payables, einvoice_file_url field on payables created from e-invoices]
+- version: '2024-05-25'
+  date: '2025-09-22'
+  breaking: false
+  highlights: [Up to 10 deductions on invoices and quotes via new deductions field; deduction_amount and deduction_memo deprecated, New has_due_date filter on receivable search]
+- version: '2024-05-25'
+  date: '2025-09-12'
+  breaking: false
+  highlights: [Invoice due date and payment terms now optional, created_at__* and issue_date__* filters now ignore milliseconds]
+- version: '2024-05-25'
+  date: '2025-09-11'
+  breaking: false
+  highlights: [Full CRUD APIs for general ledgers, tax rates and cost centers, Receipts and line items support ledger_account_id, tax_rate_id and cost_center_id]
+- version: '2024-05-25'
+  date: '2025-09-10'
+  breaking: false
+  highlights: [Added GET /health endpoint for API health checks]
+- version: '2024-05-25'
+  date: '2025-09-01'
+  breaking: false
+  highlights: [Expense management introduced with AI receipt-to-transaction matching, New RBAC permissions receipt and transaction, Webhooks for receipts and transactions]
+- version: '2024-05-25'
+  date: '2025-08-28'
+  breaking: false
+  highlights: [Custom document_id can be updated on existing invoices and quotes in non-compliant mode]
+- version: '2024-05-25'
+  date: '2025-08-21'
+  breaking: false
+  highlights: [mail.reply_to entity setting, New email template variables]
+- version: '2024-05-25'
+  date: '2025-08-13'
+  breaking: false
+  highlights: [Custom VAT rate components increased from 3 to 10, is_einvoice field on credit notes]
+- version: '2024-05-25'
+  date: '2025-08-12'
+  breaking: false
+  highlights: [USD bank accounts for entities not using Monite payment rails, payment_intent_id no longer required for created payment records]

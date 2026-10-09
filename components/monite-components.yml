@@ -1,0 +1,65 @@
+name: Monite UI Components
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/sdks/index
+description: 'Monite ships two embeddable UI SDKs: a framework-agnostic Drop-in library of Web Components and a React UI SDK of prebuilt components connected to the Monite API.'
+families:
+- name: Drop-in
+  type: web-components
+  package: '@monite/sdk-drop-in'
+  install: npm install @monite/sdk-drop-in
+  docs: https://docs.monite.com/sdks/drop-in/index
+  description: Fully embeddable UI component library built on Web Components; individual components or the whole library as a single component. Theming, localization and iframe guides.
+  guides:
+  - https://docs.monite.com/sdks/drop-in/theming
+  - https://docs.monite.com/sdks/drop-in/localization
+  - https://docs.monite.com/sdks/drop-in/iframe
+- name: React SDK
+  type: react-components
+  package: '@monite/sdk-react'
+  install: npm install @monite/sdk-react
+  docs: https://docs.monite.com/sdks/react/index
+  description: Prebuilt React components (MoniteProvider wrapper) for client- and server-side React apps.
+  components_docs: https://docs.monite.com/sdks/react/components/index
+  components:
+  - approvalpolicies
+  - approvalpoliciestable
+  - approvalpolicydetails
+  - approvalrequests
+  - approvalrequeststable
+  - counterpartdetails
+  - counterparts
+  - counterpartstable
+  - creditnotestable
+  - documentnumber
+  - invoicedetails
+  - invoicestable
+  - layoutandlogo
+  - onboarding
+  - othersettings
+  - payabledetails
+  - payables
+  - payablestable
+  - productdetails
+  - products
+  - productstable
+  - quotestable
+  - receivables
+  - receivablestable
+  - rolesandpolicies
+  - tagformmodal
+  - tags
+  - tagstable
+  - templatesettings
+  - userroledetails
+  - userroles
+  - userrolestable
+- name: Payment and onboarding web components
+  type: hosted
+  docs:
+  - https://docs.monite.com/payments/payment-web-component
+  - https://docs.monite.com/payments/onboarding/web-component
+  description: Payment and onboarding web component pages listed in the docs sitemap.
+loader_libs:
+- '@monite/sdk-drop-in'
+- '@monite/sdk-react'

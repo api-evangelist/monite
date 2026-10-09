@@ -1,0 +1,2401 @@
+openapi: 3.2.0
+info:
+  title: Monite Counterparts API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Counterparts across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Counterparts
+paths:
+  /counterparts:
+    get:
+      tags:
+      - Counterparts
+      summary: Get all counterparts
+      operationId: get_counterparts
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The IBAN of the counterpart's bank account.
+        required: false
+        schema:
+          type: string
+          maxLength: 34
+        name: iban
+        in: query
+      - description: The bank's sort code.
+        required: false
+        schema:
+          type: string
+          maxLength: 100
+        example: '123456'
+        name: sort_code
+        in: query
+      - description: The bank account number. Required for US bank accounts to accept ACH payments. US account numbers contain 9 to 12 digits. UK account numbers typically contain 8 digits.
+        required: false
+        schema:
+          type: string
+          maxLength: 100
+        name: account_number
+        in: query
+      - description: The tax ID of the counterpart.
+        required: false
+        schema:
+          type: string
+          maxLength: 30
+        name: tax_id
+        in: query
+      - description: The VAT ID of the counterpart.
+        required: false
+        schema:
+          type: string
+          maxLength: 30
+        name: vat_id
+        in: query
+      - description: A list of counterpart IDs to search through.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: id__in
+        in: query
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/CounterpartType'
+        name: type
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name__icontains
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: is_vendor
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: is_customer
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: email
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: email__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: email__icontains
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.country
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.city
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.postal_code
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.state
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.line1
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: address.line2
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: tag_ids__in
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Counterparts
+      summary: Create a counterpart
+      operationId: post_counterparts
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CounterpartCreatePayload'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /counterparts/{counterpart_id}:
+    get:
+      tags:
+      - Counterparts
+      summary: Get a counterpart
+      operationId: get_counterparts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Counterparts
+      summary: Update a counterpart
+      operationId: patch_counterparts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CounterpartUpdatePayload'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CounterpartResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Counterparts
+      summary: Delete a counterpart
+      operationId: delete_counterparts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /counterparts/{counterpart_id}/partner_metadata:
+    get:
+      tags:
+      - Counterparts
+      summary: Get counterpart metadata
+      operationId: get_counterparts_id_partner_metadata
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerMetadataResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - Counterparts
+      summary: Replace counterpart metadata
+      operationId: put_counterparts_id_partner_metadata
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerMetadata'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerMetadataResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    CounterpartResponse:
+      anyOf:
+      - $ref: '#/components/schemas/CounterpartIndividualRootResponse'
+      - $ref: '#/components/schemas/CounterpartOrganizationRootResponse'
+      description: 'A Counterpart object contains information about an organization (juridical person) or
+
+        individual (natural person) that provides goods and services to or buys them from an
+
+        [SME](https://docs.monite.com/docs/glossary#sme).'
+    CounterpartOrganizationRootCreatePayload:
+      properties:
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationCreatePayload'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - organization
+          description: Must be "organization".
+          example: organization
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      - type
+      description: This schema is used to create counterparts that are organizations (juridical persons).
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
+    CounterpartPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CounterpartResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of counterparts
+    CounterpartOrganizationUpdatePayload:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the organization.
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          maxLength: 255
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of the organization.
+          example: '5551231234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+      additionalProperties: false
+      type: object
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartOrganizationRootResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the counterpart.
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Entity user ID of counterpart creator.
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationResponse'
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartType'
+          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - organization
+      - type
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartIndividualResponse:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        tags:
+          items:
+            $ref: '#/components/schemas/CounterpartTagSchema'
+          type: array
+          description: The list of tags for this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      type: object
+      required:
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartIndividualRootCreatePayload:
+      properties:
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          examples:
+          - CR-ABC-12345
+          - CUS123456
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualCreatePayload'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - individual
+          description: Must be "individual".
+          example: individual
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      - type
+      description: This schema is used to create counterparts that are individuals (natural persons).
+    PartnerMetadata:
+      properties:
+        metadata:
+          type: object
+          description: Metadata for partner needs
+      type: object
+      required:
+      - metadata
+    CounterpartIndividualCreatePayload:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        residential_address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The person's address.
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      additionalProperties: false
+      type: object
+      required:
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      - residential_address
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartIndividualUpdatePayload:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      additionalProperties: false
+      type: object
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartCursorFields:
+      type: string
+      enum:
+      - counterpart_name
+    CounterpartOrganizationResponse:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          maxLength: 255
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of the organization
+          example: '5551231234'
+        tags:
+          items:
+            $ref: '#/components/schemas/CounterpartTagSchema'
+          type: array
+          description: The list of tags for this counterpart.
+      type: object
+      required:
+      - is_customer
+      - is_vendor
+      - legal_name
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartIndividualRootResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the counterpart.
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Entity user ID of counterpart creator.
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualResponse'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartType'
+          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - individual
+      - type
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartUpdatePayload:
+      anyOf:
+      - $ref: '#/components/schemas/CounterpartIndividualRootUpdatePayload'
+      - $ref: '#/components/schemas/CounterpartOrganizationRootUpdatePayload'
+      additionalProperties: false
+      description: This schema is used to update existing counterparts (organizations or individuals).
+    PartnerMetadataResponse:
+      properties:
+        metadata:
+          type: object
+          description: Metadata for partner needs
+      type: object
+    LanguageCodeEnum:
+      type: string
+      enum:
+      - ab
+      - aa
+      - af
+      - ak
+      - sq
+      - am
+      - ar
+      - an
+      - hy
+      - av
+      - ae
+      - ay
+      - az
+      - bm
+      - ba
+      - eu
+      - be
+      - bn
+      - bi
+      - bs
+      - br
+      - bg
+      - my
+      - ca
+      - ch
+      - ce
+      - ny
+      - zh
+      - cu
+      - cv
+      - kw
+      - co
+      - cr
+      - hr
+      - cs
+      - da
+      - dv
+      - nl
+      - dz
+      - en
+      - eo
+      - et
+      - ee
+      - fo
+      - fj
+      - fi
+      - fr
+      - fy
+      - ff
+      - gd
+      - gl
+      - lg
+      - ka
+      - de
+      - el
+      - kl
+      - gn
+      - gu
+      - ht
+      - ha
+      - he
+      - hz
+      - hi
+      - ho
+      - hu
+      - io
+      - ig
+      - id
+      - ia
+      - ie
+      - iu
+      - ik
+      - ga
+      - it
+      - ja
+      - jv
+      - kn
+      - kr
+      - ks
+      - kk
+      - km
+      - ki
+      - rw
+      - ky
+      - kv
+      - kg
+      - ko
+      - kj
+      - ku
+      - lo
+      - la
+      - lv
+      - li
+      - ln
+      - lt
+      - lu
+      - lb
+      - mk
+      - mg
+      - ms
+      - ml
+      - mt
+      - gv
+      - mi
+      - mr
+      - mh
+      - mn
+      - na
+      - nv
+      - nd
+      - nr
+      - ng
+      - ne
+      - 'no'
+      - nb
+      - nn
+      - ii
+      - oc
+      - oj
+      - om
+      - os
+      - pi
+      - ps
+      - fa
+      - pl
+      - pt
+      - pa
+      - qu
+      - ro
+      - rm
+      - rn
+      - ru
+      - se
+      - sm
+      - sg
+      - sa
+      - sc
+      - sr
+      - sn
+      - sd
+      - si
+      - sk
+      - sl
+      - so
+      - st
+      - es
+      - su
+      - sw
+      - ss
+      - sv
+      - tl
+      - ty
+      - tg
+      - ta
+      - tt
+      - te
+      - th
+      - bo
+      - ti
+      - to
+      - ts
+      - tn
+      - tr
+      - tk
+      - tw
+      - ug
+      - uk
+      - ur
+      - uz
+      - ve
+      - vi
+      - vo
+      - wa
+      - cy
+      - wo
+      - xh
+      - yi
+      - yo
+      - za
+      - zu
+    CounterpartOrganizationCreatePayload:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          maxLength: 255
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of the organization
+          example: '5551231234'
+        registered_address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The address of the organization.
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+      type: object
+      required:
+      - is_customer
+      - is_vendor
+      - legal_name
+      - registered_address
+      description: Represents counterparts that are organizations (juridical persons).
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    CounterpartOrganizationRootUpdatePayload:
+      properties:
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationUpdatePayload'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - organization
+          description: Must be "organization".
+          example: organization
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      - type
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartAddress:
+      properties:
+        city:
+          type: string
+          maxLength: 255
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          maxLength: 255
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          maxLength: 255
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          maxLength: 255
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          maxLength: 255
+          description: State, region, province, or county.
+      additionalProperties: false
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+      description: Address information.
+    CounterpartCreatePayload:
+      anyOf:
+      - $ref: '#/components/schemas/CounterpartOrganizationRootCreatePayload'
+      - $ref: '#/components/schemas/CounterpartIndividualRootCreatePayload'
+      additionalProperties: false
+      description: 'This schema is used to create new counterparts (either organizations or individuals).
+
+        The counterpart type is specified by the `type` property. Depending on the `type`,
+
+        you need to provide the data for either the `individual` or `organization` property.'
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    CounterpartIndividualRootUpdatePayload:
+      properties:
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualUpdatePayload'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - individual
+          description: Must be "individual".
+          example: individual
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      - type
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartTagSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/TagCategory'
+          description: The tag category.
+          example: department
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        description:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The tag description.
+          example: Tag for the Marketing Department
+        name:
+          type: string
+          description: The tag name.
+          example: Marketing
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - name
+      description: Represents a user-defined tag that can be assigned to resources to filter them.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    CounterpartType:
+      type: string
+      enum:
+      - individual
+      - organization
+    CounterpartOrganizationRootCreatePayload_2:
+      properties:
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationCreatePayload_2'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - organization
+          description: Must be "organization".
+          example: organization
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      - type
+      description: This schema is used to create counterparts that are organizations (juridical persons).
+    CounterpartIndividualRootCreatePayload_2:
+      properties:
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          examples:
+          - CR-ABC-12345
+          - CUS123456
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualCreatePayload_2'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - individual
+          description: Must be "individual".
+          example: individual
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      - type
+      description: This schema is used to create counterparts that are individuals (natural persons).
+    CounterpartIndividualCreatePayload_2:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The person's address.
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      additionalProperties: false
+      type: object
+      required:
+      - address
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartOrganizationCreatePayload_2:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The address of the organization.
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          maxLength: 255
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of the organization
+          example: '5551231234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+      type: object
+      required:
+      - address
+      - is_customer
+      - is_vendor
+      - legal_name
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartOrganizationRootUpdatePayload_2:
+      properties:
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationUpdatePayload'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartIndividualRootUpdatePayload_2:
+      properties:
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualUpdatePayload'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartOrganizationRootCreatePayload_3:
+      properties:
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationCreatePayload_3'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - organization
+          description: Must be "organization".
+          example: organization
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      - type
+      description: This schema is used to create counterparts that are organizations (juridical persons).
+    CounterpartIndividualRootCreatePayload_3:
+      properties:
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          examples:
+          - CR-ABC-12345
+          - CUS123456
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualCreatePayload_3'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+        type:
+          type: string
+          enum:
+          - individual
+          description: Must be "individual".
+          example: individual
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      - type
+      description: This schema is used to create counterparts that are individuals (natural persons).
+    CounterpartIndividualCreatePayload_3:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The person's address.
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      additionalProperties: false
+      type: object
+      required:
+      - address
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    CounterpartOrganizationCreatePayload_3:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The address of the organization.
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          maxLength: 255
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of the organization
+          example: '5551231234'
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this counterpart.
+      type: object
+      required:
+      - address
+      - is_customer
+      - is_vendor
+      - legal_name
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartOrganizationRootUpdatePayload_3:
+      properties:
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+          default: en
+        organization:
+          $ref: '#/components/schemas/CounterpartOrganizationUpdatePayload'
+        reminders_enabled:
+          type: boolean
+          default: true
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+      additionalProperties: false
+      type: object
+      required:
+      - organization
+      description: Represents counterparts that are organizations (juridical persons).
+    CounterpartIndividualRootUpdatePayload_3:
+      properties:
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the counterpart. For example, the customer or vendor reference number in the entity's CRM system. If specified, it will be displayed in PDF invoices and other accounts receivable documents created by the entity.
+          example: '123456789'
+        individual:
+          $ref: '#/components/schemas/CounterpartIndividualUpdatePayload'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate PDF documents for this counterpart.
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. For identification purposes, this field may be required for counterparts that are not VAT-registered.
+      additionalProperties: false
+      type: object
+      required:
+      - individual
+      description: Represents counterparts that are individuals (natural persons).
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,1075 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-delivery-note-resource-schema.json",
+  "title": "DeliveryNoteResource",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/DeliveryNoteResource",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique ID of the delivery note"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Time at which the delivery note was created. Timestamps follow the ISO 8601 standard."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Time at which the delivery note was last updated. Timestamps follow the ISO 8601 standard."
+    },
+    "based_on": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique ID of a previous document related to the delivery note if applicable."
+    },
+    "based_on_document_id": {
+      "type": "string",
+      "description": "The unique document ID of a previous document related to the delivery note if applicable."
+    },
+    "counterpart": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryNoteCounterpartResource"
+        }
+      ],
+      "description": "Counterpart of the delivery note"
+    },
+    "counterpart_address": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ReceivablesCounterpartAddress"
+        }
+      ],
+      "description": "Address of the counterpart"
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the counterpart"
+    },
+    "created_by_entity_user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the user that created the delivery note"
+    },
+    "delivery_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Date of delivery"
+    },
+    "delivery_number": {
+      "type": "string",
+      "description": "Delivery number"
+    },
+    "display_signature_placeholder": {
+      "type": "boolean",
+      "description": "Whether to display a signature placeholder in the generated PDF"
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Document ID of the delivery note"
+    },
+    "entity": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ReceivableEntityOrganization"
+        },
+        {
+          "$ref": "#/$defs/ReceivableEntityIndividual"
+        }
+      ],
+      "description": "Entity that created the delivery note"
+    },
+    "entity_address": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ReceivableEntityAddressSchema"
+        }
+      ],
+      "description": "Address of the entity that created the delivery note"
+    },
+    "entity_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the entity that created the delivery note"
+    },
+    "file_language": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/LanguageCodeEnum"
+        }
+      ],
+      "description": "The language of the customer-facing PDF file (`file_url`). The value matches the counterpart's `language` at the time when this PDF file was generated."
+    },
+    "file_url": {
+      "type": "string",
+      "description": "The delivery note's PDF URL in the customer-facing language."
+    },
+    "line_items": {
+      "items": {
+        "$ref": "#/$defs/DeliveryNoteLineItemResource"
+      },
+      "type": "array",
+      "minItems": 1,
+      "description": "List of line items in the delivery note"
+    },
+    "memo": {
+      "type": "string",
+      "description": "Additional information regarding the delivery note"
+    },
+    "original_file_language": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/LanguageCodeEnum"
+        }
+      ],
+      "description": "The language of the entity's copy of the PDF file (`original_file_url`). The value matches the entity's `language` at the time when this PDF file was generated."
+    },
+    "original_file_url": {
+      "type": "string",
+      "description": "The delivery note's PDF URL in the entity's language."
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/DeliveryNoteStatusEnum"
+        }
+      ],
+      "description": "Status of the delivery note"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "created_at",
+    "updated_at",
+    "counterpart",
+    "counterpart_address",
+    "counterpart_id",
+    "display_signature_placeholder",
+    "document_id",
+    "entity",
+    "entity_address",
+    "entity_id",
+    "file_language",
+    "line_items",
+    "original_file_language",
+    "status"
+  ],
+  "$defs": {
+    "AllowedCountries": {
+      "type": "string",
+      "enum": [
+        "AF",
+        "AX",
+        "AL",
+        "DZ",
+        "AS",
+        "AD",
+        "AO",
+        "AI",
+        "AQ",
+        "AG",
+        "AR",
+        "AM",
+        "AW",
+        "AU",
+        "AT",
+        "AZ",
+        "BS",
+        "BH",
+        "BD",
+        "BB",
+        "BY",
+        "BE",
+        "BZ",
+        "BJ",
+        "BM",
+        "BT",
+        "BO",
+        "BA",
+        "BW",
+        "BV",
+        "BR",
+        "IO",
+        "BN",
+        "BG",
+        "BF",
+        "BI",
+        "KH",
+        "CM",
+        "CA",
+        "IC",
+        "CV",
+        "KY",
+        "CF",
+        "EA",
+        "TD",
+        "CL",
+        "CN",
+        "CX",
+        "CC",
+        "CO",
+        "KM",
+        "CG",
+        "CD",
+        "CK",
+        "CR",
+        "CI",
+        "HR",
+        "CU",
+        "CY",
+        "CZ",
+        "DK",
+        "DJ",
+        "DM",
+        "DO",
+        "EC",
+        "EG",
+        "SV",
+        "GQ",
+        "ER",
+        "EE",
+        "SZ",
+        "ET",
+        "FK",
+        "FO",
+        "FJ",
+        "FI",
+        "FR",
+        "GF",
+        "PF",
+        "TF",
+        "GA",
+        "GM",
+        "GE",
+        "DE",
+        "GH",
+        "GI",
+        "GR",
+        "GL",
+        "GD",
+        "GP",
+        "GU",
+        "GT",
+        "GG",
+        "GN",
+        "GW",
+        "GY",
+        "HT",
+        "HM",
+        "VA",
+        "HN",
+        "HK",
+        "HU",
+        "IS",
+        "IN",
+        "ID",
+        "IR",
+        "IQ",
+        "IE",
+        "IM",
+        "IL",
+        "IT",
+        "JM",
+        "JP",
+        "JE",
+        "JO",
+        "KZ",
+        "KE",
+        "KI",
+        "KP",
+        "KR",
+        "KW",
+        "KG",
+        "LA",
+        "LV",
+        "LB",
+        "LS",
+        "LR",
+        "LY",
+        "LI",
+        "LT",
+        "LU",
+        "MO",
+        "MG",
+        "MW",
+        "MY",
+        "MV",
+        "ML",
+        "MT",
+        "MH",
+        "MQ",
+        "MR",
+        "MU",
+        "YT",
+        "MX",
+        "FM",
+        "MD",
+        "MC",
+        "MN",
+        "ME",
+        "MS",
+        "MA",
+        "MZ",
+        "MM",
+        "NA",
+        "NR",
+        "NP",
+        "NL",
+        "AN",
+        "NC",
+        "NZ",
+        "NI",
+        "NE",
+        "NG",
+        "NU",
+        "NF",
+        "MP",
+        "MK",
+        "NO",
+        "OM",
+        "PK",
+        "PW",
+        "PS",
+        "PA",
+        "PG",
+        "PY",
+        "PE",
+        "PH",
+        "PN",
+        "PL",
+        "PT",
+        "PR",
+        "QA",
+        "RE",
+        "RO",
+        "RU",
+        "RW",
+        "SH",
+        "KN",
+        "LC",
+        "PM",
+        "VC",
+        "WS",
+        "SM",
+        "ST",
+        "SA",
+        "SN",
+        "RS",
+        "SC",
+        "SL",
+        "SG",
+        "SK",
+        "SI",
+        "SB",
+        "SO",
+        "ZA",
+        "SS",
+        "GS",
+        "ES",
+        "LK",
+        "SD",
+        "SR",
+        "SJ",
+        "SE",
+        "CH",
+        "SY",
+        "TW",
+        "TJ",
+        "TZ",
+        "TH",
+        "TL",
+        "TG",
+        "TK",
+        "TO",
+        "TT",
+        "TN",
+        "TR",
+        "TM",
+        "TC",
+        "TV",
+        "UG",
+        "UA",
+        "AE",
+        "GB",
+        "US",
+        "UM",
+        "UY",
+        "UZ",
+        "VU",
+        "VE",
+        "VN",
+        "VG",
+        "VI",
+        "WF",
+        "EH",
+        "YE",
+        "ZM",
+        "ZW",
+        "BL",
+        "BQ",
+        "CW",
+        "MF",
+        "SX"
+      ]
+    },
+    "CounterpartIndividualResponse": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The person's email address."
+        },
+        "first_name": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "description": "The person's first name."
+        },
+        "is_customer": {
+          "type": "boolean",
+          "description": "Indicates if the counterpart is a customer."
+        },
+        "is_vendor": {
+          "type": "boolean",
+          "description": "Indicates if the counterpart is a vendor."
+        },
+        "last_name": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "description": "The person's last name."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The person's phone number."
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/$defs/CounterpartTagSchema"
+          },
+          "type": "array",
+          "description": "The list of tags for this counterpart."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The person's title or honorific. Examples: Mr., Ms., Dr., Prof."
+        }
+      },
+      "type": "object",
+      "required": [
+        "first_name",
+        "is_customer",
+        "is_vendor",
+        "last_name"
+      ],
+      "description": "Represents counterparts that are individuals (natural persons)."
+    },
+    "CounterpartOrganizationResponse": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the organization"
+        },
+        "is_customer": {
+          "type": "boolean",
+          "description": "Indicates if the counterpart is a customer."
+        },
+        "is_vendor": {
+          "type": "boolean",
+          "description": "Indicates if the counterpart is a vendor."
+        },
+        "legal_name": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "The legal name of the organization."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "The phone number of the organization"
+        },
+        "tags": {
+          "items": {
+            "$ref": "#/$defs/CounterpartTagSchema"
+          },
+          "type": "array",
+          "description": "The list of tags for this counterpart."
+        }
+      },
+      "type": "object",
+      "required": [
+        "is_customer",
+        "is_vendor",
+        "legal_name"
+      ],
+      "description": "Represents counterparts that are organizations (juridical persons)."
+    },
+    "CounterpartTagSchema": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A unique ID of this tag."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "category": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TagCategory"
+            }
+          ],
+          "description": "The tag category."
+        },
+        "created_by_entity_user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who created the tag."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "description": "The tag description."
+        },
+        "name": {
+          "type": "string",
+          "description": "The tag name."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "created_at",
+        "updated_at",
+        "name"
+      ],
+      "description": "Represents a user-defined tag that can be assigned to resources to filter them."
+    },
+    "DeliveryNoteCounterpartResource": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the counterpart"
+        },
+        "individual": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartIndividualResponse"
+            }
+          ],
+          "description": "Individual counterpart"
+        },
+        "language": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/LanguageCodeEnum"
+            }
+          ],
+          "description": "The language used to generate pdf documents for this counterpart."
+        },
+        "organization": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartOrganizationResponse"
+            }
+          ],
+          "description": "Organization counterpart"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "id"
+      ]
+    },
+    "DeliveryNoteLineItemProduct": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "Description of the product."
+        },
+        "measure_unit": {
+          "$ref": "#/$defs/UnitRequest"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1,
+          "description": "Name of the product."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    },
+    "DeliveryNoteLineItemResource": {
+      "properties": {
+        "product": {
+          "$ref": "#/$defs/DeliveryNoteLineItemProduct"
+        },
+        "quantity": {
+          "type": "number",
+          "maximum": 2147483647.0,
+          "minimum": 0.0,
+          "description": "The quantity of each of the goods, materials, or services listed in the receivable."
+        }
+      },
+      "type": "object",
+      "required": [
+        "product",
+        "quantity"
+      ]
+    },
+    "DeliveryNoteStatusEnum": {
+      "type": "string",
+      "enum": [
+        "created",
+        "canceled",
+        "delivered"
+      ]
+    },
+    "LanguageCodeEnum": {
+      "type": "string",
+      "enum": [
+        "ab",
+        "aa",
+        "af",
+        "ak",
+        "sq",
+        "am",
+        "ar",
+        "an",
+        "hy",
+        "av",
+        "ae",
+        "ay",
+        "az",
+        "bm",
+        "ba",
+        "eu",
+        "be",
+        "bn",
+        "bi",
+        "bs",
+        "br",
+        "bg",
+        "my",
+        "ca",
+        "ch",
+        "ce",
+        "ny",
+        "zh",
+        "cu",
+        "cv",
+        "kw",
+        "co",
+        "cr",
+        "hr",
+        "cs",
+        "da",
+        "dv",
+        "nl",
+        "dz",
+        "en",
+        "eo",
+        "et",
+        "ee",
+        "fo",
+        "fj",
+        "fi",
+        "fr",
+        "fy",
+        "ff",
+        "gd",
+        "gl",
+        "lg",
+        "ka",
+        "de",
+        "el",
+        "kl",
+        "gn",
+        "gu",
+        "ht",
+        "ha",
+        "he",
+        "hz",
+        "hi",
+        "ho",
+        "hu",
+        "io",
+        "ig",
+        "id",
+        "ia",
+        "ie",
+        "iu",
+        "ik",
+        "ga",
+        "it",
+        "ja",
+        "jv",
+        "kn",
+        "kr",
+        "ks",
+        "kk",
+        "km",
+        "ki",
+        "rw",
+        "ky",
+        "kv",
+        "kg",
+        "ko",
+        "kj",
+        "ku",
+        "lo",
+        "la",
+        "lv",
+        "li",
+        "ln",
+        "lt",
+        "lu",
+        "lb",
+        "mk",
+        "mg",
+        "ms",
+        "ml",
+        "mt",
+        "gv",
+        "mi",
+        "mr",
+        "mh",
+        "mn",
+        "na",
+        "nv",
+        "nd",
+        "nr",
+        "ng",
+        "ne",
+        "no",
+        "nb",
+        "nn",
+        "ii",
+        "oc",
+        "oj",
+        "om",
+        "os",
+        "pi",
+        "ps",
+        "fa",
+        "pl",
+        "pt",
+        "pa",
+        "qu",
+        "ro",
+        "rm",
+        "rn",
+        "ru",
+        "se",
+        "sm",
+        "sg",
+        "sa",
+        "sc",
+        "sr",
+        "sn",
+        "sd",
+        "si",
+        "sk",
+        "sl",
+        "so",
+        "st",
+        "es",
+        "su",
+        "sw",
+        "ss",
+        "sv",
+        "tl",
+        "ty",
+        "tg",
+        "ta",
+        "tt",
+        "te",
+        "th",
+        "bo",
+        "ti",
+        "to",
+        "ts",
+        "tn",
+        "tr",
+        "tk",
+        "tw",
+        "ug",
+        "uk",
+        "ur",
+        "uz",
+        "ve",
+        "vi",
+        "vo",
+        "wa",
+        "cy",
+        "wo",
+        "xh",
+        "yi",
+        "yo",
+        "za",
+        "zu"
+      ]
+    },
+    "ReceivableEntityAddressSchema": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "A city (a full name) where the entity is registered"
+        },
+        "country": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AllowedCountries"
+            }
+          ],
+          "description": "A country name (as ISO code) where the entity is registered ",
+          "default": "DE"
+        },
+        "line1": {
+          "type": "string",
+          "maxLength": 255,
+          "description": "A street where the entity is registered"
+        },
+        "line2": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "An alternative street used by the entity"
+        },
+        "postal_code": {
+          "type": "string",
+          "maxLength": 10,
+          "description": "A postal code of the address where the entity is registered"
+        },
+        "state": {
+          "type": "string",
+          "description": "A state in a country where the entity is registered"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "city",
+        "line1",
+        "postal_code"
+      ],
+      "description": "A schema represents address info of the entity"
+    },
+    "ReceivableEntityIndividual": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "An email of the entity"
+        },
+        "first_name": {
+          "type": "string",
+          "description": "The first name of the entity issuing the receivable"
+        },
+        "last_name": {
+          "type": "string",
+          "description": "The last name of the entity issuing the receivable"
+        },
+        "logo": {
+          "type": "string",
+          "maxLength": 2083,
+          "minLength": 1,
+          "format": "uri",
+          "description": "A link to the entity logo"
+        },
+        "phone": {
+          "type": "string",
+          "description": "A phone number of the entity"
+        },
+        "registration_authority": {
+          "type": "string",
+          "description": "The registration authority of the entity"
+        },
+        "registration_number": {
+          "type": "string",
+          "description": "The registration number of the entity"
+        },
+        "tax_id": {
+          "type": "string",
+          "description": "The Tax ID of the entity issuing the receivable"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "individual"
+          ],
+          "description": "The entity type"
+        },
+        "website": {
+          "type": "string",
+          "maxLength": 2083,
+          "minLength": 1,
+          "format": "uri",
+          "description": "A website of the entity"
+        }
+      },
+      "type": "object",
+      "required": [
+        "first_name",
+        "last_name",
+        "type"
+      ],
+      "description": "A Response schema for an entity of individual type"
+    },
+    "ReceivableEntityOrganization": {
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "An email of the entity"
+        },
+        "logo": {
+          "type": "string",
+          "maxLength": 2083,
+          "minLength": 1,
+          "format": "uri",
+          "description": "A link to the entity logo"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the entity issuing the receivable, when it is an organization."
+        },
+        "phone": {
+          "type": "string",
+          "description": "A phone number of the entity"
+        },
+        "registration_authority": {
+          "type": "string",
+          "description": "The registration authority of the entity"
+        },
+        "registration_number": {
+          "type": "string",
+          "description": "The registration number of the entity"
+        },
+        "tax_id": {
+          "type": "string",
+          "description": "The Tax ID of the entity issuing the receivable"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "organization"
+          ],
+          "description": "The entity type"
+        },
+        "vat_id": {
+          "type": "string",
+          "description": "The VAT ID of the entity issuing the receivable, when it is an organization."
+        },
+        "website": {
+          "type": "string",
+          "maxLength": 2083,
+          "minLength": 1,
+          "format": "uri",
+          "description": "A website of the entity"
+        }
+      },
+      "type": "object",
+      "required": [
+        "name",
+        "type"
+      ],
+      "description": "A Response schema for an entity of organization type"
+    },
+    "ReceivablesCounterpartAddress": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "country": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AllowedCountries"
+            }
+          ],
+          "description": "Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))."
+        },
+        "line1": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "line2": {
+          "type": "string",
+          "description": "Additional address information (if any)."
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "ZIP or postal code."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province, or county."
+        }
+      },
+      "type": "object",
+      "required": [
+        "city",
+        "country",
+        "line1",
+        "postal_code"
+      ],
+      "description": "Address information."
+    },
+    "TagCategory": {
+      "type": "string",
+      "enum": [
+        "document_type",
+        "department",
+        "project",
+        "cost_center",
+        "vendor_type",
+        "payment_method",
+        "approval_status"
+      ]
+    },
+    "UnitRequest": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "minLength": 1
+        }
+      },
+      "type": "object",
+      "required": [
+        "name"
+      ]
+    }
+  }
+}

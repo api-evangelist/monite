@@ -1,0 +1,1384 @@
+openapi: 3.2.0
+info:
+  title: Monite Recurrences API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Recurrences across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Recurrences
+paths:
+  /recurrences:
+    get:
+      tags:
+      - Recurrences
+      summary: Get recurrences
+      operationId: get_recurrences
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurrenceResponseList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Recurrences
+      summary: Create a recurrence
+      operationId: post_recurrences
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRecurrencePayload'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurrenceResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /recurrences/{recurrence_id}:
+    get:
+      tags:
+      - Recurrences
+      summary: Get a recurrence by ID
+      operationId: get_recurrences_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: recurrence_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurrenceResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Recurrences
+      summary: Update a recurrence
+      operationId: patch_recurrences_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: recurrence_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRecurrencePayload'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecurrenceResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /recurrences/{recurrence_id}/cancel:
+    post:
+      tags:
+      - Recurrences
+      summary: Cancel a recurrence
+      operationId: post_recurrences_id_cancel
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: recurrence_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /recurrences/{recurrence_id}/pause:
+    post:
+      tags:
+      - Recurrences
+      summary: Pause a recurrence
+      operationId: post_recurrences_id_pause
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: recurrence_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /recurrences/{recurrence_id}/resume:
+    post:
+      tags:
+      - Recurrences
+      summary: Resume a recurrence
+      operationId: post_recurrences_id_resume
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: recurrence_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    DayOfMonth:
+      type: string
+      enum:
+      - first_day
+      - last_day
+    RecurrenceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the recurrence was created. Timestamps follow the ISO 8601 standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the recurrence was last updated. Timestamps follow the ISO 8601 standard.
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        body_text:
+          type: string
+          description: The body text for the email that will be sent with the recurring invoice.
+        current_iteration:
+          type: integer
+          minimum: 1.0
+          description: Current iteration number
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+        invoice_id:
+          type: string
+          format: uuid
+          description: ID of the base invoice that will be used as a template for creating recurring invoices.
+        iterations:
+          items:
+            $ref: '#/components/schemas/RecurrenceIteration'
+          type: array
+          minItems: 1
+          description: List of iterations for the recurrence
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        recipients:
+          allOf:
+          - $ref: '#/components/schemas/Recipients'
+          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        start_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        start_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceStatus'
+          description: Status of the recurrence
+          examples:
+          - active
+          - canceled
+          - completed
+        subject_text:
+          type: string
+          description: The subject for the email that will be sent with the recurring invoice.
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - automation_level
+      - current_iteration
+      - day_of_month
+      - frequency
+      - interval
+      - invoice_id
+      - iterations
+      - start_date
+      - start_month
+      - start_year
+      - status
+    RecurrenceFrequency:
+      type: string
+      enum:
+      - day
+      - week
+      - month
+      - quarter
+      - year
+    IterationStatus:
+      type: string
+      enum:
+      - pending
+      - completed
+      - canceled
+      - skipped
+      - issue_failed
+      - send_failed
+    Recipients:
+      properties:
+        bcc:
+          items:
+            type: string
+            format: email
+          type: array
+        cc:
+          items:
+            type: string
+            format: email
+          type: array
+        to:
+          items:
+            type: string
+            format: email
+          type: array
+      additionalProperties: false
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CreateRecurrencePayload:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+          default: month
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+          default: 1
+        invoice_id:
+          type: string
+          format: uuid
+          description: ID of the base invoice that will be used as a template for creating recurring invoices.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        start_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        start_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+      type: object
+      required:
+      - invoice_id
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    RecurrenceIteration:
+      properties:
+        issue_at:
+          type: string
+          format: date
+        issued_invoice_id:
+          type: string
+          format: uuid
+        iteration:
+          type: integer
+          default: 1
+        status:
+          $ref: '#/components/schemas/IterationStatus'
+      additionalProperties: false
+      type: object
+      required:
+      - issue_at
+      - status
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    RecurrenceStatus:
+      type: string
+      enum:
+      - active
+      - paused
+      - canceled
+      - completed
+      description: 'Represents the status of a recurrence
+
+
+        Allowed transitions:
+
+        - active -> paused
+
+        - active -> canceled
+
+        - active -> completed
+
+        - paused -> active
+
+        - paused -> canceled'
+    UpdateRecurrencePayload:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+      additionalProperties: false
+      type: object
+    RecurrenceResponseList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/RecurrenceResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    AutomationLevel:
+      type: string
+      enum:
+      - draft
+      - issue
+      - issue_and_send
+      description: Automation level for recurrence
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    CreateRecurrencePayload_2:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        body_text:
+          type: string
+          minLength: 1
+          description: The body text for the email that will be sent with the recurring invoice.
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+          default: month
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+          default: 1
+        invoice_id:
+          type: string
+          format: uuid
+          description: ID of the base invoice that will be used as a template for creating recurring invoices.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        recipients:
+          allOf:
+          - $ref: '#/components/schemas/Recipients'
+          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        start_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        start_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        subject_text:
+          type: string
+          minLength: 1
+          description: The subject for the email that will be sent with the recurring invoice.
+      type: object
+      required:
+      - invoice_id
+    UpdateRecurrencePayload_2:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        body_text:
+          type: string
+          minLength: 1
+          description: The body text for the email that will be sent with the recurring invoice.
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        recipients:
+          allOf:
+          - $ref: '#/components/schemas/Recipients'
+          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        subject_text:
+          type: string
+          minLength: 1
+          description: The subject for the email that will be sent with the recurring invoice.
+      additionalProperties: false
+      type: object
+    CreateRecurrencePayload_3:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        body_text:
+          type: string
+          minLength: 1
+          description: The body text for the email that will be sent with the recurring invoice.
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+          default: month
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+          default: 1
+        invoice_id:
+          type: string
+          format: uuid
+          description: ID of the base invoice that will be used as a template for creating recurring invoices.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        recipients:
+          allOf:
+          - $ref: '#/components/schemas/Recipients'
+          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        start_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        start_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        subject_text:
+          type: string
+          minLength: 1
+          description: The subject for the email that will be sent with the recurring invoice.
+      type: object
+      required:
+      - invoice_id
+    UpdateRecurrencePayload_3:
+      properties:
+        automation_level:
+          allOf:
+          - $ref: '#/components/schemas/AutomationLevel'
+          description: 'Controls how invoices are processed when generated:
+
+            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
+
+            - "issue": Automatically issues invoices but requires manual sending
+
+            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
+
+
+            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
+
+
+            Note: When using "issue_and_send", both subject_text and body_text must be provided.
+
+            '
+        body_text:
+          type: string
+          minLength: 1
+          description: The body text for the email that will be sent with the recurring invoice.
+        day_of_month:
+          allOf:
+          - $ref: '#/components/schemas/DayOfMonth'
+          description: Deprecated, use `start_date` instead
+          deprecated: true
+        end_date:
+          type: string
+          format: date
+          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
+        end_month:
+          type: integer
+          maximum: 12.0
+          minimum: 1.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        end_year:
+          type: integer
+          maximum: 2077.0
+          description: Deprecated, use `end_date` instead
+          deprecated: true
+        frequency:
+          allOf:
+          - $ref: '#/components/schemas/RecurrenceFrequency'
+          description: How often the invoice will be created.
+        interval:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
+        max_occurrences:
+          type: integer
+          maximum: 1000.0
+          minimum: 1.0
+          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
+        recipients:
+          allOf:
+          - $ref: '#/components/schemas/Recipients'
+          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
+        start_date:
+          type: string
+          format: date
+          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
+        subject_text:
+          type: string
+          minLength: 1
+          description: The subject for the email that will be sent with the recurring invoice.
+      additionalProperties: false
+      type: object
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

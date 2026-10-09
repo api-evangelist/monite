@@ -1,0 +1,893 @@
+openapi: 3.2.0
+info:
+  title: Monite Roles API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Roles across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Roles
+paths:
+  /roles:
+    get:
+      tags:
+      - Roles
+      summary: Search roles
+      description: Find all roles that match the search criteria.
+      operationId: get_roles
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/RoleCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: id__in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+              format: uuid
+          - type: 'null'
+      - name: name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: created_at
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RolePaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Roles
+      summary: Create a role
+      description: Create a new role from the specified values.
+      operationId: post_roles
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /roles/{role_id}:
+    get:
+      tags:
+      - Roles
+      summary: Get a role by ID
+      operationId: get_roles_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Roles
+      summary: Update a role
+      description: Change the specified fields with the provided values.
+      operationId: patch_roles_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Roles
+      summary: Delete a role
+      description: Delete a role with the specified ID. The role being deleted must not be in use by any entity users, otherwise a 409 error is returned. To check if there are entity users that have this role, call `GET /entity_users?role_id=ROLE_ID`.
+      operationId: delete_roles_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: role_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    RoleResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID role ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        name:
+          type: string
+          minLength: 1
+          description: Role name
+        permissions:
+          $ref: '#/components/schemas/BizObjectsSchema-Output'
+          description: Access permissions
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+      type: object
+      required:
+      - id
+      - name
+      - permissions
+      - status
+      - created_at
+      - updated_at
+    BizObjectsSchema-Input:
+      properties:
+        objects:
+          items:
+            $ref: '#/components/schemas/RootSchema-Input'
+          type: array
+          description: List of objects
+      additionalProperties: false
+      type: object
+    PayableActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/PayableActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      additionalProperties: false
+      type: object
+    RolePaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+          type: array
+          description: array of records
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    PayableSchema-Input:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/PayableActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          const: payable
+          description: Object type
+          default: payable
+      additionalProperties: false
+      type: object
+    ActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+    PermissionEnum:
+      type: string
+      enum:
+      - allowed
+      - allowed_for_own
+      - not_allowed
+    RoleCursorFields:
+      type: string
+      enum:
+      - updated_at
+      - created_at
+    CreateRoleRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: Role name
+        permissions:
+          $ref: '#/components/schemas/BizObjectsSchema-Input'
+          description: Access permissions
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - permissions
+    RootSchema-Input:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Input'
+      - $ref: '#/components/schemas/PayableSchema-Input'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Input'
+          approval_policy: '#/components/schemas/CommonSchema-Input'
+          approval_request: '#/components/schemas/CommonSchema-Input'
+          comment: '#/components/schemas/CommonSchema-Input'
+          cost_center: '#/components/schemas/CommonSchema-Input'
+          counterpart: '#/components/schemas/CommonSchema-Input'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Input'
+          delivery_note: '#/components/schemas/CommonSchema-Input'
+          entity: '#/components/schemas/CommonSchema-Input'
+          entity_bank_account: '#/components/schemas/CommonSchema-Input'
+          entity_user: '#/components/schemas/CommonSchema-Input'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Input'
+          export: '#/components/schemas/CommonSchema-Input'
+          ledger_account: '#/components/schemas/CommonSchema-Input'
+          mailbox: '#/components/schemas/CommonSchema-Input'
+          ocr_task: '#/components/schemas/CommonSchema-Input'
+          onboarding: '#/components/schemas/CommonSchema-Input'
+          overdue_reminder: '#/components/schemas/CommonSchema-Input'
+          payable: '#/components/schemas/PayableSchema-Input'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Input'
+          payment_record: '#/components/schemas/CommonSchema-Input'
+          payment_reminder: '#/components/schemas/CommonSchema-Input'
+          person: '#/components/schemas/CommonSchema-Input'
+          product: '#/components/schemas/CommonSchema-Input'
+          project: '#/components/schemas/CommonSchema-Input'
+          receipt: '#/components/schemas/CommonSchema-Input'
+          receivable: '#/components/schemas/CommonSchema-Input'
+          reconciliation: '#/components/schemas/CommonSchema-Input'
+          role: '#/components/schemas/CommonSchema-Input'
+          tag: '#/components/schemas/CommonSchema-Input'
+          todo_task: '#/components/schemas/CommonSchema-Input'
+          todo_task_mute: '#/components/schemas/CommonSchema-Input'
+          transaction: '#/components/schemas/CommonSchema-Input'
+          workflow: '#/components/schemas/CommonSchema-Input'
+    CommonSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/ActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          enum:
+          - person
+          - onboarding
+          - comment
+          - counterpart
+          - entity_user
+          - entity
+          - entity_vat_ids
+          - counterpart_vat_id
+          - entity_bank_account
+          - export
+          - mailbox
+          - payables_purchase_order
+          - payment_reminder
+          - overdue_reminder
+          - product
+          - project
+          - receivable
+          - delivery_note
+          - ocr_task
+          - reconciliation
+          - role
+          - tag
+          - todo_task
+          - todo_task_mute
+          - transaction
+          - workflow
+          - approval_request
+          - approval_policy
+          - payment_record
+          - receipt
+          - accounting_tax_rate
+          - ledger_account
+          - cost_center
+          description: Object type
+          default: comment
+      additionalProperties: false
+      type: object
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    UpdateRoleRequest:
+      properties:
+        name:
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
+          description: Role name
+        permissions:
+          anyOf:
+          - $ref: '#/components/schemas/BizObjectsSchema-Input'
+          - type: 'null'
+          description: Access permissions
+      additionalProperties: false
+      type: object
+    CommonSchema-Input:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/ActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          enum:
+          - person
+          - onboarding
+          - comment
+          - counterpart
+          - entity_user
+          - entity
+          - entity_vat_ids
+          - counterpart_vat_id
+          - entity_bank_account
+          - export
+          - mailbox
+          - payables_purchase_order
+          - payment_reminder
+          - overdue_reminder
+          - product
+          - project
+          - receivable
+          - delivery_note
+          - ocr_task
+          - reconciliation
+          - role
+          - tag
+          - todo_task
+          - todo_task_mute
+          - transaction
+          - workflow
+          - approval_request
+          - approval_policy
+          - payment_record
+          - receipt
+          - accounting_tax_rate
+          - ledger_account
+          - cost_center
+          description: Object type
+          default: comment
+      additionalProperties: false
+      type: object
+    BizObjectsSchema-Output:
+      properties:
+        objects:
+          items:
+            $ref: '#/components/schemas/RootSchema-Output'
+          type: array
+          description: List of objects
+      additionalProperties: false
+      type: object
+    PayableSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/PayableActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          const: payable
+          description: Object type
+          default: payable
+      additionalProperties: false
+      type: object
+    ActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/ActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      type: object
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PayableActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+      - pay
+      - approve
+      - cancel
+      - submit
+      - create_from_mail
+      - reopen
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    RootSchema-Output:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Output'
+      - $ref: '#/components/schemas/PayableSchema-Output'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
+          approval_policy: '#/components/schemas/CommonSchema-Output'
+          approval_request: '#/components/schemas/CommonSchema-Output'
+          comment: '#/components/schemas/CommonSchema-Output'
+          cost_center: '#/components/schemas/CommonSchema-Output'
+          counterpart: '#/components/schemas/CommonSchema-Output'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
+          delivery_note: '#/components/schemas/CommonSchema-Output'
+          entity: '#/components/schemas/CommonSchema-Output'
+          entity_bank_account: '#/components/schemas/CommonSchema-Output'
+          entity_user: '#/components/schemas/CommonSchema-Output'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
+          export: '#/components/schemas/CommonSchema-Output'
+          ledger_account: '#/components/schemas/CommonSchema-Output'
+          mailbox: '#/components/schemas/CommonSchema-Output'
+          ocr_task: '#/components/schemas/CommonSchema-Output'
+          onboarding: '#/components/schemas/CommonSchema-Output'
+          overdue_reminder: '#/components/schemas/CommonSchema-Output'
+          payable: '#/components/schemas/PayableSchema-Output'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
+          payment_record: '#/components/schemas/CommonSchema-Output'
+          payment_reminder: '#/components/schemas/CommonSchema-Output'
+          person: '#/components/schemas/CommonSchema-Output'
+          product: '#/components/schemas/CommonSchema-Output'
+          project: '#/components/schemas/CommonSchema-Output'
+          receipt: '#/components/schemas/CommonSchema-Output'
+          receivable: '#/components/schemas/CommonSchema-Output'
+          reconciliation: '#/components/schemas/CommonSchema-Output'
+          role: '#/components/schemas/CommonSchema-Output'
+          tag: '#/components/schemas/CommonSchema-Output'
+          todo_task: '#/components/schemas/CommonSchema-Output'
+          todo_task_mute: '#/components/schemas/CommonSchema-Output'
+          transaction: '#/components/schemas/CommonSchema-Output'
+          workflow: '#/components/schemas/CommonSchema-Output'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

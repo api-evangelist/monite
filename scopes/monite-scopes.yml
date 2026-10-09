@@ -1,0 +1,198 @@
+name: Monite RBAC Permissions
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/api/concepts/authentication#permissions
+docs: https://docs.monite.com/api/concepts/authentication#permissions
+note: Monite does not use OAuth scope strings; access for entity-user tokens is governed by RBAC role permissions, each an object_type with action names, granted as not_allowed (default), allowed, or allowed_for_own.
+  Partner tokens (client_credentials) bypass entity RBAC.
+permission_types:
+- not_allowed
+- allowed
+- allowed_for_own
+scopes:
+- name: approval_policy
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Grants entity users permissions to create, view, update, and delete Approval policies.
+- name: approval_request
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Defines an entity user's ability to perform actions on approval requests.
+- name: comment
+  actions:
+  - create
+  - read
+  - update
+  description: Controls the ability to create, view, and update comments.
+- name: counterpart
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows the entity user to create, view, update, and delete counterparts.
+- name: counterpart_vat_id
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows access to perform actions on counterpart VAT IDs.
+- name: delivery_note
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete delivery notes.
+- name: entity
+  actions:
+  - read
+  - update
+  description: Controls the ability to read and update entity information.
+- name: entity_bank_account
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows access to perform actions on entity bank accounts.
+- name: entity_vat_ids
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows access to perform actions on entity VAT IDs.
+- name: entity_user
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete entity users.
+- name: export
+  actions:
+  - create
+  - read
+  description: Allows access to perform actions on data exports .
+- name: mailbox
+  actions:
+  - create
+  - read
+  - delete
+  description: Allows access to perform actions on mailboxes .
+- name: ocr_task
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to perform actions related to generic OCR.
+- name: onboarding
+  actions:
+  - create
+  - read
+  - update
+  description: Controls the ability to perform actions related to entity onboarding.
+- name: overdue_reminder
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows access to create, view, update, and delete overdue reminders.
+- name: payable
+  actions:
+  - create
+  - create_from_mail
+  - read
+  - update
+  - delete
+  - submit
+  - approve
+  - cancel
+  - pay
+  description: Allows the entity user to perform actions on a payable.
+- name: payables_purchase_order
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the entity user's ability to create, view, update, and delete purchase orders.
+- name: payment_record
+  actions:
+  - create
+  - read
+  description: Allows the entity user to create and view payment records.
+- name: payment_reminder
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows access to create, view, update, and delete payment reminders.
+- name: person
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete persons associated with an entity.
+- name: product
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete products.
+- name: project
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete projects.
+- name: receipt
+  actions:
+  - create
+  - create_from_mail
+  - read
+  - update
+  - delete
+  description: Allows the entity user to perform actions on a receipt.
+- name: receivable
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Allows the entity user to perform actions on a receivable.
+- name: role
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete user roles.
+- name: tag
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete tags.
+- name: transaction
+  actions:
+  - create
+  - read
+  - update
+  - delete
+  description: Controls the ability to create, view, update, and delete transactions.

@@ -1,0 +1,574 @@
+openapi: 3.2.0
+info:
+  title: Monite Accounting data pull API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Accounting data pull across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Accounting data pull
+paths:
+  /accounting/payables:
+    get:
+      tags:
+      - Accounting data pull
+      summary: Get payables list from accounting system
+      description: 'Returns a list of accounts payable invoices (bills) that exist in the entity''s accounting system. This requires that an accounting connection has been previously established. Refer to the Accounting integration guide for details.
+
+
+        This endpoint only provides read-only access to the accounting system''s data but does not pull those payables into Monite. You can use it to review the data in the accounting system and find out which of those payables already exist or do not exist in Monite.
+
+
+        Data is actual as of the date and time of the last accounting synchronization, which is specified by the `last_pull` value in the response from `GET /accounting_connections/{connection_id}`. To make sure you are accessing the most up-to-date accounting data, you can use `POST /accounting_connections/{connection_id}/sync` to trigger on-demand synchronization before getting the list of payables.'
+      operationId: get_accounting_payables
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Number of results per page.
+        required: false
+        schema:
+          type: integer
+          maximum: 500.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: Number of results to skip before selecting items to return.
+        required: false
+        schema:
+          type: integer
+          minimum: 0.0
+          default: 0
+        name: offset
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountingPayableList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /accounting/payables/{payable_id}:
+    get:
+      tags:
+      - Accounting data pull
+      summary: Get payable details from accounting system
+      description: Returns information about an individual payable invoice (bill) that exists in the entity's accounting system. This payable may or may not also exist in Monite.
+      operationId: get_accounting_payables_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: An internal ID of the payable invoice (bill) in the accounting system. You can get these IDs from `GET /accounting/payables`.
+        required: true
+        schema:
+          type: string
+        name: payable_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountingPayable'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /accounting/receivables:
+    get:
+      tags:
+      - Accounting data pull
+      summary: Get invoice list from accounting system
+      description: 'Returns a list of invoices that exist in the entity''s accounting system. This requires that an accounting connection has been previously established. Refer to the Accounting integration guide for details.
+
+
+        This endpoint only provides read-only access to the accounting system''s data but does not pull those invoices into Monite. You can use it to review the data in the accounting system and find out which of those invoices already exist or do not exist in Monite.
+
+
+        Data is actual as of the date and time of the last accounting synchronization, which is specified by the `last_pull` value in the response from `GET /accounting_connections/{connection_id}`. To make sure you are accessing the most up-to-date accounting data, you can use `POST /accounting_connections/{connection_id}/sync` to trigger on-demand synchronization before getting the invoice list.'
+      operationId: get_accounting_receivables
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Number of results per page.
+        required: false
+        schema:
+          type: integer
+          maximum: 500.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: Number of results to skip before selecting items to return.
+        required: false
+        schema:
+          type: integer
+          minimum: 0.0
+          default: 0
+        name: offset
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountingReceivableList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /accounting/receivables/{invoice_id}:
+    get:
+      tags:
+      - Accounting data pull
+      summary: Get invoice details from accounting system
+      description: Returns information about an individual invoice that exists in the entity's accounting system. This invoice may or may not also exist in Monite.
+      operationId: get_accounting_receivables_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: An internal ID of the invoice in the accounting system. You can get these IDs from `GET /accounting/receivables`.
+        required: true
+        schema:
+          type: string
+        name: invoice_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountingReceivable'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    AccountingPayableList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AccountingPayable'
+          type: array
+      type: object
+      required:
+      - data
+    AccountingCustomerRefObject:
+      properties:
+        id:
+          type: string
+          description: A unique identifier of the customer in the accounting system.
+          example: '120'
+        company_name:
+          type: string
+          description: Customer name in the accounting system.
+          example: Acme Inc.
+      type: object
+      required:
+      - id
+    AccountingVendorRefObject:
+      properties:
+        id:
+          type: string
+          description: A unique identifier of the vendor in the accounting system.
+          example: '120'
+        name:
+          type: string
+          description: Vendor name in the accounting system.
+          example: Acme Inc.
+      type: object
+      required:
+      - id
+    AccountingLineItem:
+      properties:
+        description:
+          type: string
+          description: The name or description of the product or service being invoiced.
+          example: Logo design
+        discount_amount:
+          type: number
+          description: Discount amount for this line item (if any).
+        discount_percentage:
+          type: number
+          description: Discount percentage for this line item (if any).
+        ledger_account_id:
+          type: string
+          description: ID of the ledger account associated with this line item. You can use `GET /ledger_accounts/{ledger_account_id}` to get further details about this ledger account.
+        quantity:
+          type: number
+          description: The quantity of the product or service.
+        tax_rate_ref:
+          allOf:
+          - $ref: '#/components/schemas/AccountingRefObject'
+          description: An internal reference to the tax rate in the accounting system that the line item is linked to.
+        unit_amount:
+          type: number
+          description: The cost per unit of the product or service.
+      type: object
+      description: Contains the details of an invoice line item retrieved from an accounting system.
+    AccountingPurchaseOrderRef:
+      properties:
+        id:
+          type: string
+          description: An internal ID of the purchase order in the accounting system.
+          example: '10'
+        name:
+          type: string
+          description: Reference number of the purchase order.
+          example: PO-1234
+      type: object
+      required:
+      - id
+    AccountingReceivableList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AccountingReceivable'
+          type: array
+      type: object
+      required:
+      - data
+    AccountingRefObject:
+      properties:
+        id:
+          type: string
+          description: An internal ID of the tax rate in the accounting system.
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AccountingPayable:
+      properties:
+        id:
+          type: string
+          description: An internal identifier of the payable in the accounting system.
+        amount_due:
+          type: number
+          description: Remaining amount to be paid.
+        currency:
+          type: string
+          description: ISO-4217 currency code of the payable.
+          example: EUR
+        currency_rate:
+          type: number
+          description: Rate to convert the total amount of the transaction into the entity's base currency at the time of the transaction.
+        due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          description: The payable's due date.
+        invoice_number:
+          type: string
+          description: Invoice number of the payable.
+        lines:
+          items:
+            $ref: '#/components/schemas/AccountingLineItem'
+          type: array
+        memo:
+          type: string
+          description: Any additional information or business notes about the payable.
+        posted_date:
+          type: string
+          format: date
+          description: Date when the payable was added to the accounting service. This may differ from the payable creation date.
+        purchase_order_refs:
+          items:
+            $ref: '#/components/schemas/AccountingPurchaseOrderRef'
+          type: array
+          description: A list of purchase orders linked to the payable, if any.
+        status:
+          type: string
+          description: 'The status of the payable in the accounting system. Possible values: `open`, `draft`, `partially_paid`, `paid`, `unknown`, `void`.'
+          example: paid
+        subtotal:
+          type: number
+          description: Amount payable, including discounts but excluding VAT/taxes.
+        tax_amount:
+          type: number
+          description: Total VAT or tax amount.
+        total_amount:
+          type: number
+          description: The total amount payable, including discounts and VAT/taxes.
+        vendor_ref:
+          allOf:
+          - $ref: '#/components/schemas/AccountingVendorRefObject'
+          description: Information about the vendor from whom the payable was received.
+      type: object
+      required:
+      - id
+      - status
+      - total_amount
+      description: Details of an accounts payable invoice (bill) retrieved from an accounting system.
+    AccountingReceivable:
+      properties:
+        id:
+          type: string
+          description: An internal identifier of the invoice in the accounting system.
+        currency:
+          type: string
+          description: ISO-4217 currency code of the invoice.
+          example: EUR
+        currency_rate:
+          type: number
+          description: Rate to convert the total amount of the transaction into the entity's base currency at the time of the transaction.
+        customer_ref:
+          allOf:
+          - $ref: '#/components/schemas/AccountingCustomerRefObject'
+          description: Information about the customer that the invoice was sent to.
+        due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          description: Invoice due date.
+        invoice_number:
+          type: string
+          description: Invoice document number.
+        lines:
+          items:
+            $ref: '#/components/schemas/AccountingLineItem'
+          type: array
+        memo:
+          type: string
+          description: Any additional information or business notes about the invoice.
+        pass_through:
+          type: object
+          description: An object containing additional invoice data returned by the accounting system. This sometimes includes custom invoice fields.
+        posted_date:
+          type: string
+          format: date
+          description: Date when the invoice was added to the accounting service. This may differ from the invoice creation date.
+      type: object
+      description: Invoice details retrieved from an accounting system.
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

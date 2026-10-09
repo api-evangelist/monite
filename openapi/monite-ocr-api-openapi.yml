@@ -1,0 +1,1124 @@
+openapi: 3.2.0
+info:
+  title: Monite OCR API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged OCR across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: OCR
+paths:
+  /ocr_tasks:
+    get:
+      tags:
+      - OCR
+      summary: Get OCR tasks
+      operationId: get_ocr_tasks
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CursorFields'
+        name: sort
+        in: query
+      - description: Return only ocr tasks created after the specified date and time. The value must be in the ISO 8601 format YYYY-MM-DDThh:mm[:ss[.ffffff]][Z|±hh:mm].
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - description: Return only ocr tasks created in Monite before the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - description: Return only ocr tasks created on or after the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - description: Return only ocr tasks created before or on the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - description: Return only ocr tasks that have the specified status.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OCRTaskStatus'
+        name: status
+        in: query
+      - description: Return only OCR tasks related to documents of a specific type.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        name: document_type
+        in: query
+      - description: 'Return only ocr tasks with specified IDs. Valid but nonexistent IDs do not raise errors but produce no results.
+
+
+          To specify multiple IDs, repeat this parameter for each value: `id__in=<id1>&id__in=<id2>`'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: id__in
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: false
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OCRTasksPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: OCR request is not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - OCR
+      summary: OCR a file from URL
+      operationId: post_ocr_tasks
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: false
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOCRRequestPayload'
+        required: true
+      responses:
+        '202':
+          description: OCR task has been accepted for execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcrTaskResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: OCR previously tried to recognize this file and failed.
+        '413':
+          description: File size exceeds the limit for OCR processing.
+        '415':
+          description: Unsupported file format. OCR supports only PNG, JPG, and PDF.
+        '421':
+          description: The specified file URL is not reachable.
+        '424':
+          description: The specified file URL is reachable but returned an HTTP error status code.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ocr_tasks/upload_from_file:
+    post:
+      tags:
+      - OCR
+      summary: Upload a file for OCR
+      operationId: post_ocr_tasks_upload_from_file
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: false
+        schema:
+          $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        name: document_type
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: false
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OCRFileUpload'
+        required: true
+      responses:
+        '202':
+          description: OCR task has been accepted for execution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcrTaskResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: OCR failed to process the specified file.
+        '413':
+          description: File size exceeds the limit for OCR processing.
+        '415':
+          description: Unsupported file format. OCR supports only PNG, JPG, and PDF.
+        '422':
+          description: File name is too long.
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ocr_tasks/{task_id}:
+    get:
+      tags:
+      - OCR
+      summary: Get an OCR task by ID
+      operationId: get_ocr_tasks_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: task_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: false
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OcrTaskResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: OCR task with the specified ID was not found.
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    OCRBankDetails:
+      properties:
+        bank_account_number:
+          type: string
+        iban:
+          type: string
+        swift_bic:
+          type: string
+      additionalProperties: false
+      type: object
+    OCRReceipt:
+      properties:
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        discount:
+          type: number
+        document_number:
+          type: string
+        issued_at:
+          type: string
+          format: date-time
+        line_items:
+          items:
+            $ref: '#/components/schemas/OCRReceiptLineItem'
+          type: array
+        sender:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        tax_type:
+          type: string
+        total_amount:
+          type: number
+        type:
+          type: string
+          enum:
+          - receipt
+          default: receipt
+      additionalProperties: false
+      type: object
+      required:
+      - line_items
+      - sender
+    OCRInvoice:
+      properties:
+        amount_paid:
+          type: number
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        document_number:
+          type: string
+        due_date:
+          type: string
+          format: date
+        issue_date:
+          type: string
+          format: date
+        line_items:
+          items:
+            $ref: '#/components/schemas/OCRLineItem'
+          type: array
+        payment_terms:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        sender:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        total_amount:
+          type: number
+        type:
+          type: string
+          enum:
+          - invoice
+          default: invoice
+      additionalProperties: false
+      type: object
+      required:
+      - sender
+      - recipient
+    OCRCounterpartDetails:
+      properties:
+        address:
+          $ref: '#/components/schemas/OCRAddressDetails'
+        bank_account:
+          $ref: '#/components/schemas/OCRBankDetails'
+        email:
+          type: string
+        name:
+          type: string
+        tax_number:
+          type: string
+        vat_number:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - address
+      - bank_account
+    CursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    CreateOCRRequestPayload:
+      properties:
+        document_type:
+          $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        file_url:
+          type: string
+      type: object
+      required:
+      - file_url
+    OCRLineItem:
+      properties:
+        description:
+          type: string
+        line_reference:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: number
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        total_amount:
+          type: number
+        unit:
+          type: string
+        unit_price:
+          type: number
+      additionalProperties: false
+      type: object
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    OCRTasksPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OcrTaskResponseSchema'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of ocr requests.
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    OCRReceiptLineItem:
+      properties:
+        description:
+          type: string
+        discount_amount:
+          type: number
+        line_reference:
+          type: string
+        name:
+          type: string
+        quantity:
+          type: number
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        total_amount:
+          type: number
+        unit:
+          type: string
+        unit_price:
+          type: number
+      additionalProperties: false
+      type: object
+    OCRCreditNote:
+      properties:
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        document_number:
+          type: string
+        issue_date:
+          type: string
+          format: date
+        line_items:
+          items:
+            $ref: '#/components/schemas/OCRLineItem'
+          type: array
+        original_invoice_number:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        sender:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        total_amount:
+          type: number
+        type:
+          type: string
+          enum:
+          - credit_note
+          default: credit_note
+      additionalProperties: false
+      type: object
+      required:
+      - sender
+      - recipient
+      - line_items
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    OCRFileUpload:
+      properties:
+        file:
+          type: string
+          format: binary
+      type: object
+      required:
+      - file
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    OCRAddressDetails:
+      properties:
+        city:
+          type: string
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        postal_code:
+          type: string
+        state:
+          type: string
+        street_and_number:
+          type: string
+      additionalProperties: false
+      type: object
+    OCRDocumentTypeEnum:
+      type: string
+      enum:
+      - invoice
+      - credit_note
+      - receipt
+    OcrTaskResponseSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        document_type:
+          $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        recognized_data:
+          anyOf:
+          - $ref: '#/components/schemas/OCRInvoice'
+          - $ref: '#/components/schemas/OCRCreditNote'
+          - $ref: '#/components/schemas/OCRReceipt'
+        status:
+          $ref: '#/components/schemas/OCRTaskStatus'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - status
+    OCRTaskStatus:
+      type: string
+      enum:
+      - processing
+      - success
+      - error
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

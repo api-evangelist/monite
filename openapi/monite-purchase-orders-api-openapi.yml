@@ -1,0 +1,2329 @@
+openapi: 3.2.0
+info:
+  title: Monite Purchase orders API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Purchase orders across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Purchase orders
+paths:
+  /payable_purchase_orders:
+    get:
+      tags:
+      - Purchase orders
+      summary: Get purchase orders
+      operationId: get_payable_purchase_orders
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/PurchaseOrderCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issued_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issued_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issued_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issued_at__lte
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/PurchaseOrderStatusEnum'
+        name: status
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+          type: array
+        name: document_id__in
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: counterpart_id__in
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart.name
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/CurrencyEnum'
+        name: currency
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/CurrencyEnum'
+          type: array
+        name: currency__in
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Purchase orders
+      summary: Create a purchase order
+      operationId: post_payable_purchase_orders
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderPayloadSchema'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_purchase_orders/variables:
+    get:
+      tags:
+      - Purchase orders
+      summary: Get the available variables for purchase orders
+      description: Get a list of placeholders allowed to insert into an email template for customization
+      operationId: get_payable_purchase_orders_variables
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VariablesObjectList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_purchase_orders/{purchase_order_id}:
+    get:
+      tags:
+      - Purchase orders
+      summary: Get a purchase order by ID
+      operationId: get_payable_purchase_orders_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Purchase orders
+      summary: Update a purchase order
+      operationId: patch_payable_purchase_orders_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePurchaseOrderPayloadSchema'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Purchase orders
+      summary: Delete a purchase order
+      operationId: delete_payable_purchase_orders_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_purchase_orders/{purchase_order_id}/preview:
+    post:
+      tags:
+      - Purchase orders
+      summary: Preview a purchase order's email message
+      operationId: post_payable_purchase_orders_id_preview
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PurchaseOrderEmailPreviewRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderEmailPreviewResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /payable_purchase_orders/{purchase_order_id}/send:
+    post:
+      tags:
+      - Purchase orders
+      summary: Send a purchase order via email
+      operationId: post_payable_purchase_orders_id_send
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendPurchaseOrderViaEmailRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PurchaseOrderEmailSentResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    VariablesObject:
+      properties:
+        object_subtype:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        object_type:
+          type: string
+        variables:
+          items:
+            $ref: '#/components/schemas/Variable'
+          type: array
+      type: object
+      required:
+      - object_subtype
+      - object_type
+      - variables
+    PurchaseOrderCounterpartOrganizationResponse:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+      type: object
+      required:
+      - is_customer
+      - is_vendor
+      - legal_name
+      description: Represents counterparts that are organizations (juridical persons).
+    PayableEntityIndividualResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID entity ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        address:
+          $ref: '#/components/schemas/PayableEntityAddressSchema'
+        email:
+          type: string
+          description: An official email address of the entity
+        individual:
+          allOf:
+          - $ref: '#/components/schemas/PayableIndividualSchema'
+          description: A set of metadata describing an individual
+        logo:
+          allOf:
+          - $ref: '#/components/schemas/FileSchema3'
+          description: A logo image of the entity
+        phone:
+          type: string
+          maxLength: 100
+          description: A phone number of the entity
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
+        website:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: A website of the entity
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - address
+      - individual
+      - status
+      description: A base for an entity response schema
+    PayableIndividualSchema:
+      properties:
+        date_of_birth:
+          type: string
+          format: date
+        first_name:
+          type: string
+          maxLength: 100
+          description: A first name of an individual
+        id_number:
+          type: string
+        last_name:
+          type: string
+          maxLength: 100
+          description: A last name of an individual
+        ssn_last_4:
+          type: string
+          description: The last four digits of the individual's Social Security number
+        title:
+          type: string
+          maxLength: 10
+          description: A title of an individual
+      type: object
+      required:
+      - first_name
+      - last_name
+      description: A schema contains metadata for an individual
+    PurchaseOrderVatId:
+      properties:
+        id:
+          type: string
+          format: uuid
+        country:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        value:
+          type: string
+      type: object
+      required:
+      - id
+      - country
+      - entity_id
+      - type
+      - value
+    UpdatePurchaseOrderPayloadSchema:
+      properties:
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
+        counterpart_id:
+          type: string
+          format: uuid
+          description: Counterpart unique ID.
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier that applied to purchase order
+        items:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderItem'
+          type: array
+          description: List of item to purchase
+        message:
+          type: string
+          description: Msg which will be send to counterpart for who the purchase order is issued.
+        project_id:
+          type: string
+          format: uuid
+          description: Project id of a purchase order
+        valid_for_days:
+          type: integer
+          minimum: 1.0
+          description: Number of days for which purchase order is valid
+      type: object
+      description: Represents an Accounts Purchase Order document created by entity.
+    PurchaseOrderCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    PurchaseOrderEmailSentResponse:
+      properties:
+        mail_id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - mail_id
+      description: A schema for returning a response an email with a link to purchase order document has been sent
+    PreviewSchema3:
+      properties:
+        height:
+          type: integer
+          description: The image height in pixels.
+          example: 400
+        url:
+          type: string
+          description: The image URL.
+          example: https://bucketname.s3.amazonaws.com/1/2/3.png
+        width:
+          type: integer
+          description: The image width in pixels.
+          example: 200
+      type: object
+      required:
+      - height
+      - url
+      - width
+      description: A preview image generated for a file.
+    Variable:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+      type: object
+      required:
+      - description
+      - name
+    PurchaseOrderPayloadSchema:
+      properties:
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
+        counterpart_id:
+          type: string
+          format: uuid
+          description: Counterpart unique ID.
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency in which the price of the product is set. (all items need to have the same currency)
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier that applied to purchase order
+        items:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderItem'
+          type: array
+          description: List of item to purchase
+        message:
+          type: string
+          description: Msg which will be send to counterpart for who the purchase order is issued.
+        project_id:
+          type: string
+          format: uuid
+          description: Project id of a purchase order
+        valid_for_days:
+          type: integer
+          minimum: 1.0
+          description: Number of days for which purchase order is valid
+      type: object
+      required:
+      - counterpart_id
+      - currency
+      - items
+      - message
+      - valid_for_days
+      description: Represents an Accounts Purchase Order document created by entity.
+    PurchaseOrderCounterpartIndividualResponse:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          description: The person's phone number.
+          example: '5553211234'
+        title:
+          type: string
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      type: object
+      required:
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    PurchaseOrderCounterpartIndividualRootResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the counterpart.
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Entity user ID of counterpart creator.
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        individual:
+          $ref: '#/components/schemas/PurchaseOrderCounterpartIndividualResponse'
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate pdf documents for this counterpart.
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. This field is required for counterparts that are non-VAT registered.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartType'
+          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - individual
+      - type
+      description: Represents counterparts that are individuals (natural persons).
+    PageSchema3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of the image.
+        mimetype:
+          type: string
+          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) of the image.
+          example: image/png
+        number:
+          type: integer
+          minimum: 0.0
+          description: The page number in the PDF document, from 0.
+          example: 0
+        size:
+          type: integer
+          minimum: 0.0
+          description: Image file size, in bytes.
+          example: 21972
+        url:
+          type: string
+          description: The URL to download the image.
+          example: https://bucket.s3.amazonaws.com/123/456.png
+      type: object
+      required:
+      - id
+      - mimetype
+      - number
+      - size
+      - url
+      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
+
+        and saves them as PNG images. This object contains the image and metadata of a single page.'
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    LanguageCodeEnum:
+      type: string
+      enum:
+      - ab
+      - aa
+      - af
+      - ak
+      - sq
+      - am
+      - ar
+      - an
+      - hy
+      - av
+      - ae
+      - ay
+      - az
+      - bm
+      - ba
+      - eu
+      - be
+      - bn
+      - bi
+      - bs
+      - br
+      - bg
+      - my
+      - ca
+      - ch
+      - ce
+      - ny
+      - zh
+      - cu
+      - cv
+      - kw
+      - co
+      - cr
+      - hr
+      - cs
+      - da
+      - dv
+      - nl
+      - dz
+      - en
+      - eo
+      - et
+      - ee
+      - fo
+      - fj
+      - fi
+      - fr
+      - fy
+      - ff
+      - gd
+      - gl
+      - lg
+      - ka
+      - de
+      - el
+      - kl
+      - gn
+      - gu
+      - ht
+      - ha
+      - he
+      - hz
+      - hi
+      - ho
+      - hu
+      - io
+      - ig
+      - id
+      - ia
+      - ie
+      - iu
+      - ik
+      - ga
+      - it
+      - ja
+      - jv
+      - kn
+      - kr
+      - ks
+      - kk
+      - km
+      - ki
+      - rw
+      - ky
+      - kv
+      - kg
+      - ko
+      - kj
+      - ku
+      - lo
+      - la
+      - lv
+      - li
+      - ln
+      - lt
+      - lu
+      - lb
+      - mk
+      - mg
+      - ms
+      - ml
+      - mt
+      - gv
+      - mi
+      - mr
+      - mh
+      - mn
+      - na
+      - nv
+      - nd
+      - nr
+      - ng
+      - ne
+      - 'no'
+      - nb
+      - nn
+      - ii
+      - oc
+      - oj
+      - om
+      - os
+      - pi
+      - ps
+      - fa
+      - pl
+      - pt
+      - pa
+      - qu
+      - ro
+      - rm
+      - rn
+      - ru
+      - se
+      - sm
+      - sg
+      - sa
+      - sc
+      - sr
+      - sn
+      - sd
+      - si
+      - sk
+      - sl
+      - so
+      - st
+      - es
+      - su
+      - sw
+      - ss
+      - sv
+      - tl
+      - ty
+      - tg
+      - ta
+      - tt
+      - te
+      - th
+      - bo
+      - ti
+      - to
+      - ts
+      - tn
+      - tr
+      - tk
+      - tw
+      - ug
+      - uk
+      - ur
+      - uz
+      - ve
+      - vi
+      - vo
+      - wa
+      - cy
+      - wo
+      - xh
+      - yi
+      - yo
+      - za
+      - zu
+    DocumentTypeEnum:
+      type: string
+      enum:
+      - quote
+      - invoice
+      - credit_note
+      - discount_reminder
+      - final_reminder
+      - payables_purchase_order
+      - overdue_reminder
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    PayableOrganizationSchema:
+      properties:
+        business_structure:
+          allOf:
+          - $ref: '#/components/schemas/EntityBusinessStructure'
+          description: Business structure of the company
+        directors_provided:
+          type: boolean
+        executives_provided:
+          type: boolean
+        legal_entity_id:
+          type: string
+          maxLength: 20
+          description: A code which identifies uniquely a party of a transaction worldwide
+        legal_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A legal name of an organization
+        owners_provided:
+          type: boolean
+        representative_provided:
+          type: boolean
+      type: object
+      required:
+      - legal_name
+      description: A schema contains metadata for an organization
+    EntityBusinessStructure:
+      type: string
+      enum:
+      - incorporated_partnership
+      - unincorporated_partnership
+      - public_corporation
+      - private_corporation
+      - sole_proprietorship
+      - single_member_llc
+      - multi_member_llc
+      - private_partnership
+      - unincorporated_association
+      - public_partnership
+    PayableEntityAddressSchema:
+      properties:
+        city:
+          type: string
+          maxLength: 255
+          description: A city (a full name) where the entity is registered
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: 'A country name (as ISO code) where the entity is registered '
+          default: DE
+          example: DE
+        line1:
+          type: string
+          maxLength: 255
+          description: A street where the entity is registered
+        line2:
+          type: string
+          maxLength: 100
+          description: An alternative street used by the entity
+        postal_code:
+          type: string
+          maxLength: 10
+          description: A postal code of the address where the entity is registered
+        state:
+          type: string
+          maxLength: 255
+          description: A state in a country where the entity is registered
+      type: object
+      required:
+      - city
+      - line1
+      - postal_code
+      description: A schema represents address info of the entity
+    PurchaseOrderStatusEnum:
+      type: string
+      enum:
+      - draft
+      - issued
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PurchaseOrderCounterpartOrganizationRootResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the counterpart.
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Entity user ID of counterpart creator.
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate pdf documents for this counterpart.
+        organization:
+          $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationResponse'
+        reminders_enabled:
+          type: boolean
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. This field is required for counterparts that are non-VAT registered.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartType'
+          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - organization
+      - type
+      description: Represents counterparts that are organizations (juridical persons).
+    PayableEntityOrganizationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID entity ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        address:
+          $ref: '#/components/schemas/PayableEntityAddressSchema'
+        email:
+          type: string
+          description: An official email address of the entity
+        logo:
+          allOf:
+          - $ref: '#/components/schemas/FileSchema3'
+          description: A logo image of the entity
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/PayableOrganizationSchema'
+          description: A set of metadata describing an organization
+        phone:
+          type: string
+          maxLength: 100
+          description: A phone number of the entity
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
+        website:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: A website of the entity
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - address
+      - organization
+      - status
+      description: A base for an entity response schema
+    PurchaseOrderCounterpartSchema:
+      anyOf:
+      - $ref: '#/components/schemas/PurchaseOrderCounterpartIndividualRootResponse'
+      - $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationRootResponse'
+      description: 'A Counterpart object contains information about an organization (juridical person) or
+
+        individual (natural person) that provides goods and services to or buys them from an
+
+        [SME](https://docs.monite.com/docs/glossary#sme).'
+    PurchaseOrderPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of purchase orders.
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    PurchaseOrderResponseSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID assigned to this purchase order.
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the receivable was created. Timestamps follow the ISO 8601 standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the receivable was last updated. Timestamps follow the ISO 8601 standard.
+        counterpart:
+          allOf:
+          - $ref: '#/components/schemas/PurchaseOrderCounterpartSchema'
+          description: Counterpart information about an organization (juridical person) or individual (natural person) that provides goods and services to or buys them from an
+        counterpart_address:
+          allOf:
+          - $ref: '#/components/schemas/PurchaseOrderCounterpartAddressSchema'
+          description: Counterpart address data saved on creation or update of the purchase order.
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
+        counterpart_id:
+          type: string
+          format: uuid
+          description: Counterpart unique ID.
+        created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the creator of the purchase order
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency in which the price of the product is set. (all items need to have the same currency)
+        document_id:
+          type: string
+        entity:
+          anyOf:
+          - $ref: '#/components/schemas/PayableEntityIndividualResponse'
+          - $ref: '#/components/schemas/PayableEntityOrganizationResponse'
+          description: Data of the entity (address, name, contact)
+        entity_id:
+          type: string
+          format: uuid
+          description: The ID of the entity which issued the purchase order.
+        entity_vat_id:
+          $ref: '#/components/schemas/PurchaseOrderVatId'
+        file_id:
+          type: string
+          format: uuid
+        file_url:
+          type: string
+        issued_at:
+          type: string
+          format: date
+          description: When status changed from 'draft' to 'send', so after sending purchase order
+        items:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderItem'
+          type: array
+          description: List of item to purchase
+        message:
+          type: string
+          description: Msg which will be send to counterpart for who the purchase order is issued.
+        project_id:
+          type: string
+          format: uuid
+          description: Project id of a purchase order
+        status:
+          type: string
+          description: Purchase order can be in 'draft' state before sending it to counterpart. After that state is 'issued'
+        valid_for_days:
+          type: integer
+          minimum: 1.0
+          description: Number of days for which purchase order is valid
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - counterpart
+      - counterpart_id
+      - currency
+      - document_id
+      - entity
+      - entity_id
+      - items
+      - message
+      - status
+      - valid_for_days
+      description: Represents response for an Accounts Purchase Order document created by entity.
+    PurchaseOrderCounterpartAddressSchema:
+      properties:
+        city:
+          type: string
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+      description: Address information.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    PurchaseOrderItem:
+      properties:
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency in which the price of the product is set.
+        name:
+          type: string
+          description: The name of the product to purchase
+        price:
+          type: integer
+          description: The subtotal cost (excluding VAT), in [minor units](https://docs.monite.com/references/currencies#minor-units).
+        quantity:
+          type: integer
+          description: Number (quantity) of products
+        unit:
+          type: string
+          description: Units (hours, meters, unit)
+        vat_rate:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Percent minor units. Example: 12.5% is 1250'
+      additionalProperties: false
+      type: object
+      required:
+      - currency
+      - name
+      - price
+      - quantity
+      - unit
+      - vat_rate
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    PurchaseOrderEmailPreviewRequest:
+      properties:
+        body_text:
+          type: string
+        subject_text:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body_text
+      - subject_text
+      description: A schema for request for preview of purchase order email
+    PurchaseOrderEmailPreviewResponse:
+      properties:
+        body_preview:
+          type: string
+        subject_preview:
+          type: string
+      type: object
+      required:
+      - body_preview
+      - subject_preview
+      description: A schema for returning a response for email preview
+    SendPurchaseOrderViaEmailRequest:
+      properties:
+        body_text:
+          type: string
+        subject_text:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body_text
+      - subject_text
+      description: A schema for request for sending purchase order via email
+    VariablesObjectList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/VariablesObject'
+          type: array
+      type: object
+      required:
+      - data
+    FileSchema3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this file.
+        created_at:
+          type: string
+          format: date-time
+          description: UTC date and time when this workflow was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        file_type:
+          type: string
+          description: The type of the business object associated with this file.
+          example: payables
+        md5:
+          type: string
+          description: The MD5 hash of the file.
+          example: 31d1a2dd1ad3dfc39be849d70a68dac0
+        mimetype:
+          type: string
+          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types).
+          example: application/pdf
+        name:
+          type: string
+          maxLength: 512
+          description: The original file name (if available).
+          example: invoice.pdf
+        pages:
+          items:
+            $ref: '#/components/schemas/PageSchema3'
+          type: array
+          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
+          default: []
+        previews:
+          items:
+            $ref: '#/components/schemas/PreviewSchema3'
+          type: array
+          description: Preview images generated for this file. There can be multiple images with different sizes.
+          default: []
+        region:
+          type: string
+          description: Geographical region of the data center where the file is stored.
+          example: eu-central-1
+        size:
+          type: integer
+          minimum: 0.0
+          description: The file size in bytes.
+          example: 24381
+        url:
+          type: string
+          description: The URL to download the file.
+          example: https://bucketname.s3.amazonaws.com/12345/67890.pdf
+      type: object
+      required:
+      - id
+      - created_at
+      - file_type
+      - md5
+      - mimetype
+      - name
+      - region
+      - size
+      - url
+      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
+    CounterpartType:
+      type: string
+      enum:
+      - individual
+      - organization
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

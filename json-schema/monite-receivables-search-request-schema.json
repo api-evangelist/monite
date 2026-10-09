@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-receivables-search-request-schema.json",
+  "title": "ReceivablesSearchRequest",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/ReceivablesSearchRequest",
+  "properties": {
+    "based_on": {
+      "type": "string",
+      "format": "uuid",
+      "description": "This parameter accepts a quote ID or an invoice ID.\n\n* Specify a quote ID to find invoices created from this quote.\n* Specify an invoice ID to find credit notes created for this invoice.\n\nValid but nonexistent IDs do not raise errors but produce no results."
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Return only receivables created for the counterpart with the specified ID.\n\nCounterparts that have been deleted but have associated receivables will still return results here because the receivables contain a frozen copy of the counterpart data.\n\nIf the specified counterpart ID does not exist and never existed, no results are returned."
+    },
+    "counterpart_name": {
+      "type": "string",
+      "description": "Return only receivables created for counterparts with the specified name (exact match, case-sensitive). For counterparts of `type` = `individual`, the full name is formatted as `first_name last_name`."
+    },
+    "counterpart_name__contains": {
+      "type": "string",
+      "description": "Return only receivables created for counterparts whose name contains the specified string (case-sensitive)."
+    },
+    "counterpart_name__icontains": {
+      "type": "string",
+      "description": "Return only receivables created for counterparts whose name contains the specified string (case-insensitive)."
+    },
+    "created_at__gt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only receivables created after the specified date and time. The value must be in the ISO 8601 format `YYYY-MM-DDThh:mm[:ss][Z|±hh:mm]`. Milliseconds are ignored."
+    },
+    "created_at__gte": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only receivables created on or after the specified date and time."
+    },
+    "created_at__lt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only receivables created before the specified date and time."
+    },
+    "created_at__lte": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only receivables created before or on the specified date and time."
+    },
+    "discounted_subtotal": {
+      "type": "integer",
+      "description": "Return only receivables with the exact specified discounted subtotal. The amount must be specified in the [minor units](https://docs.monite.com/references/currencies#minor-units) of currency. For example, $12.5 is represented as 1250."
+    },
+    "discounted_subtotal__gt": {
+      "type": "integer",
+      "description": "Return only receivables whose discounted subtotal (in minor units) is greater than the specified value."
+    },
+    "discounted_subtotal__gte": {
+      "type": "integer",
+      "description": "Return only receivables whose discounted subtotal (in minor units) is greater than or equal to the specified value."
+    },
+    "discounted_subtotal__lt": {
+      "type": "integer",
+      "description": "Return only receivables whose discounted subtotal (in minor units) is less than the specified value."
+    },
+    "discounted_subtotal__lte": {
+      "type": "integer",
+      "description": "Return only receivables whose discounted subtotal (in minor units) is less than or equal to the specified value."
+    },
+    "document_id": {
+      "type": "string",
+      "description": "Return a receivable with the exact specified document number (case-sensitive). The `document_id` is the user-facing document number such as INV-00042, not to be confused with Monite resource IDs (`id`)."
+    },
+    "document_id__contains": {
+      "type": "string",
+      "description": "Return only receivables whose document number (`document_id`) contains the specified string (case-sensitive)."
+    },
+    "document_id__icontains": {
+      "type": "string",
+      "description": "Return only receivables whose document number (`document_id`) contains the specified string (case-insensitive)."
+    },
+    "due_date__gt": {
+      "type": "string",
+      "format": "date",
+      "description": "Return invoices that are due after the specified date (exclusive, `YYYY-MM-DD`).\n\nThis filter excludes quotes, credit notes, and draft invoices."
+    },
+    "due_date__gte": {
+      "type": "string",
+      "format": "date",
+      "description": "Return invoices that are due on or after the specified date (`YYYY-MM-DD`).\n\nThis filter excludes quotes, credit notes, and draft invoices."
+    },
+    "due_date__lt": {
+      "type": "string",
+      "format": "date",
+      "description": "Return invoices that are due before the specified date (exclusive, `YYYY-MM-DD`).\n\nThis filter excludes quotes, credit notes, and draft invoices."
+    },
+    "due_date__lte": {
+      "type": "string",
+      "format": "date",
+      "description": "Return invoices that are due before or on the specified date (`YYYY-MM-DD`).\n\nThis filter excludes quotes, credit notes, and draft invoices."
+    },
+    "entity_user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Return only receivables created by the entity user with the specified ID. To query receivables by multiple user IDs at once, use the `entity_user_id__in` parameter instead.\n\nIf the request is authenticated using an entity user token, this user must have the `receivable.read.allowed` (rather than `allowed_for_own`) permission to be able to query receivables created by other users.\n\nIDs of deleted users will still produce results here if those users had associated receivables. Valid but nonexistent user IDs do not raise errors but produce no results."
+    },
+    "entity_user_id__in": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "has_due_date": {
+      "type": "boolean",
+      "description": "Return only receivables that have a due date set. true=only invoices with due_date, false=only invoices without due_date"
+    },
+    "id__in": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "issue_date__gt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only non-draft receivables that were issued after the specified date and time. The value must be in the ISO 8601 format `YYYY-MM-DDThh:mm[:ss][Z|±hh:mm]`. Milliseconds are ignored."
+    },
+    "issue_date__gte": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only non-draft receivables that were issued on or after the specified date and time."
+    },
+    "issue_date__lt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only non-draft receivables that were issued before the specified date and time."
+    },
+    "issue_date__lte": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Return only non-draft receivables that were issued before or on the specified date and time."
+    },
+    "limit": {
+      "type": "integer",
+      "maximum": 250.0,
+      "minimum": 1.0,
+      "default": 100
+    },
+    "order": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/OrderEnum"
+        }
+      ],
+      "default": "asc"
+    },
+    "pagination_token": {
+      "type": "string"
+    },
+    "product_ids": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "product_ids__in": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Return only receivables assigned to the project with the specified ID. Valid but nonexistent project IDs do not raise errors but return no results."
+    },
+    "project_id__in": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "search_text": {
+      "type": "string",
+      "description": "Case-insensitive and partial match search for the specified text in the `document_id` and `counterpart_name` fields of the receivables."
+    },
+    "sort": {
+      "$ref": "#/$defs/ReceivableCursorFields2"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "issuing",
+        "issued",
+        "failed",
+        "accepted",
+        "expired",
+        "declined",
+        "recurring",
+        "partially_paid",
+        "paid",
+        "overdue",
+        "uncollectible",
+        "canceled"
+      ],
+      "description": "Return only receivables that have the specified status. See the applicable [invoice statuses](https://docs.monite.com/accounts-receivable/invoices/index), [quote statuses](https://docs.monite.com/accounts-receivable/quotes/index), and [credit note statuses](https://docs.monite.com/accounts-receivable/credit-notes#credit-note-lifecycle).\n\nTo query multiple statuses at once, use the `status__in` parameter instead."
+    },
+    "status__in": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "tag_ids": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "tag_ids__in": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array"
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "Return only receivables with the exact specified total amount. The amount must be specified in the [minor units](https://docs.monite.com/references/currencies#minor-units) of currency. For example, $12.5 is represented as 1250."
+    },
+    "total_amount__gt": {
+      "type": "integer",
+      "description": "Return only receivables whose total amount (in minor units) exceeds the specified value."
+    },
+    "total_amount__gte": {
+      "type": "integer",
+      "description": "Return only receivables whose total amount (in minor units) is greater than or equal to the specified value."
+    },
+    "total_amount__lt": {
+      "type": "integer",
+      "description": "Return only receivables whose total amount (in minor units) is less than the specified value."
+    },
+    "total_amount__lte": {
+      "type": "integer",
+      "description": "Return only receivables whose total amount (in minor units) is less than or equal to the specified value."
+    },
+    "type": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/ReceivableType"
+        }
+      ],
+      "description": "Return only receivables of the specified type. Use this parameter to get only invoices, or only quotes, or only credit notes."
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "$defs": {
+    "OrderEnum": {
+      "type": "string",
+      "enum": [
+        "asc",
+        "desc"
+      ]
+    },
+    "ReceivableCursorFields2": {
+      "type": "string",
+      "enum": [
+        "counterpart_name",
+        "counterpart_id",
+        "amount",
+        "total_amount",
+        "status",
+        "due_date",
+        "issue_date",
+        "document_id",
+        "created_at",
+        "project_id"
+      ]
+    },
+    "ReceivableType": {
+      "type": "string",
+      "enum": [
+        "quote",
+        "invoice",
+        "credit_note"
+      ]
+    }
+  }
+}

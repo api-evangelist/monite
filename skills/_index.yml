@@ -1,0 +1,8 @@
+generated: '2026-10-09'
+method: generated
+source: openapi/monite-openapi.yml
+provider_published_skills: none found (no AGENTS.md or skills on docs.monite.com; llms.txt names only a docs MCP server)
+skills:
+- {name: monite-issue-and-send-invoice, file: skills/monite-issue-and-send-invoice.md}
+- {name: monite-process-payable, file: skills/monite-process-payable.md}
+- {name: monite-onboard-entity, file: skills/monite-onboard-entity.md}

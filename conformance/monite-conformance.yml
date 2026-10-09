@@ -1,0 +1,28 @@
+name: Monite Conformance
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/api/concepts/authentication
+standards:
+- id: openapi-3.1
+  conforms: true
+  evidence: openapi/monite-openapi.yml declares openapi 3.1.0 (info.version 2024-05-25).
+- id: oauth2
+  conforms: partial
+  evidence: '"This method is in line with, and compliant with OAuth 2.0" - POST /auth/token supports the standard client_credentials grant plus a custom entity_user grant; the contract declares an http bearer scheme, not an oauth2 securityScheme. https://docs.monite.com/api/concepts/authentication'
+- id: rfc9457
+  conforms: false
+  evidence: 'Error bodies use {"error": {"type", "message"}} and {"detail": [...]} JSON envelopes, not application/problem+json (openapi/monite-openapi.yml ErrorSchemaResponse, HTTPValidationError).'
+- id: idempotency
+  conforms: false
+  evidence: No idempotency key is documented or declared on any write operation.
+- id: pagination
+  conforms: true
+  evidence: Cursor pagination with limit (1-100) and pagination_token; responses carry next_pagination_token / prev_pagination_token. https://docs.monite.com/api/concepts/pagination-sorting-filtering
+- id: ietf-ratelimit-headers
+  conforms: partial
+  evidence: Responses carry RateLimit-Limit, RateLimit-Remaining, RateLimit-Reset plus X-RateLimit-* and Retry-After on 429. https://docs.monite.com/api/concepts/rate-limiting
+- id: peppol
+  conforms: true
+  domain_standard: true
+  evidence: 'Contract: components.schemas.EinvoiceSchemaTypeEnum (DE:VAT, NL:KVK, NL:VAT, BE:VAT, BE:EN) used as network_schema with network_identifier on /einvoicing_connections/{einvoicing_connection_id}/network_credentials and counterpart e-invoicing credentials. Docs: these are Peppol participant identifier scheme names - "Monite API uses the scheme names (such as NL:KVK) rather than their ICD codes (0106)" and look-ups use directory.peppol.eu. https://docs.monite.com/e-invoicing/peppol-ids'
+  source: https://docs.monite.com/e-invoicing/peppol-ids

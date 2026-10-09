@@ -1,0 +1,768 @@
+{
+  "@context": {
+    "@vocab": "https://monite.com/schema#",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+    "monite": "https://monite.com/schema#",
+    "APIVersion": "monite:APIVersion",
+    "AccessTokenResponse": "monite:AccessTokenResponse",
+    "access_token": {
+      "@id": "monite:access_token",
+      "@type": "xsd:string"
+    },
+    "expires_in": {
+      "@id": "monite:expires_in",
+      "@type": "xsd:integer"
+    },
+    "token_type": {
+      "@id": "monite:token_type",
+      "@type": "xsd:string"
+    },
+    "AccountDisabledReason": "monite:AccountDisabledReason",
+    "AccountingConnectionList": "monite:AccountingConnectionList",
+    "data": {
+      "@id": "monite:data",
+      "@container": "@list"
+    },
+    "AccountingConnectionResponse": "monite:AccountingConnectionResponse",
+    "id": {
+      "@id": "monite:id",
+      "@type": "xsd:string"
+    },
+    "created_at": {
+      "@id": "monite:created_at",
+      "@type": "xsd:dateTime"
+    },
+    "updated_at": {
+      "@id": "monite:updated_at",
+      "@type": "xsd:dateTime"
+    },
+    "business_info": {
+      "@id": "monite:business_info",
+      "@type": "@id"
+    },
+    "connection_url": {
+      "@id": "monite:connection_url",
+      "@type": "xsd:string"
+    },
+    "errors": {
+      "@id": "monite:errors",
+      "@container": "@list"
+    },
+    "last_pull": {
+      "@id": "monite:last_pull",
+      "@type": "xsd:dateTime"
+    },
+    "platform": {
+      "@id": "monite:platform",
+      "@type": "xsd:string"
+    },
+    "status": {
+      "@id": "monite:status",
+      "@type": "@id"
+    },
+    "AccountingCostCenterCreateRequest": "monite:AccountingCostCenterCreateRequest",
+    "description": {
+      "@id": "monite:description",
+      "@type": "xsd:string"
+    },
+    "name": {
+      "@id": "monite:name",
+      "@type": "xsd:string"
+    },
+    "AccountingCostCenterListResponse": "monite:AccountingCostCenterListResponse",
+    "next_pagination_token": {
+      "@id": "monite:next_pagination_token",
+      "@type": "xsd:string"
+    },
+    "prev_pagination_token": {
+      "@id": "monite:prev_pagination_token",
+      "@type": "xsd:string"
+    },
+    "AccountingCostCenterResponse": "monite:AccountingCostCenterResponse",
+    "is_external": {
+      "@id": "monite:is_external",
+      "@type": "xsd:boolean"
+    },
+    "AccountingCostCenterUpdateRequest": "monite:AccountingCostCenterUpdateRequest",
+    "AccountingCustomerRefObject": "monite:AccountingCustomerRefObject",
+    "company_name": {
+      "@id": "monite:company_name",
+      "@type": "xsd:string"
+    },
+    "AccountingLineItem": "monite:AccountingLineItem",
+    "discount_amount": {
+      "@id": "monite:discount_amount",
+      "@type": "xsd:decimal"
+    },
+    "discount_percentage": {
+      "@id": "monite:discount_percentage",
+      "@type": "xsd:decimal"
+    },
+    "ledger_account_id": {
+      "@id": "monite:ledger_account_id",
+      "@type": "xsd:string"
+    },
+    "quantity": {
+      "@id": "monite:quantity",
+      "@type": "xsd:decimal"
+    },
+    "tax_rate_ref": {
+      "@id": "monite:tax_rate_ref"
+    },
+    "unit_amount": {
+      "@id": "monite:unit_amount",
+      "@type": "xsd:decimal"
+    },
+    "AccountingMessageResponse": "monite:AccountingMessageResponse",
+    "message": {
+      "@id": "monite:message",
+      "@type": "xsd:string"
+    },
+    "AccountingPayable": "monite:AccountingPayable",
+    "amount_due": {
+      "@id": "monite:amount_due",
+      "@type": "xsd:decimal"
+    },
+    "currency": {
+      "@id": "monite:currency",
+      "@type": "xsd:string"
+    },
+    "currency_rate": {
+      "@id": "monite:currency_rate",
+      "@type": "xsd:decimal"
+    },
+    "due_date": {
+      "@id": "monite:due_date"
+    },
+    "invoice_number": {
+      "@id": "monite:invoice_number",
+      "@type": "xsd:string"
+    },
+    "lines": {
+      "@id": "monite:lines",
+      "@container": "@list"
+    },
+    "memo": {
+      "@id": "monite:memo",
+      "@type": "xsd:string"
+    },
+    "posted_date": {
+      "@id": "monite:posted_date",
+      "@type": "xsd:date"
+    },
+    "purchase_order_refs": {
+      "@id": "monite:purchase_order_refs",
+      "@container": "@list"
+    },
+    "subtotal": {
+      "@id": "monite:subtotal",
+      "@type": "xsd:decimal"
+    },
+    "tax_amount": {
+      "@id": "monite:tax_amount",
+      "@type": "xsd:decimal"
+    },
+    "total_amount": {
+      "@id": "monite:total_amount",
+      "@type": "xsd:decimal"
+    },
+    "vendor_ref": {
+      "@id": "monite:vendor_ref"
+    },
+    "AccountingPayableList": "monite:AccountingPayableList",
+    "AccountingPurchaseOrderRef": "monite:AccountingPurchaseOrderRef",
+    "AccountingReceivable": "monite:AccountingReceivable",
+    "customer_ref": {
+      "@id": "monite:customer_ref"
+    },
+    "pass_through": {
+      "@id": "monite:pass_through"
+    },
+    "AccountingReceivableList": "monite:AccountingReceivableList",
+    "AccountingRefObject": "monite:AccountingRefObject",
+    "AccountingSettings": "monite:AccountingSettings",
+    "ledger_account_ids": {
+      "@id": "monite:ledger_account_ids"
+    },
+    "tax_ids": {
+      "@id": "monite:tax_ids"
+    },
+    "AccountingTaxRateCreateRequest": "monite:AccountingTaxRateCreateRequest",
+    "code": {
+      "@id": "monite:code",
+      "@type": "xsd:string"
+    },
+    "effective_tax_rate": {
+      "@id": "monite:effective_tax_rate",
+      "@type": "xsd:integer"
+    },
+    "AccountingTaxRateListResponse": "monite:AccountingTaxRateListResponse",
+    "AccountingTaxRateResponse": "monite:AccountingTaxRateResponse",
+    "components": {
+      "@id": "monite:components",
+      "@container": "@list"
+    },
+    "total_tax_rate": {
+      "@id": "monite:total_tax_rate",
+      "@type": "xsd:integer"
+    },
+    "AccountingTaxRateUpdateRequest": "monite:AccountingTaxRateUpdateRequest",
+    "AccountingVendorRefObject": "monite:AccountingVendorRefObject",
+    "ActionEnum": "monite:ActionEnum",
+    "ActionSchema": "monite:ActionSchema",
+    "action_name": {
+      "@id": "monite:action_name",
+      "@type": "@id"
+    },
+    "permission": {
+      "@id": "monite:permission",
+      "@type": "@id"
+    },
+    "AddCustomTemplateSchema": "monite:AddCustomTemplateSchema",
+    "body_template": {
+      "@id": "monite:body_template",
+      "@type": "xsd:string"
+    },
+    "is_default": {
+      "@id": "monite:is_default",
+      "@type": "xsd:boolean"
+    },
+    "language": {
+      "@id": "monite:language"
+    },
+    "subject_template": {
+      "@id": "monite:subject_template",
+      "@type": "xsd:string"
+    },
+    "type": {
+      "@id": "monite:type"
+    },
+    "AggregationFunctionEnum": "monite:AggregationFunctionEnum",
+    "AirwallexMandate": "monite:AirwallexMandate",
+    "email": {
+      "@id": "monite:email",
+      "@type": "xsd:string"
+    },
+    "signatory": {
+      "@id": "monite:signatory",
+      "@type": "xsd:string"
+    },
+    "version": {
+      "@id": "monite:version",
+      "@type": "@id"
+    },
+    "AirwallexMandateType": "monite:AirwallexMandateType",
+    "AirwallexMandateVersion": "monite:AirwallexMandateVersion",
+    "AirwallexPlaidAccount": "monite:AirwallexPlaidAccount",
+    "mask": {
+      "@id": "monite:mask",
+      "@type": "xsd:string"
+    },
+    "AirwallexPlaidBankAccountVerificationStatus": "monite:AirwallexPlaidBankAccountVerificationStatus",
+    "AirwallexPlaidInstitution": "monite:AirwallexPlaidInstitution",
+    "AirwallexPlaidVerification": "monite:AirwallexPlaidVerification",
+    "AllDocumentExportResponseSchema": "monite:AllDocumentExportResponseSchema",
+    "AllOverdueRemindersResponse": "monite:AllOverdueRemindersResponse",
+    "AllowedCountries": "monite:AllowedCountries",
+    "AllowedEinvoicingCountryCodes": "monite:AllowedEinvoicingCountryCodes",
+    "AllowedFileTypes": "monite:AllowedFileTypes",
+    "AnalyticsDataPoint": "monite:AnalyticsDataPoint",
+    "dimension_value": {
+      "@id": "monite:dimension_value",
+      "@type": "xsd:string"
+    },
+    "metric_value": {
+      "@id": "monite:metric_value",
+      "@type": "xsd:decimal"
+    },
+    "ApprovalPolicyCreate": "monite:ApprovalPolicyCreate",
+    "ends_at": {
+      "@id": "monite:ends_at",
+      "@type": "xsd:dateTime"
+    },
+    "priority": {
+      "@id": "monite:priority",
+      "@type": "xsd:integer"
+    },
+    "script": {
+      "@id": "monite:script",
+      "@container": "@list"
+    },
+    "starts_at": {
+      "@id": "monite:starts_at",
+      "@type": "xsd:dateTime"
+    },
+    "trigger": {
+      "@id": "monite:trigger"
+    },
+    "ApprovalPolicyCursorFields": "monite:ApprovalPolicyCursorFields",
+    "ApprovalPolicyResource": "monite:ApprovalPolicyResource",
+    "created_by": {
+      "@id": "monite:created_by",
+      "@type": "xsd:string"
+    },
+    "updated_by": {
+      "@id": "monite:updated_by",
+      "@type": "xsd:string"
+    },
+    "ApprovalPolicyResourceList": "monite:ApprovalPolicyResourceList",
+    "ApprovalPolicyStatus": "monite:ApprovalPolicyStatus",
+    "ApprovalPolicyUpdate": "monite:ApprovalPolicyUpdate",
+    "ApprovalProcessResourceList": "monite:ApprovalProcessResourceList",
+    "ApprovalProcessStepResource": "monite:ApprovalProcessStepResource",
+    "approval_request_id": {
+      "@id": "monite:approval_request_id",
+      "@type": "xsd:string"
+    },
+    "approved_by": {
+      "@id": "monite:approved_by",
+      "@container": "@list"
+    },
+    "object_id": {
+      "@id": "monite:object_id",
+      "@type": "xsd:string"
+    },
+    "rejected_by": {
+      "@id": "monite:rejected_by",
+      "@type": "xsd:string"
+    },
+    "required_approval_count": {
+      "@id": "monite:required_approval_count",
+      "@type": "xsd:integer"
+    },
+    "role_ids": {
+      "@id": "monite:role_ids",
+      "@container": "@list"
+    },
+    "user_ids": {
+      "@id": "monite:user_ids",
+      "@container": "@list"
+    },
+    "ApprovalProcessStepResourceList": "monite:ApprovalProcessStepResourceList",
+    "ApprovalProcessStepStatus": "monite:ApprovalProcessStepStatus",
+    "ApprovalRequestCreateByRoleRequest": "monite:ApprovalRequestCreateByRoleRequest",
+    "object_type": {
+      "@id": "monite:object_type",
+      "@type": "@id"
+    },
+    "ApprovalRequestCreateByUserRequest": "monite:ApprovalRequestCreateByUserRequest",
+    "ApprovalRequestCursorFields": "monite:ApprovalRequestCursorFields",
+    "ApprovalRequestResourceList": "monite:ApprovalRequestResourceList",
+    "ApprovalRequestResourceWithMetadata": "monite:ApprovalRequestResourceWithMetadata",
+    "ApprovalRequestStatus": "monite:ApprovalRequestStatus",
+    "AttachmentRequest": "monite:AttachmentRequest",
+    "include_in_email": {
+      "@id": "monite:include_in_email",
+      "@type": "xsd:boolean"
+    },
+    "AttachmentResponse": "monite:AttachmentResponse",
+    "mimetype": {
+      "@id": "monite:mimetype",
+      "@type": "xsd:string"
+    },
+    "size": {
+      "@id": "monite:size",
+      "@type": "xsd:integer"
+    },
+    "url": {
+      "@id": "monite:url",
+      "@type": "xsd:string"
+    },
+    "AutomationLevel": "monite:AutomationLevel",
+    "BankAccount": "monite:BankAccount",
+    "account_holder_name": {
+      "@id": "monite:account_holder_name",
+      "@type": "xsd:string"
+    },
+    "account_number": {
+      "@id": "monite:account_number",
+      "@type": "xsd:string"
+    },
+    "bic": {
+      "@id": "monite:bic",
+      "@type": "xsd:string"
+    },
+    "country": {
+      "@id": "monite:country"
+    },
+    "display_name": {
+      "@id": "monite:display_name",
+      "@type": "xsd:string"
+    },
+    "iban": {
+      "@id": "monite:iban",
+      "@type": "xsd:string"
+    },
+    "routing_number": {
+      "@id": "monite:routing_number",
+      "@type": "xsd:string"
+    },
+    "sort_code": {
+      "@id": "monite:sort_code",
+      "@type": "xsd:string"
+    },
+    "was_created_by_user_id": {
+      "@id": "monite:was_created_by_user_id",
+      "@type": "xsd:string"
+    },
+    "BankAccountPaymentMethod": "monite:BankAccountPaymentMethod",
+    "details": {
+      "@id": "monite:details",
+      "@type": "@id"
+    },
+    "BankAccountPaymentMethodDetails": "monite:BankAccountPaymentMethodDetails",
+    "BankAccountVerificationType": "monite:BankAccountVerificationType",
+    "BankAccountVerifications": "monite:BankAccountVerifications",
+    "airwallex_plaid": {
+      "@id": "monite:airwallex_plaid"
+    },
+    "BasedOnReceivableCreatedEventData": "monite:BasedOnReceivableCreatedEventData",
+    "receivable_id": {
+      "@id": "monite:receivable_id",
+      "@type": "xsd:string"
+    },
+    "BasedOnTransitionType": "monite:BasedOnTransitionType",
+    "BatchPaymentIntentsRecipient": "monite:BatchPaymentIntentsRecipient",
+    "bank_account_id": {
+      "@id": "monite:bank_account_id",
+      "@type": "xsd:string"
+    },
+    "BatchPaymentLinkRequest": "monite:BatchPaymentLinkRequest",
+    "expires_at": {
+      "@id": "monite:expires_at",
+      "@type": "xsd:dateTime"
+    },
+    "funding_payment_method": {
+      "@id": "monite:funding_payment_method",
+      "@type": "xsd:string"
+    },
+    "payment_intents": {
+      "@id": "monite:payment_intents",
+      "@container": "@list"
+    },
+    "payout_payment_methods": {
+      "@id": "monite:payout_payment_methods",
+      "@container": "@list"
+    },
+    "return_url": {
+      "@id": "monite:return_url",
+      "@type": "@id"
+    },
+    "BatchPaymentLinkResponse": "monite:BatchPaymentLinkResponse",
+    "error": {
+      "@id": "monite:error"
+    },
+    "payment_page_url": {
+      "@id": "monite:payment_page_url",
+      "@type": "@id"
+    },
+    "BatchPaymentLinkWithPaymentIntents": "monite:BatchPaymentLinkWithPaymentIntents",
+    "BatchSinglePaymentIntent": "monite:BatchSinglePaymentIntent",
+    "object": {
+      "@id": "monite:object",
+      "@type": "@id"
+    },
+    "payment_reference": {
+      "@id": "monite:payment_reference",
+      "@type": "xsd:string"
+    },
+    "recipient": {
+      "@id": "monite:recipient",
+      "@type": "@id"
+    },
+    "BizObjectsSchema-Input": "monite:BizObjectsSchema-Input",
+    "objects": {
+      "@id": "monite:objects",
+      "@container": "@list"
+    },
+    "BizObjectsSchema-Output": "monite:BizObjectsSchema-Output",
+    "Body_put_entities_id_logo": "monite:Body_put_entities_id_logo",
+    "file": {
+      "@id": "monite:file",
+      "@type": "xsd:string"
+    },
+    "BusinessInfoSchema": "monite:BusinessInfoSchema",
+    "base_currency": {
+      "@id": "monite:base_currency",
+      "@type": "xsd:string"
+    },
+    "legal_name": {
+      "@id": "monite:legal_name",
+      "@type": "xsd:string"
+    },
+    "BusinessProfile-Input": "monite:BusinessProfile-Input",
+    "description_of_goods_or_services": {
+      "@id": "monite:description_of_goods_or_services"
+    },
+    "estimated_monthly_revenue": {
+      "@id": "monite:estimated_monthly_revenue"
+    },
+    "mcc": {
+      "@id": "monite:mcc"
+    },
+    "operating_countries": {
+      "@id": "monite:operating_countries"
+    },
+    "BusinessProfile-Output": "monite:BusinessProfile-Output",
+    "ButtonTheme": "monite:ButtonTheme",
+    "primary_color": {
+      "@id": "monite:primary_color"
+    },
+    "primary_hover_color": {
+      "@id": "monite:primary_hover_color"
+    },
+    "secondary_color": {
+      "@id": "monite:secondary_color"
+    },
+    "secondary_hover_color": {
+      "@id": "monite:secondary_hover_color"
+    },
+    "CardPaymentMethod": "monite:CardPaymentMethod",
+    "CardPaymentMethodDetails": "monite:CardPaymentMethodDetails",
+    "brand": {
+      "@id": "monite:brand",
+      "@type": "xsd:string"
+    },
+    "card_type": {
+      "@id": "monite:card_type"
+    },
+    "expiry_month": {
+      "@id": "monite:expiry_month",
+      "@type": "xsd:integer"
+    },
+    "expiry_year": {
+      "@id": "monite:expiry_year",
+      "@type": "xsd:integer"
+    },
+    "last4": {
+      "@id": "monite:last4",
+      "@type": "xsd:string"
+    },
+    "CardTheme": "monite:CardTheme",
+    "background_color": {
+      "@id": "monite:background_color"
+    },
+    "CardTypeEnum": "monite:CardTypeEnum",
+    "ClientMessage": "monite:ClientMessage",
+    "attachments": {
+      "@id": "monite:attachments"
+    },
+    "text_prompt": {
+      "@id": "monite:text_prompt",
+      "@type": "xsd:string"
+    },
+    "CommentCreateRequest": "monite:CommentCreateRequest",
+    "reply_to_entity_user_id": {
+      "@id": "monite:reply_to_entity_user_id",
+      "@type": "xsd:string"
+    },
+    "text": {
+      "@id": "monite:text",
+      "@type": "xsd:string"
+    },
+    "CommentCursorFields": "monite:CommentCursorFields",
+    "CommentPayload": "monite:CommentPayload",
+    "comment": {
+      "@id": "monite:comment",
+      "@type": "xsd:string"
+    },
+    "CommentResource": "monite:CommentResource",
+    "created_by_entity_user_id": {
+      "@id": "monite:created_by_entity_user_id",
+      "@type": "xsd:string"
+    },
+    "entity_id": {
+      "@id": "monite:entity_id",
+      "@type": "xsd:string"
+    },
+    "CommentResourceList": "monite:CommentResourceList",
+    "CommentUpdateRequest": "monite:CommentUpdateRequest",
+    "CommonSchema-Input": "monite:CommonSchema-Input",
+    "actions": {
+      "@id": "monite:actions",
+      "@container": "@list"
+    },
+    "CommonSchema-Output": "monite:CommonSchema-Output",
+    "CompleteRefreshVerificationRequest": "monite:CompleteRefreshVerificationRequest",
+    "CompleteRefreshVerificationResponse": "monite:CompleteRefreshVerificationResponse",
+    "verifications": {
+      "@id": "monite:verifications",
+      "@type": "@id"
+    },
+    "CompleteVerificationAirwallexPlaidRequest": "monite:CompleteVerificationAirwallexPlaidRequest",
+    "account": {
+      "@id": "monite:account"
+    },
+    "institution": {
+      "@id": "monite:institution"
+    },
+    "mandate": {
+      "@id": "monite:mandate",
+      "@type": "@id"
+    },
+    "public_token": {
+      "@id": "monite:public_token",
+      "@type": "xsd:string"
+    },
+    "CompleteVerificationRequest": "monite:CompleteVerificationRequest",
+    "CompleteVerificationResponse": "monite:CompleteVerificationResponse",
+    "bank_name": {
+      "@id": "monite:bank_name",
+      "@type": "xsd:string"
+    },
+    "ConnectionStatus": "monite:ConnectionStatus",
+    "ConversationResource": "monite:ConversationResource",
+    "is_starred": {
+      "@id": "monite:is_starred",
+      "@type": "xsd:boolean"
+    },
+    "messages": {
+      "@id": "monite:messages"
+    },
+    "title": {
+      "@id": "monite:title",
+      "@type": "xsd:string"
+    },
+    "ConversationResourceList": "monite:ConversationResourceList",
+    "CounterpartAddress": "monite:CounterpartAddress",
+    "city": {
+      "@id": "monite:city",
+      "@type": "xsd:string"
+    },
+    "line1": {
+      "@id": "monite:line1",
+      "@type": "xsd:string"
+    },
+    "line2": {
+      "@id": "monite:line2",
+      "@type": "xsd:string"
+    },
+    "postal_code": {
+      "@id": "monite:postal_code",
+      "@type": "xsd:string"
+    },
+    "state": {
+      "@id": "monite:state",
+      "@type": "xsd:string"
+    },
+    "CounterpartAddressResourceList": "monite:CounterpartAddressResourceList",
+    "CounterpartAddressResponseWithCounterpartID": "monite:CounterpartAddressResponseWithCounterpartID",
+    "counterpart_id": {
+      "@id": "monite:counterpart_id",
+      "@type": "xsd:string"
+    },
+    "CounterpartBankAccountResourceList": "monite:CounterpartBankAccountResourceList",
+    "CounterpartBankAccountResponse": "monite:CounterpartBankAccountResponse",
+    "is_default_for_currency": {
+      "@id": "monite:is_default_for_currency",
+      "@type": "xsd:boolean"
+    },
+    "open_banking_verification_error": {
+      "@id": "monite:open_banking_verification_error",
+      "@type": "xsd:string"
+    },
+    "open_banking_verification_status": {
+      "@id": "monite:open_banking_verification_status"
+    },
+    "partner_metadata": {
+      "@id": "monite:partner_metadata"
+    },
+    "CounterpartContactResponse": "monite:CounterpartContactResponse",
+    "address": {
+      "@id": "monite:address"
+    },
+    "first_name": {
+      "@id": "monite:first_name",
+      "@type": "xsd:string"
+    },
+    "last_name": {
+      "@id": "monite:last_name",
+      "@type": "xsd:string"
+    },
+    "phone": {
+      "@id": "monite:phone",
+      "@type": "xsd:string"
+    },
+    "CounterpartContactsResourceList": "monite:CounterpartContactsResourceList",
+    "CounterpartCursorFields": "monite:CounterpartCursorFields",
+    "CounterpartEinvoicingCredentialExistenceResponse": "monite:CounterpartEinvoicingCredentialExistenceResponse",
+    "exists": {
+      "@id": "monite:exists",
+      "@type": "xsd:boolean"
+    },
+    "CounterpartEinvoicingCredentialResponse": "monite:CounterpartEinvoicingCredentialResponse",
+    "network_identifier": {
+      "@id": "monite:network_identifier",
+      "@type": "xsd:string"
+    },
+    "network_schema": {
+      "@id": "monite:network_schema",
+      "@type": "@id"
+    },
+    "CounterpartEinvoicingCredentialResponseList": "monite:CounterpartEinvoicingCredentialResponseList",
+    "CounterpartEinvoicingCredentialSchema": "monite:CounterpartEinvoicingCredentialSchema",
+    "CounterpartFields": "monite:CounterpartFields",
+    "tax_id": {
+      "@id": "monite:tax_id"
+    },
+    "vat_id": {
+      "@id": "monite:vat_id"
+    },
+    "CounterpartIndividualCreatePayload": "monite:CounterpartIndividualCreatePayload",
+    "is_customer": {
+      "@id": "monite:is_customer",
+      "@type": "xsd:boolean"
+    },
+    "is_vendor": {
+      "@id": "monite:is_vendor",
+      "@type": "xsd:boolean"
+    },
+    "tag_ids": {
+      "@id": "monite:tag_ids",
+      "@container": "@list"
+    },
+    "CounterpartIndividualResponse": "monite:CounterpartIndividualResponse",
+    "tags": {
+      "@id": "monite:tags",
+      "@container": "@list"
+    },
+    "CounterpartIndividualRootCreatePayload": "monite:CounterpartIndividualRootCreatePayload",
+    "external_reference": {
+      "@id": "monite:external_reference",
+      "@type": "xsd:string"
+    },
+    "individual": {
+      "@id": "monite:individual",
+      "@type": "@id"
+    },
+    "reminders_enabled": {
+      "@id": "monite:reminders_enabled",
+      "@type": "xsd:boolean"
+    },
+    "CounterpartIndividualRootResponse": "monite:CounterpartIndividualRootResponse",
+    "created_automatically": {
+      "@id": "monite:created_automatically",
+      "@type": "xsd:boolean"
+    },
+    "default_billing_address_id": {
+      "@id": "monite:default_billing_address_id",
+      "@type": "xsd:string"
+    },
+    "default_shipping_address_id": {
+      "@id": "monite:default_shipping_address_id",
+      "@type": "xsd:string"
+    },
+    "CounterpartIndividualRootUpdatePayload": "monite:CounterpartIndividualRootUpdatePayload",
+    "CounterpartIndividualUpdatePayload": "monite:CounterpartIndividualUpdatePayload",
+    "CounterpartOrganizationCreatePayload": "monite:CounterpartOrganizationCreatePayload"
+  },
+  "@type": "schema:Dataset",
+  "schema:name": "Monite API JSON-LD context",
+  "schema:description": "A JSON-LD @context for the objects Monite's own API contract declares: one class per component schema, one property per declared field, typed from the contract. Derived by script (derive-json-ld.py, 2026-10-09) from openapi/monite-openapi.yml.",
+  "dcterms:created": "2026-10-09",
+  "dcterms:source": [
+    "openapi/monite-openapi.yml"
+  ]
+}

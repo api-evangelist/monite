@@ -1,0 +1,1447 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-payable-response-schema-schema.json",
+  "title": "PayableResponseSchema",
+  "description": "Represents an Accounts Payable document received from a vendor or supplier.",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/PayableResponseSchema",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "A unique ID assigned to this payable."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC date and time when this payable was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "UTC date and time when this payable was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+    },
+    "amount_due": {
+      "type": "integer",
+      "description": "How much is left to be paid on the invoice (in minor units)."
+    },
+    "amount_paid": {
+      "type": "integer",
+      "description": "How much was paid on the invoice (in minor units)."
+    },
+    "amount_to_pay": {
+      "type": "integer",
+      "description": "How much is left to be paid on the invoice (in minor units) with discounts from payment terms."
+    },
+    "approval_policy_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of existing approval policy that applies to this payable, if any. A policy is applied if the payable matches the policy trigger conditions."
+    },
+    "counterpart": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CounterpartRawData"
+        }
+      ],
+      "description": "Object representing de-normalized counterpart data. Filled at the moment of invoice submitting for approval or payment."
+    },
+    "counterpart_address_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart address object stored in counterparts service"
+    },
+    "counterpart_bank_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart bank account object stored in counterparts service"
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the counterpart object that represents the vendor or supplier."
+    },
+    "counterpart_raw_data": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CounterpartRawData"
+        }
+      ],
+      "description": "Object representing counterpart data which was extracted by OCR. Used for informational purposes."
+    },
+    "counterpart_vat_id_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart VAT ID object stored in counterparts service"
+    },
+    "created_by_role_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the role that the entity user who created this payable had at that time. If the payable was created using a partner access token, the value is `null`."
+    },
+    "credit_notes": {
+      "items": {
+        "$ref": "#/$defs/PayableCreditNoteData"
+      },
+      "type": "array",
+      "description": "The list of linked credit notes of the payable."
+    },
+    "currency": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CurrencyEnum"
+        }
+      ],
+      "description": "The [currency code](https://docs.monite.com/references/currencies) of the currency used in the payable."
+    },
+    "currency_exchange": {
+      "$ref": "#/$defs/CurrencyExchangeSchema2"
+    },
+    "description": {
+      "type": "string",
+      "description": "An arbitrary description of this payable."
+    },
+    "discount": {
+      "type": "integer",
+      "description": "The value of the additional discount that will be applied to the total amount. in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "document_id": {
+      "type": "string",
+      "description": "A unique invoice number assigned by the invoice issuer for payment tracking purposes. This is different from `id` which is an internal ID created automatically by Monite."
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date by which the payable must be paid, in the YYYY-MM-DD format. If the payable specifies payment terms with early payment discounts, this is the final payment date."
+    },
+    "einvoice_file_url": {
+      "type": "string",
+      "description": "The URL to download the original e-invoice file."
+    },
+    "enforce_approval_policy_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of an existing approval policy that should be enforced when submitting the payable for approval.If this field is set, no other policies will be evaluated via their triggers - the specified policy will always be applied instead."
+    },
+    "entity_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the entity to which the payable was issued."
+    },
+    "file": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/FileSchema"
+        }
+      ],
+      "description": "The original file from which this payable was created."
+    },
+    "file_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "File id to retrieve file info from file saver."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date",
+      "description": "The date when the payable was issued, in the YYYY-MM-DD format."
+    },
+    "marked_as_paid_by_entity_user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the entity user who marked this document as paid."
+    },
+    "marked_as_paid_with_comment": {
+      "type": "string",
+      "description": "An arbitrary comment that describes how and when this payable was paid."
+    },
+    "ocr_request_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of OCR request to match asynchronous result of processing payable."
+    },
+    "ocr_status": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/OcrStatusEnum"
+        }
+      ],
+      "description": "The status of the data recognition process using OCR. The 'processing' status means that the data recognition is in progress and the user needs to wait for the data enrichment. The 'error' status indicates that some error occurred on the OCR side and the user can fill in the data manually. The 'success' status means the data recognition has been successfully completed, after which the user can check the data if desired and enrich or correct it."
+    },
+    "other_extracted_data": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OCRResponseInvoiceReceiptData"
+        },
+        {
+          "$ref": "#/$defs/OcrRecognitionResponse"
+        }
+      ],
+      "description": "Data extracted from the uploaded payable by OCR."
+    },
+    "paid_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date by which the payable was paid"
+    },
+    "partner_metadata": {
+      "type": "object",
+      "description": "Metadata for partner needs"
+    },
+    "payable_origin": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/PayableOriginEnum"
+        }
+      ],
+      "description": "Specifies how this payable was created in Monite: `upload` - created via an API call, `email` - sent via email to the entity's mailbox."
+    },
+    "payment_terms": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/PayablePaymentTermsCreatePayload"
+        }
+      ],
+      "description": "The number of days to pay with potential discount for options shorter than due_date"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Project id of a payable."
+    },
+    "purchase_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The identifier of the purchase order to which this payable belongs."
+    },
+    "sender": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address from which the invoice was sent to the entity."
+    },
+    "source_of_payable_data": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SourceOfPayableDataEnum"
+        }
+      ],
+      "description": "Specifies how the property values of this payable were provided: `ocr` - Monite OCR service extracted the values from the provided PDF or image file, `user_specified` - values were added or updated via an API call."
+    },
+    "status": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/PayableStateEnum"
+        }
+      ],
+      "description": "The [status](https://docs.monite.com/accounts-payable/payables/index) of the payable."
+    },
+    "subtotal": {
+      "type": "integer",
+      "description": "The subtotal amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "suggested_payment_term": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SuggestedPaymentTerm"
+        }
+      ],
+      "description": "The suggested date and corresponding discount in which payable could be paid. The date is in the YYYY-MM-DD format. The discount is calculated as X * (10^-4) - for example, 100 is 1%, 25 is 0,25%, 10000 is 100 %. Date varies depending on the payment terms and may even be equal to the due date with discount 0."
+    },
+    "tags": {
+      "items": {
+        "$ref": "#/$defs/TagReadSchema"
+      },
+      "type": "array",
+      "description": "A list of user-defined tags (labels) assigned to this payable. Tags can be used to trigger a specific approval policy for this payable."
+    },
+    "tax": {
+      "type": "integer",
+      "description": "Registered tax percentage applied for a service price in minor units, e.g. 200 means 2%, 1050 means 10.5%."
+    },
+    "tax_amount": {
+      "type": "integer",
+      "description": "Tax amount in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "The total amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "total_amount_with_credit_notes": {
+      "type": "integer",
+      "description": "The total price of the payable in [minor units](https://docs.monite.com/references/currencies#minor-units), excluding all issued credit notes."
+    },
+    "was_created_by_user_id": {
+      "type": "string",
+      "format": "uuid"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "created_at",
+    "updated_at",
+    "credit_notes",
+    "entity_id",
+    "payable_origin",
+    "source_of_payable_data",
+    "status"
+  ],
+  "$defs": {
+    "AllowedCountries": {
+      "type": "string",
+      "enum": [
+        "AF",
+        "AX",
+        "AL",
+        "DZ",
+        "AS",
+        "AD",
+        "AO",
+        "AI",
+        "AQ",
+        "AG",
+        "AR",
+        "AM",
+        "AW",
+        "AU",
+        "AT",
+        "AZ",
+        "BS",
+        "BH",
+        "BD",
+        "BB",
+        "BY",
+        "BE",
+        "BZ",
+        "BJ",
+        "BM",
+        "BT",
+        "BO",
+        "BA",
+        "BW",
+        "BV",
+        "BR",
+        "IO",
+        "BN",
+        "BG",
+        "BF",
+        "BI",
+        "KH",
+        "CM",
+        "CA",
+        "IC",
+        "CV",
+        "KY",
+        "CF",
+        "EA",
+        "TD",
+        "CL",
+        "CN",
+        "CX",
+        "CC",
+        "CO",
+        "KM",
+        "CG",
+        "CD",
+        "CK",
+        "CR",
+        "CI",
+        "HR",
+        "CU",
+        "CY",
+        "CZ",
+        "DK",
+        "DJ",
+        "DM",
+        "DO",
+        "EC",
+        "EG",
+        "SV",
+        "GQ",
+        "ER",
+        "EE",
+        "SZ",
+        "ET",
+        "FK",
+        "FO",
+        "FJ",
+        "FI",
+        "FR",
+        "GF",
+        "PF",
+        "TF",
+        "GA",
+        "GM",
+        "GE",
+        "DE",
+        "GH",
+        "GI",
+        "GR",
+        "GL",
+        "GD",
+        "GP",
+        "GU",
+        "GT",
+        "GG",
+        "GN",
+        "GW",
+        "GY",
+        "HT",
+        "HM",
+        "VA",
+        "HN",
+        "HK",
+        "HU",
+        "IS",
+        "IN",
+        "ID",
+        "IR",
+        "IQ",
+        "IE",
+        "IM",
+        "IL",
+        "IT",
+        "JM",
+        "JP",
+        "JE",
+        "JO",
+        "KZ",
+        "KE",
+        "KI",
+        "KP",
+        "KR",
+        "KW",
+        "KG",
+        "LA",
+        "LV",
+        "LB",
+        "LS",
+        "LR",
+        "LY",
+        "LI",
+        "LT",
+        "LU",
+        "MO",
+        "MG",
+        "MW",
+        "MY",
+        "MV",
+        "ML",
+        "MT",
+        "MH",
+        "MQ",
+        "MR",
+        "MU",
+        "YT",
+        "MX",
+        "FM",
+        "MD",
+        "MC",
+        "MN",
+        "ME",
+        "MS",
+        "MA",
+        "MZ",
+        "MM",
+        "NA",
+        "NR",
+        "NP",
+        "NL",
+        "AN",
+        "NC",
+        "NZ",
+        "NI",
+        "NE",
+        "NG",
+        "NU",
+        "NF",
+        "MP",
+        "MK",
+        "NO",
+        "OM",
+        "PK",
+        "PW",
+        "PS",
+        "PA",
+        "PG",
+        "PY",
+        "PE",
+        "PH",
+        "PN",
+        "PL",
+        "PT",
+        "PR",
+        "QA",
+        "RE",
+        "RO",
+        "RU",
+        "RW",
+        "SH",
+        "KN",
+        "LC",
+        "PM",
+        "VC",
+        "WS",
+        "SM",
+        "ST",
+        "SA",
+        "SN",
+        "RS",
+        "SC",
+        "SL",
+        "SG",
+        "SK",
+        "SI",
+        "SB",
+        "SO",
+        "ZA",
+        "SS",
+        "GS",
+        "ES",
+        "LK",
+        "SD",
+        "SR",
+        "SJ",
+        "SE",
+        "CH",
+        "SY",
+        "TW",
+        "TJ",
+        "TZ",
+        "TH",
+        "TL",
+        "TG",
+        "TK",
+        "TO",
+        "TT",
+        "TN",
+        "TR",
+        "TM",
+        "TC",
+        "TV",
+        "UG",
+        "UA",
+        "AE",
+        "GB",
+        "US",
+        "UM",
+        "UY",
+        "UZ",
+        "VU",
+        "VE",
+        "VN",
+        "VG",
+        "VI",
+        "WF",
+        "EH",
+        "YE",
+        "ZM",
+        "ZW",
+        "BL",
+        "BQ",
+        "CW",
+        "MF",
+        "SX"
+      ]
+    },
+    "CounterpartRawAddress": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "country": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AllowedCountries"
+            }
+          ],
+          "description": "Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))."
+        },
+        "line1": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "line2": {
+          "type": "string",
+          "description": "Additional address information (if any)."
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "ZIP or postal code."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province, or county."
+        }
+      },
+      "type": "object",
+      "description": "Address information."
+    },
+    "CounterpartRawBankAccount": {
+      "properties": {
+        "account_holder_name": {
+          "type": "string",
+          "description": "Vendor's bank account name."
+        },
+        "account_number": {
+          "type": "string",
+          "description": "Vendor's bank account number, IBAN, or similar (if specified in the payable document)."
+        },
+        "bic": {
+          "type": "string",
+          "description": "SWIFT code (BIC) of the vendor's bank."
+        },
+        "iban": {
+          "type": "string",
+          "description": "required for non-GB bank accounts"
+        },
+        "routing_number": {
+          "type": "string",
+          "description": "required for US bank accounts"
+        },
+        "sort_code": {
+          "type": "string",
+          "description": "required for GB bank accounts"
+        }
+      },
+      "type": "object"
+    },
+    "CounterpartRawData": {
+      "properties": {
+        "address": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawAddress"
+            }
+          ],
+          "description": "The address of the vendor or supplier."
+        },
+        "bank_account": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawBankAccount"
+            }
+          ],
+          "description": "Object representing counterpart bank account."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the organization"
+        },
+        "name": {
+          "type": "string",
+          "description": "Vendor or supplier name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the organization"
+        },
+        "tax_id": {
+          "type": "string",
+          "description": "The tax id of the counterpart."
+        },
+        "vat_id": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawVatID"
+            }
+          ],
+          "description": "VAT ID of the vendor or supplier which was used in the invoice."
+        }
+      },
+      "type": "object"
+    },
+    "CounterpartRawVatID": {
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/AllowedCountries"
+        },
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "CurrencyEnum": {
+      "type": "string",
+      "enum": [
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTN",
+        "BWP",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "INR",
+        "IQD",
+        "ISK",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLE",
+        "SOS",
+        "SRD",
+        "SSP",
+        "SVC",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW"
+      ]
+    },
+    "CurrencyExchangeSchema2": {
+      "properties": {
+        "default_currency_code": {
+          "type": "string"
+        },
+        "rate": {
+          "type": "number",
+          "exclusiveMinimum": 0.0
+        },
+        "total": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "default_currency_code",
+        "rate",
+        "total"
+      ]
+    },
+    "FileSchema": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A unique ID of this file."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "UTC date and time when this file was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format."
+        },
+        "file_type": {
+          "type": "string",
+          "description": "The type of the business object associated with this file."
+        },
+        "md5": {
+          "type": "string",
+          "description": "The MD5 hash of the file."
+        },
+        "mimetype": {
+          "type": "string",
+          "description": "The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types)."
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 512,
+          "description": "The original file name (if available)."
+        },
+        "pages": {
+          "items": {
+            "$ref": "#/$defs/PageSchema2"
+          },
+          "type": "array",
+          "description": "If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.",
+          "default": []
+        },
+        "previews": {
+          "items": {
+            "$ref": "#/$defs/PreviewSchema2"
+          },
+          "type": "array",
+          "description": "Preview images generated for this file. There can be multiple images with different sizes.",
+          "default": []
+        },
+        "region": {
+          "type": "string",
+          "description": "Geographical region of the data center where the file is stored."
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0.0,
+          "description": "The file size in bytes."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL to download the file."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "created_at",
+        "file_type",
+        "name",
+        "region",
+        "md5",
+        "mimetype",
+        "url",
+        "size"
+      ],
+      "description": "Represents a file (such as a PDF invoice) that was uploaded to Monite."
+    },
+    "Item": {
+      "properties": {
+        "confidence": {
+          "type": "number",
+          "maximum": 100.0,
+          "minimum": 0.0,
+          "description": "OCR confidence score - the estimated accuracy percentage of character recognition of the extracted text, from 0 to 100%."
+        },
+        "processed_text": {
+          "description": "If the `text` value is identified as a currency amount or a date, `processed_text` contains this value converted to a common format:\n\n* Currency amounts (such as the total, subtotal, tax/VAT, line item prices) are converted to numbers with the currency character removed. For example, \"€1,125.00\" becomes 1125.0.* Dates are converted to the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format, `YYYY-MM-DDThh:mm:ss`. For example, \"26/3/2021\" becomes \"2021-03-26T00:00:00\".\n\nIf `text` is not a currency amount or a date, `processed_text` is `null`."
+        },
+        "text": {
+          "type": "string",
+          "description": "The text as recognized by OCR."
+        }
+      },
+      "type": "object",
+      "required": [
+        "confidence",
+        "text"
+      ],
+      "description": "Contains information about a text block or line extracted from an uploaded document by OCR."
+    },
+    "LabelNValue": {
+      "properties": {
+        "label": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Item"
+            }
+          ],
+          "description": "Text label."
+        },
+        "value": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/Item"
+            }
+          ],
+          "description": "The value (if any)."
+        }
+      },
+      "type": "object",
+      "required": [
+        "label",
+        "value"
+      ],
+      "description": "A label-value pair extracted from an uploaded document by OCR.\nFor example, the label could be \"Total\" and the value could be a currency amount."
+    },
+    "OCRAddress": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "country": {
+          "type": "string",
+          "description": "Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))."
+        },
+        "line1": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "line2": {
+          "type": "string",
+          "description": "Additional address information (if any)."
+        },
+        "original_country_name": {
+          "type": "string",
+          "description": "Country name as it is stated in the document."
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "ZIP or postal code."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province, or county."
+        }
+      },
+      "type": "object",
+      "description": "In general it's compatible with CounterpartAddress model but\n* All fields are optional\n* There is an additional field original_country_name"
+    },
+    "OCRResponseInvoiceReceiptData": {
+      "properties": {
+        "counterpart_account_id": {
+          "type": "string",
+          "description": "Counterpart bank ID"
+        },
+        "counterpart_account_number": {
+          "type": "string",
+          "description": "The bank account number"
+        },
+        "counterpart_address": {
+          "type": "string",
+          "description": "Counterpart address"
+        },
+        "counterpart_address_object": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/OCRAddress"
+            }
+          ],
+          "description": "Counterpart address as a json object compatible with counterparts service"
+        },
+        "counterpart_branch_number": {
+          "type": "string",
+          "description": "The bank branch number"
+        },
+        "counterpart_email": {
+          "type": "string",
+          "description": "Email address of the counterpart"
+        },
+        "counterpart_name": {
+          "type": "string",
+          "description": "Counterpart name"
+        },
+        "counterpart_routing_number": {
+          "type": "string",
+          "description": "The bank routing number"
+        },
+        "counterpart_vat_id": {
+          "type": "string",
+          "description": "Counterpart VAT ID"
+        },
+        "currency": {
+          "type": "string",
+          "description": "ISO 4217 currency code"
+        },
+        "discount_raw": {
+          "type": "number",
+          "description": "Discount Raw amount"
+        },
+        "document_due_date": {
+          "type": "string",
+          "description": "Document due date in ISO format"
+        },
+        "document_id": {
+          "type": "string",
+          "description": "Invoice/receipt ID"
+        },
+        "document_issued_at_date": {
+          "type": "string",
+          "description": "Document issuance date in ISO format"
+        },
+        "line_items_raw": {
+          "items": {
+            "$ref": "#/$defs/OCRResponseInvoiceReceiptLineItemRaw"
+          },
+          "type": "array",
+          "description": "List of line items from document raw, without minor units conversion."
+        },
+        "payment_terms_raw": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "Raw payment terms parsed but not calculated."
+        },
+        "purchase_order_number": {
+          "type": "string",
+          "description": "Purchase Order Number"
+        },
+        "tax_payer_id": {
+          "type": "string",
+          "description": "Tax payer ID"
+        },
+        "total_excl_vat_raw": {
+          "type": "number",
+          "description": "Subtotal, without minor units"
+        },
+        "total_paid_amount_raw": {
+          "type": "number",
+          "description": "Total paid amount",
+          "default": 0
+        },
+        "total_raw": {
+          "type": "number",
+          "description": "Total, without minor units"
+        },
+        "total_vat_amount_raw": {
+          "type": "number",
+          "description": "VAT amount, without minor units"
+        },
+        "total_vat_rate_raw": {
+          "type": "number",
+          "description": "VAT Percent raw, without minor units."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "invoice"
+          ],
+          "default": "invoice"
+        }
+      },
+      "type": "object"
+    },
+    "OCRResponseInvoiceReceiptLineItemRaw": {
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Human-readable line item description"
+        },
+        "item_adjusted": {
+          "type": "boolean",
+          "description": "Item Quantity/Unit Price adjusted",
+          "default": false
+        },
+        "line_item_ocr_id": {
+          "type": "string",
+          "description": "OCR Id of line item"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity"
+        },
+        "total_excl_vat": {
+          "type": "number",
+          "description": "Total excluded VAT as parsed."
+        },
+        "total_incl_vat": {
+          "type": "number",
+          "description": "Total included VAT as parsed."
+        },
+        "unit": {
+          "type": "string",
+          "description": "Unit"
+        },
+        "unit_price": {
+          "type": "number",
+          "description": "Price as parsed"
+        },
+        "vat_amount": {
+          "type": "number",
+          "description": "VAT Amount as parsed."
+        },
+        "vat_percentage": {
+          "type": "number",
+          "description": "VAT Percent as parsed."
+        }
+      },
+      "type": "object"
+    },
+    "OcrRecognitionResponse": {
+      "properties": {
+        "line_items": {
+          "items": {
+            "$ref": "#/$defs/LabelNValue"
+          },
+          "type": "array",
+          "description": "Text content of the invoice line items as recognized by OCR."
+        },
+        "summary": {
+          "items": {
+            "$ref": "#/$defs/LabelNValue"
+          },
+          "type": "array",
+          "description": "Invoice text content other than the line items. Such as the invoice issue and due dates, vendor name and address, and other general information."
+        }
+      },
+      "type": "object",
+      "description": "Contains information about all text blocks extracted from an uploaded invoice by OCR.\nThe text blocks are grouped into `line_items` (invoice line items) and `summary` (all other information).\nLegacy schema used for AWS textract recognition."
+    },
+    "OcrStatusEnum": {
+      "type": "string",
+      "enum": [
+        "processing",
+        "error",
+        "success",
+        "canceled"
+      ]
+    },
+    "PageSchema2": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A unique ID of the image."
+        },
+        "mimetype": {
+          "type": "string",
+          "description": "The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) of the image."
+        },
+        "number": {
+          "type": "integer",
+          "minimum": 0.0,
+          "description": "The page number in the PDF document, from 0."
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0.0,
+          "description": "Image file size, in bytes."
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL to download the image."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "mimetype",
+        "size",
+        "number",
+        "url"
+      ],
+      "description": "When a PDF document is uploaded to Monite, it extracts individual pages from the document\nand saves them as PNG images. This object contains the image and metadata of a single page."
+    },
+    "PayableCreditNoteData": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "The unique identifier of the credit note."
+        },
+        "document_id": {
+          "type": "string",
+          "description": "The credit note's unique document number."
+        },
+        "issued_at": {
+          "type": "string",
+          "format": "date",
+          "description": "The date when the credit note was issued, in the YYYY-MM-DD format"
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "The current status of the credit note in its lifecycle"
+        },
+        "total_amount": {
+          "type": "integer",
+          "description": "Credit note total amount."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "status"
+      ]
+    },
+    "PayableOriginEnum": {
+      "type": "string",
+      "enum": [
+        "upload",
+        "email",
+        "einvoicing"
+      ]
+    },
+    "PayablePaymentTermDiscount": {
+      "properties": {
+        "discount": {
+          "type": "integer",
+          "description": "The discount percentage in minor units. E.g., 200 means 2%, 1050 means 10.5%."
+        },
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "discount",
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermFinal": {
+      "properties": {
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermsCreatePayload": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "term_1": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_2": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_final": {
+          "$ref": "#/$defs/PayablePaymentTermFinal"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "term_final"
+      ]
+    },
+    "PayableStateEnum": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "new",
+        "approve_in_progress",
+        "waiting_to_be_paid",
+        "partially_paid",
+        "paid",
+        "canceled",
+        "rejected"
+      ]
+    },
+    "PreviewSchema2": {
+      "properties": {
+        "height": {
+          "type": "integer",
+          "description": "The image height in pixels."
+        },
+        "url": {
+          "type": "string",
+          "description": "The image URL."
+        },
+        "width": {
+          "type": "integer",
+          "description": "The image width in pixels."
+        }
+      },
+      "type": "object",
+      "required": [
+        "url",
+        "width",
+        "height"
+      ],
+      "description": "A preview image generated for a file."
+    },
+    "SourceOfPayableDataEnum": {
+      "type": "string",
+      "enum": [
+        "ocr",
+        "user_specified",
+        "einvoicing"
+      ]
+    },
+    "SuggestedPaymentTerm": {
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "discount": {
+          "type": "integer",
+          "maximum": 10000.0,
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "date"
+      ],
+      "description": "Suggested payment date and corresponding discount"
+    },
+    "TagCategory": {
+      "type": "string",
+      "enum": [
+        "document_type",
+        "department",
+        "project",
+        "cost_center",
+        "vendor_type",
+        "payment_method",
+        "approval_status"
+      ]
+    },
+    "TagReadSchema": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A unique ID of this tag."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "category": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TagCategory"
+            }
+          ],
+          "description": "The tag category."
+        },
+        "created_by_entity_user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who created the tag."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "description": "The tag description."
+        },
+        "name": {
+          "type": "string",
+          "description": "The tag name."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "created_at",
+        "updated_at",
+        "name"
+      ],
+      "description": "Represents a user-defined tag that can be assigned to resources to filter them."
+    }
+  }
+}

@@ -1,0 +1,21 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-webhooks.py
+source:
+- openapi/monite-openapi.yml
+description: 'Event surface derived from the provider''s own OpenAPI: callbacks. No AsyncAPI document is published by the provider; this catalog
+  lists the events the contract names.'
+management_operations:
+- get_webhook_deliveries
+- get_webhook_subscriptions
+- post_webhook_subscriptions
+- get_webhook_subscriptions_id
+- patch_webhook_subscriptions_id
+- delete_webhook_subscriptions_id
+- post_webhook_subscriptions_id_disable
+- post_webhook_subscriptions_id_enable
+- post_webhook_subscriptions_id_regenerate_secret
+events:
+- event: webhook_notification
+  description: callback declared on post_webhook_subscriptions
+  declared_in: callbacks

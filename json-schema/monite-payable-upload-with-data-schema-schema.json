@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-payable-upload-with-data-schema-schema.json",
+  "title": "PayableUploadWithDataSchema",
+  "description": "This schema is used to create a new payable by providing its data along with the original file.",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/PayableUploadWithDataSchema",
+  "properties": {
+    "base64_encoded_file": {
+      "type": "string",
+      "description": "Base64-encoded contents of the original issued payable. The file is provided for reference purposes as the original source of the data.\n\n Any file formats are allowed. The most common formats are PDF, PNG, JPEG, TIFF."
+    },
+    "counterpart_address_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart address object stored in counterparts service"
+    },
+    "counterpart_bank_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart bank account object stored in counterparts service"
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the counterpart object that represents the vendor or supplier."
+    },
+    "counterpart_vat_id_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart VAT ID object stored in counterparts service"
+    },
+    "currency": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CurrencyEnum"
+        }
+      ],
+      "description": "The [currency code](https://docs.monite.com/references/currencies) of the currency used in the payable."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "An arbitrary description of this payable."
+    },
+    "discount": {
+      "type": "integer",
+      "description": "The value of the additional discount that will be applied to the total amount. in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "document_id": {
+      "type": "string",
+      "description": "A unique invoice number assigned by the invoice issuer for payment tracking purposes."
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date by which the payable must be paid, in the YYYY-MM-DD format. If the payable specifies payment terms with early payment discounts, this is the final payment date."
+    },
+    "enforce_approval_policy_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of an existing approval policy that should be enforced when submitting the payable for approval.If this field is set, no other policies will be evaluated via their triggers - the specified policy will always be applied instead."
+    },
+    "file_name": {
+      "type": "string",
+      "maxLength": 512,
+      "description": "The original file name."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date",
+      "description": "The date when the payable was issued, in the YYYY-MM-DD format."
+    },
+    "partner_metadata": {
+      "type": "object",
+      "description": "Metadata for partner needs"
+    },
+    "payment_terms": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/PayablePaymentTermsCreatePayload"
+        }
+      ],
+      "description": "The number of days to pay with potential discount for options shorter than due_date"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of a project"
+    },
+    "purchase_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The identifier of the purchase order to which this payable belongs."
+    },
+    "sender": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address from which the invoice was sent to the entity."
+    },
+    "subtotal": {
+      "type": "integer",
+      "description": "The subtotal amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "suggested_payment_term": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SuggestedPaymentTerm"
+        }
+      ],
+      "description": "The suggested date and corresponding discount in which payable could be paid. The date is in the YYYY-MM-DD format. The discount is calculated as X * (10^-4) - for example, 100 is 1%, 25 is 0,25%, 10000 is 100 %. Date varies depending on the payment terms and may even be equal to the due date with discount 0."
+    },
+    "tag_ids": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array",
+      "description": "A list of IDs of user-defined tags (labels) assigned to this payable. Tags can be used to trigger a specific approval policy for this payable."
+    },
+    "tax": {
+      "type": "integer",
+      "description": "Registered tax percentage applied for a service price in minor units, e.g. 200 means 2%. 1050 means 10.5%."
+    },
+    "tax_amount": {
+      "type": "integer",
+      "description": "Tax amount in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "The total amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "$defs": {
+    "CurrencyEnum": {
+      "type": "string",
+      "enum": [
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTN",
+        "BWP",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "INR",
+        "IQD",
+        "ISK",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLE",
+        "SOS",
+        "SRD",
+        "SSP",
+        "SVC",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW"
+      ]
+    },
+    "PayablePaymentTermDiscount": {
+      "properties": {
+        "discount": {
+          "type": "integer",
+          "description": "The discount percentage in minor units. E.g., 200 means 2%, 1050 means 10.5%."
+        },
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "discount",
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermFinal": {
+      "properties": {
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermsCreatePayload": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "term_1": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_2": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_final": {
+          "$ref": "#/$defs/PayablePaymentTermFinal"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "term_final"
+      ]
+    },
+    "SuggestedPaymentTerm": {
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "discount": {
+          "type": "integer",
+          "maximum": 10000.0,
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "date"
+      ],
+      "description": "Suggested payment date and corresponding discount"
+    }
+  }
+}

@@ -1,0 +1,80 @@
+generated: '2026-10-09'
+method: searched
+source:
+- https://www.monite.com/data-privacy
+- https://www.monite.com/terms
+signals:
+  data_subject_request:
+    url: https://www.monite.com/data-privacy
+    section: VII. YOUR PRIVACY CHOICES AND RIGHTS
+    note: Lists access, portability, correction, deletion, restriction/objection, objection to automated decisions and consent withdrawal; requests go through the contact channel (privacy@monite.com). There is no dedicated DSR portal or stated response deadline.
+    evidence:
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'If you would like to exercise any of these rights, please contact us at any time using Contact information below . . We will process such requests in accordance with applicable laws.'
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'receiving an electronic copy of personal information that you have provided to us, or asking us to send that information to another company in a structured, commonly used, and machine readable format (also known as the “right of data portability”);'
+  data_retention:
+    url: https://www.monite.com/data-privacy
+    section: X. RETENTION OF PERSONAL INFORMATION
+    note: Retention is purpose-based ("for as long as you use our Services, or as necessary..."); the policy gives no fixed retention periods.
+    evidence:
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'We store the personal information we collect as described in this Privacy Policy for as long as you use our Services, or as necessary to fulfill the purpose(s) for which it was collected, provide our Services, resolve disputes, establish legal defenses, conduct audits, pursue legitimate business purposes, enforce our agreements, and comply with applicable laws.'
+  data_residency:
+    url: https://www.monite.com/data-privacy
+    section: IX. INTERNATIONAL DATA TRANSFERS
+    note: This is not a residency commitment. The policy says data may be stored anywhere in the world, and EU Standard Contractual Clauses or the UK IDTA may be used for transfers. It is recorded here because it states the opposite of a residency guarantee.
+    evidence:
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'All information processed by us may be transferred, processed, and stored anywhere in the world, including, but not limited to, the United States or other countries, which may have data protection laws that are different from the laws where you live.'
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'one of the safeguards we may use to support such transfer is the EU Standard Contractual Clauses or the UK International Data Transfer Agreement.'
+  incident_notification:
+    url: https://www.monite.com/terms
+    note: The Terms of Service (version dated 27 November 2023) commit Monite to notify the Client immediately by telephone or e-mail if user data is lost or accessed without authorization. No time window in hours is stated.
+    evidence:
+    - source: https://www.monite.com/terms
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'Monite shall notify the Client immediately by telephone or e-mail, if it becomes aware or has reason to believe that any of the following has occurred: any loss of user data or confidential information; any attempt to obtain unauthorized access to, disclosure of or use of user data or confidential information; or any attempt to alter or destroy user data or confidential information.'
+  global_privacy_control:
+    url: https://www.monite.com/data-privacy
+    section: VII. YOUR PRIVACY CHOICES AND RIGHTS
+    note: This is a denial. Monite says it does not honor DNT "or similar mechanisms" sent by browsers, which reads as covering GPC too. The policy does not name GPC.
+    evidence:
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'Please note that we do not respond to or honor DNT signals or similar mechanisms transmitted by web browsers.'
+  age_assurance:
+    url: https://www.monite.com/data-privacy
+    section: XI. CHILDREN'S INFORMATION
+    note: Gives an age floor of 18 and a promise not to knowingly collect data from children. It describes no age-verification mechanism.
+    evidence:
+    - source: https://www.monite.com/data-privacy
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'The Services are not intended for users and customers under 18 (or other age as required by local regulations). Monite does not knowingly collect personal information of children.'
+  exit_assistance:
+    url: https://www.monite.com/terms
+    note: On termination, access simply ends. The Terms state no data-return or export-assistance commitment (the portability right above covers individuals' personal data, not client exit).
+    evidence:
+    - source: https://www.monite.com/terms
+      http_status: 200
+      fetched: '2026-10-09'
+      quote: 'Upon termination of the Monite Contract, the Client’s right to access the Product and to use the Monite Services ends.'
+not_recorded:
+- signal: ai_transparency
+  note: The dossier candidate is the BDSG summary of automated decision-making and profiling. That is a statutory description, not an AI transparency statement, even though Monite markets AI products (AI-OCR, AI Invoicing).
+- signal: subprocessors
+  note: Neither the privacy policy nor the terms contains the words subprocessor or sub-processor. trust.monite.com (Vanta) returned a 199-char "Page not found - Vanta" shell in pre-flight, so no list could be read there.

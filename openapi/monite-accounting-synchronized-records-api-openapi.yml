@@ -1,0 +1,473 @@
+openapi: 3.2.0
+info:
+  title: Monite Accounting synchronized records API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Accounting synchronized records across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Accounting synchronized records
+paths:
+  /accounting_synced_records:
+    get:
+      tags:
+      - Accounting synchronized records
+      summary: Get Synced Records
+      description: Get synchronized records
+      operationId: get_accounting_synced_records
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          $ref: '#/components/schemas/ObjectMatchTypes'
+        name: object_type
+        in: query
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: "The number of items (0 .. 250) to return in a single page of the response. Default is 100. The response may contain fewer items if it is the last or only page. \n\nWhen using pagination with a non-default `limit`, you must provide the `limit` value alongside `pagination_token` in all subsequent pagination requests. Unlike other query parameters, `limit` is not inferred from `pagination_token`."
+        required: false
+        schema:
+          type: integer
+          maximum: 250.0
+          minimum: 1.0
+          default: 250
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters except `limit` are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SyncRecordCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: object_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+          minItems: 1
+        name: object_id__in
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: updated_at__lte
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRecordResourceList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /accounting_synced_records/{synced_record_id}:
+    get:
+      tags:
+      - Accounting synchronized records
+      summary: Get Single Synced Record
+      description: Get synchronized record by id
+      operationId: get_accounting_synced_records_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: synced_record_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRecordResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /accounting_synced_records/{synced_record_id}/push:
+    post:
+      tags:
+      - Accounting synchronized records
+      summary: Push Object
+      description: Push object to the accounting system manually
+      operationId: post_accounting_synced_records_id_push
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: synced_record_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncRecordResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    ServiceProvidersEnum:
+      type: string
+      enum:
+      - codat
+      - railz
+    ObjectMatchTypes:
+      type: string
+      enum:
+      - product
+      - customer
+      - vendor
+      - receivable
+      - bill
+      - payment_record
+    Platform:
+      type: string
+      enum:
+      - xero
+      - quickbooks
+      - quickbooks_online
+      - quickbooks_online_sandbox
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    SyncRecordCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    SyncRecordResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SyncRecordResource'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
+      type: object
+      required:
+      - data
+    SyncRecordResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        errors:
+          type: object
+        last_pulled_at:
+          type: string
+          format: date-time
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/ObjectMatchTypes'
+        object_updated_at:
+          type: string
+          format: date-time
+        platform:
+          $ref: '#/components/schemas/Platform'
+        platform_object_id:
+          type: string
+        platform_updated_at:
+          type: string
+          format: date-time
+        provider:
+          $ref: '#/components/schemas/ServiceProvidersEnum'
+        provider_object_id:
+          type: string
+        provider_updated_at:
+          type: string
+          format: date-time
+        sync_status:
+          $ref: '#/components/schemas/SyncStatus'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - last_pulled_at
+      - sync_status
+      - object_type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    SyncStatus:
+      type: string
+      enum:
+      - pending
+      - error
+      - done
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

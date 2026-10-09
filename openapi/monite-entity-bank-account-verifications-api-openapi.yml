@@ -1,0 +1,1095 @@
+openapi: 3.2.0
+info:
+  title: Monite Entity bank account verifications API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Entity bank account verifications across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Entity bank account verifications
+paths:
+  /bank_accounts/complete_verification:
+    post:
+      tags:
+      - Entity bank account verifications
+      summary: Complete entity bank account verification
+      operationId: post_bank_accounts_complete_verification
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteVerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteVerificationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/start_verification:
+    post:
+      tags:
+      - Entity bank account verifications
+      summary: Start entity bank account verification
+      description: 'Start entity bank account verification. The flow depends on verification type.
+
+        For airwallex_plaid it generates Plaid Link token to init the Plaid SDK.'
+      operationId: post_bank_accounts_start_verification
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}/complete_verification:
+    post:
+      tags:
+      - Entity bank account verifications
+      summary: Complete verification of the provided entity bank account
+      operationId: post_bank_accounts_id_complete_verification
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteRefreshVerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompleteRefreshVerificationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}/refresh_verification:
+    post:
+      tags:
+      - Entity bank account verifications
+      summary: Refresh verification of the provided entity bank account
+      operationId: post_bank_accounts_id_refresh_verification
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerificationRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerificationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}/verifications:
+    get:
+      tags:
+      - Entity bank account verifications
+      summary: Get a bank account verifications
+      operationId: get_bank_accounts_id_verifications
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BankAccountVerifications'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    CompleteVerificationAirwallexPlaidRequest:
+      properties:
+        account:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidAccount'
+          description: The bank account that was selected in the Plaid Modal
+        institution:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidInstitution'
+          description: The financial institution that was selected in the Plaid Modal
+        mandate:
+          $ref: '#/components/schemas/AirwallexMandate'
+        public_token:
+          type: string
+          minLength: 1
+          description: The Plaid Public Token
+      additionalProperties: false
+      type: object
+      required:
+      - account
+      - institution
+      - mandate
+      - public_token
+    AirwallexMandate:
+      properties:
+        email:
+          type: string
+          format: email
+          description: PDF copy of mandate will be sent to the email by Airwallex
+        signatory:
+          type: string
+          minLength: 1
+          description: Name of the person signed the mandate, must be a bank account owner
+        type:
+          $ref: '#/components/schemas/AirwallexMandateType'
+        version:
+          $ref: '#/components/schemas/AirwallexMandateVersion'
+      additionalProperties: false
+      type: object
+      required:
+      - email
+      - signatory
+      - type
+      - version
+    CompleteRefreshVerificationResponse:
+      properties:
+        verifications:
+          $ref: '#/components/schemas/BankAccountVerifications'
+      additionalProperties: false
+      type: object
+      required:
+      - verifications
+    AirwallexMandateType:
+      type: string
+      enum:
+      - us_ach_debit
+    VerificationResponse:
+      properties:
+        airwallex_plaid:
+          $ref: '#/components/schemas/VerificationAirwallexPlaidResponse'
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
+      additionalProperties: false
+      type: object
+      required:
+      - airwallex_plaid
+      - type
+    VerificationRequest:
+      properties:
+        airwallex_plaid:
+          $ref: '#/components/schemas/VerificationAirwallexPlaidRequest'
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
+      additionalProperties: false
+      type: object
+      required:
+      - airwallex_plaid
+      - type
+    AirwallexPlaidVerification:
+      properties:
+        status:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidBankAccountVerificationStatus'
+          description: Status of the bank account verification
+      additionalProperties: false
+      type: object
+      required:
+      - status
+    AirwallexMandateVersion:
+      type: string
+      enum:
+      - '1.0'
+    BankAccountVerificationType:
+      type: string
+      enum:
+      - airwallex_plaid
+      - micro_deposit
+    AirwallexPlaidInstitution:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: The institution identifier assigned by Plaid
+        name:
+          type: string
+          minLength: 1
+          description: The full financial institution name
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - name
+    AirwallexPlaidAccount:
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Plaid`s unique identifier for the account
+        mask:
+          type: string
+          minLength: 1
+          description: The last 2-4 alphanumeric characters of an account's official account number
+        name:
+          type: string
+          minLength: 1
+          description: The name of the account, either assigned by the user or by the financial institution itself
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - mask
+      - name
+    VerificationAirwallexPlaidRequest:
+      properties:
+        client_name:
+          type: string
+          maxLength: 30
+          minLength: 1
+          description: The name of your application to be displayed in Plaid Modal
+        link_customization_name:
+          type: string
+          minLength: 1
+          description: The name of the Link customization configured on the Plaid Dashboard. If not specified, the default customization will be applied
+        redirect_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: URL to handle the OAuth verification flow
+      additionalProperties: false
+      type: object
+      required:
+      - client_name
+      - redirect_url
+    BankAccountVerifications:
+      properties:
+        airwallex_plaid:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidVerification'
+          description: Airwallex Plaid verification
+      additionalProperties: false
+      type: object
+    VerificationAirwallexPlaidResponse:
+      properties:
+        client_name:
+          type: string
+          maxLength: 30
+          minLength: 1
+          description: Client name from the request
+        expires_at:
+          type: string
+          format: date-time
+        link_customization_name:
+          type: string
+          minLength: 1
+          description: Customization name from the request
+        link_token:
+          type: string
+          minLength: 1
+          description: Link token that should be used to init Plaid SDK
+        redirect_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: URL from the request
+      additionalProperties: false
+      type: object
+      required:
+      - client_name
+      - expires_at
+      - link_token
+      - redirect_url
+    CompleteVerificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Deprecated. Use bank_account_id instead.
+          deprecated: true
+        account_holder_name:
+          type: string
+          description: Account holder's name
+        account_number:
+          type: string
+          description: Account number (required if IBAN is not provided)
+        bank_account_id:
+          type: string
+          format: uuid
+        bank_name:
+          type: string
+          description: The name of the entity`s bank account.
+        bic:
+          type: string
+          description: The BIC of the entity`s bank account.
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        display_name:
+          type: string
+        iban:
+          type: string
+          description: The IBAN of the entity`s bank account.
+        is_default:
+          type: boolean
+          description: Marks if a bank account should be used by default for the currency. Only 1 can be True for each currency.
+        routing_number:
+          type: string
+          description: Routing number (US)
+        sort_code:
+          type: string
+          description: Sort code (GB)
+        verifications:
+          $ref: '#/components/schemas/BankAccountVerifications'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - bank_account_id
+      - is_default
+      - verifications
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    CompleteVerificationRequest:
+      properties:
+        airwallex_plaid:
+          $ref: '#/components/schemas/CompleteVerificationAirwallexPlaidRequest'
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
+      additionalProperties: false
+      type: object
+      required:
+      - airwallex_plaid
+      - type
+    AirwallexPlaidBankAccountVerificationStatus:
+      type: string
+      enum:
+      - verified
+      - expired
+      - suspended
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    CompleteRefreshVerificationRequest:
+      properties:
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
+      additionalProperties: false
+      type: object
+      required:
+      - type
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,32 @@
+type: MCPServer
+name: Monite Docs MCP Server
+provider: Monite
+generated: '2026-10-09'
+method: probed
+source: https://docs.monite.com/llms.txt
+status: live
+description: >-
+  Monite's llms.txt instructs AI clients (Claude Code, Cursor, etc.) to connect to the MCP
+  server at https://docs.monite.com/_mcp/server. It is a Fern-hosted documentation MCP server
+  (serverInfo name "fern-docs-mcp-server" 1.0.0) exposing a single documentation search tool.
+  It does NOT expose Monite Partner API operations; no official MCP server for the Monite API
+  itself was found (web search returned nothing Monite-specific).
+deployment:
+  mode: remote
+  endpoint: https://docs.monite.com/_mcp/server
+  transport: streamable-http
+  auth: none
+  verified: probed
+probe:
+  date: '2026-10-09'
+  initialize: {http_status: 200, content_type: text/event-stream, protocolVersion: '2025-06-18', serverInfo: {name: fern-docs-mcp-server, version: 1.0.0}}
+  tools_list: {http_status: 200, tool_count: 1}
+tools:
+- name: searchDocs
+  description: Search the documentation at https://docs.monite.com. Returns relevant doc passages with source URLs.
+  inputSchema:
+    properties: [query, topK]
+  source: live tools/list
+api_mcp_server:
+  found: false
+  note: No MCP server exposing Monite Partner API (payables, receivables, counterparts...) operations was found.

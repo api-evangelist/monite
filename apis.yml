@@ -1,23 +1,1848 @@
 aid: monite
+
 name: Monite
-description: 'Monite is a company surfaced via the API Evangelist harvest backlog (source: spectral-ruleset-web)
-  and added to the network as a stub for full-pipeline profiling.'
+
+description: Monite (Monite GmbH) is an embedded finance API platform that lets neobanks and B2B SaaS platforms add invoicing, accounts payable
+  automation, payments and related financial workflows to their own products, with a fully embeddable SDK and UI components. Its REST API (api.monite.com,
+  with a sandbox at api.sandbox.monite.com) is documented at docs.monite.com, and the company publishes a public API style guide with Spectral
+  rules on GitHub.
+
 url: https://raw.githubusercontent.com/api-evangelist/monite/refs/heads/main/apis.yml
+
 x-type: company
+
 x-source: harvest:spectral-ruleset-web
-x-tier: stub
-x-tier-reason: harvest
+
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-09 (modular-v1; was harvest)
+
 specificationVersion: '0.20'
+
 created: '2026-10-09'
+
 modified: '2026-10-09'
+
 tags:
 - Company
-apis: []
+- Embedded Finance
+- Invoicing
+- Accounts Payable
+- Payments
+- B2B
+- Fintech
+- SaaS
+
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+
+image: https://framerusercontent.com/images/PH8mkvz4WO907aVf6N6yabuqhA.png
+
 common:
+- type: AgenticAccess
+  url: agentic-access/monite-agentic-access.yml
+- type: RateLimits
+  url: rate-limits/monite-rate-limits.yml
+- type: Spectral
+  url: rules/monite-rules.yml
+- type: Spectral
+  url: rules/monite-api-style-guide-spectral-rules.yml
+- type: JSONLD
+  url: json-ld/monite-context.jsonld
+- type: Vocabulary
+  url: vocabulary/monite-vocabulary.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Webhooks
+  url: asyncapi/monite-webhooks.yml
+- type: DataModel
+  url: data-model/monite-data-model.yml
+- type: Components
+  url: components/monite-components.yml
+- type: ChangeLog
+  url: changelog/monite-changelog.yml
+- type: Conventions
+  url: conventions/monite-conventions.yml
+- type: Sandbox
+  url: sandbox/monite-sandbox.yml
+- type: OAuthScopes
+  url: scopes/monite-scopes.yml
+- type: Deprecation
+  url: lifecycle/monite-lifecycle.yml
+- type: Lifecycle
+  url: lifecycle/monite-lifecycle.yml
+- type: ErrorCatalog
+  url: errors/monite-problem-types.yml
+- type: Conformance
+  url: conformance/monite-conformance.yml
+- type: Overlay
+  url: overlays/monite-openapi-overlay.yaml
+- type: LLMsTxt
+  url: llms/monite-llms.txt
+- type: ToolCrosswalk
+  url: mcp/monite-tool-crosswalk.yml
+- type: MCPServer
+  url: mcp/monite-mcp.yml
+- type: WellKnown
+  url: well-known/monite-well-known.yml
+- type: Hosts
+  url: hosts/monite-hosts.yml
+- type: Vendors
+  url: vendors/monite-vendors.yml
+- type: SDKs
+  url: packages/monite-packages.yml
+- type: Packages
+  url: packages/monite-packages.yml
+- type: Authentication
+  url: authentication/monite-authentication.yml
+- type: DomainSecurity
+  url: security/monite-domain-security.yml
 - type: Website
+  url: https://docs.monite.com/api/concepts/overview
+- type: Documentation
+  url: https://docs.monite.com/home
+- type: GettingStarted
+  url: https://docs.monite.com/get-started/credentials
+- type: ChangeLog
+  url: https://docs.monite.com/intro/release-notes/index
+- type: DeveloperPortal
+  url: https://portal.sandbox.monite.com/
+- type: SignUp
+  url: https://portal.sandbox.monite.com/sign-up
+- type: Login
+  url: https://portal.sandbox.monite.com/sign-in
+- type: Support
+  url: https://docs.monite.com/intro/support
+- type: Blog
+  url: https://www.monite.com/blog
+- type: About
+  url: https://www.monite.com/about
+- type: Demo
+  url: https://www.monite.com/free-demo
+- type: GitHubOrganization
+  url: https://github.com/team-monite
+- type: Postman
+  url: https://www.postman.com/monite/workspace/monite-public-workspace
+- type: TermsOfService
+  url: https://www.monite.com/terms
+- type: PrivacyPolicy
+  url: https://www.monite.com/data-privacy
+- type: TrustCenter
+  url: https://trust.monite.com/
+- type: LinkedIn
+  url: https://www.linkedin.com/company/monitehq
+- type: X
+  url: https://x.com/Monite_
+- type: StyleGuide
   url: https://github.com/team-monite/api-style-guide
+- type: SpectralRules
+  url: https://github.com/team-monite/api-style-guide/blob/6b3d64c03345a46a5bd643a7e93d15b49716332f/spectral/monite.all.yaml
+
+apis:
+- aid: monite:monite-access-tokens-api
+  name: Monite Access tokens API
+  description: The Access tokens API from Monite — 2 operation(s) for access tokens.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Access tokens
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-access-tokens-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-accounting-connections-api
+  name: Monite Accounting connections API
+  description: The Accounting connections API from Monite — 4 operation(s) for accounting connections.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Accounting connections
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-accounting-connections-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-accounting-data-pull-api
+  name: Monite Accounting data pull API
+  description: The Accounting data pull API from Monite — 4 operation(s) for accounting data pull.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Accounting data pull
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-accounting-data-pull-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-accounting-synchronized-records-api
+  name: Monite Accounting synchronized records API
+  description: >-
+    The Accounting synchronized records API from Monite — 3 operation(s) for accounting synchronized records.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Accounting synchronized records
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-accounting-synchronized-records-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-accounting-tax-rates-api
+  name: Monite Accounting tax rates API
+  description: The Accounting tax rates API from Monite — 2 operation(s) for accounting tax rates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Accounting tax rates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-accounting-tax-rates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-analytics-api
+  name: Monite Analytics API
+  description: The Analytics API from Monite — 3 operation(s) for analytics.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Analytics
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-analytics-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-approval-policies-api
+  name: Monite Approval policies API
+  description: The Approval policies API from Monite — 6 operation(s) for approval policies.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Approval policies
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-approval-policies-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-approval-requests-api
+  name: Monite Approval requests API
+  description: The Approval requests API from Monite — 5 operation(s) for approval requests.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Approval requests
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-approval-requests-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-batch-payment-links-api
+  name: Monite Batch payment links API
+  description: The Batch payment links API from Monite — 3 operation(s) for batch payment links.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Batch payment links
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-batch-payment-links-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-batch-payments-api
+  name: Monite Batch payments API
+  description: The Batch payments API from Monite — 2 operation(s) for batch payments.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Batch payments
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-batch-payments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-comments-api
+  name: Monite Comments API
+  description: The Comments API from Monite — 2 operation(s) for comments.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Comments
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-comments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-cost-centers-api
+  name: Monite Cost centers API
+  description: The Cost centers API from Monite — 2 operation(s) for cost centers.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Cost centers
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-cost-centers-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterpart-addresses-api
+  name: Monite Counterpart addresses API
+  description: The Counterpart addresses API from Monite — 3 operation(s) for counterpart addresses.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterpart addresses
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterpart-addresses-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterpart-bank-accounts-api
+  name: Monite Counterpart bank accounts API
+  description: >-
+    The Counterpart bank accounts API from Monite — 4 operation(s) for counterpart bank accounts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterpart bank accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterpart-bank-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterpart-contacts-api
+  name: Monite Counterpart contacts API
+  description: The Counterpart contacts API from Monite — 3 operation(s) for counterpart contacts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterpart contacts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterpart-contacts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterpart-e-invoicing-credentials-api
+  name: Monite Counterpart e-invoicing credentials API
+  description: >-
+    The Counterpart e-invoicing credentials API from Monite — 2 operation(s) for counterpart e-invoicing
+    credentials.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterpart e-invoicing credentials
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterpart-e-invoicing-credentials-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterpart-vat-ids-api
+  name: Monite Counterpart VAT IDs API
+  description: The Counterpart VAT IDs API from Monite — 2 operation(s) for counterpart vat ids.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterpart VAT IDs
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterpart-vat-ids-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-counterparts-api
+  name: Monite Counterparts API
+  description: The Counterparts API from Monite — 3 operation(s) for counterparts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Counterparts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-counterparts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-credit-notes-api
+  name: Monite Credit notes API
+  description: The Credit notes API from Monite — 13 operation(s) for credit notes.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Credit notes
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-credit-notes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-custom-vat-rates-api
+  name: Monite Custom VAT rates API
+  description: The Custom VAT rates API from Monite — 2 operation(s) for custom vat rates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Custom VAT rates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-custom-vat-rates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-data-export-api
+  name: Monite Data export API
+  description: The Data export API from Monite — 3 operation(s) for data export.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Data export
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-data-export-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-data-export-extra-data-api
+  name: Monite Data export - extra data API
+  description: >-
+    The Data export - extra data API from Monite — 2 operation(s) for data export - extra data.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Data export - extra data
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-data-export-extra-data-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-delivery-notes-api
+  name: Monite Delivery notes API
+  description: The Delivery notes API from Monite — 4 operation(s) for delivery notes.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Delivery notes
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-delivery-notes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-e-invoicing-connections-api
+  name: Monite E-invoicing connections API
+  description: >-
+    The E-invoicing connections API from Monite — 3 operation(s) for e-invoicing connections.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - E-invoicing connections
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-e-invoicing-connections-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-e-invoicing-search-api
+  name: Monite E-invoicing search API
+  description: The E-invoicing search API from Monite — 1 operation(s) for e-invoicing search.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - E-invoicing search
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-e-invoicing-search-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entities-api
+  name: Monite Entities API
+  description: The Entities API from Monite — 10 operation(s) for entities.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entities
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entities-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-bank-account-verifications-api
+  name: Monite Entity bank account verifications API
+  description: >-
+    The Entity bank account verifications API from Monite — 5 operation(s) for entity bank account verifications.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity bank account verifications
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-bank-account-verifications-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-bank-accounts-api
+  name: Monite Entity bank accounts API
+  description: The Entity bank accounts API from Monite — 4 operation(s) for entity bank accounts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity bank accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-bank-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-onboarding-data-api
+  name: Monite Entity onboarding data API
+  description: The Entity onboarding data API from Monite — 1 operation(s) for entity onboarding data.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity onboarding data
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-onboarding-data-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-persons-api
+  name: Monite Entity persons API
+  description: The Entity persons API from Monite — 2 operation(s) for entity persons.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity persons
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-persons-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-users-api
+  name: Monite Entity users API
+  description: The Entity users API from Monite — 4 operation(s) for entity users.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity users
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-entity-vat-ids-api
+  name: Monite Entity VAT IDs API
+  description: The Entity VAT IDs API from Monite — 2 operation(s) for entity vat ids.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Entity VAT IDs
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-entity-vat-ids-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-events-api
+  name: Monite Events API
+  description: The Events API from Monite — 2 operation(s) for events.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Events
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-events-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-files-api
+  name: Monite Files API
+  description: The Files API from Monite — 2 operation(s) for files.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Files
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-files-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-financing-api
+  name: Monite Financing API
+  description: The Financing API from Monite — 3 operation(s) for financing.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Financing
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-financing-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-ledger-accounts-api
+  name: Monite Ledger accounts API
+  description: The Ledger accounts API from Monite — 2 operation(s) for ledger accounts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Ledger accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-ledger-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-mail-templates-api
+  name: Monite Mail templates API
+  description: The Mail templates API from Monite — 5 operation(s) for mail templates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Mail templates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-mail-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-mailbox-domains-api
+  name: Monite Mailbox domains API
+  description: The Mailbox domains API from Monite — 3 operation(s) for mailbox domains.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Mailbox domains
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-mailbox-domains-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-mailboxes-api
+  name: Monite Mailboxes API
+  description: The Mailboxes API from Monite — 3 operation(s) for mailboxes.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Mailboxes
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-mailboxes-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-measure-units-api
+  name: Monite Measure units API
+  description: The Measure units API from Monite — 2 operation(s) for measure units.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Measure units
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-measure-units-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-monite-ai-api
+  name: Monite Monite AI API
+  description: The Monite AI API from Monite — 7 operation(s) for monite ai.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Monite AI
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-monite-ai-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-ocr-api
+  name: Monite OCR API
+  description: The OCR API from Monite — 3 operation(s) for ocr.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - OCR
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-ocr-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-onboarding-documents-api
+  name: Monite Onboarding documents API
+  description: The Onboarding documents API from Monite — 4 operation(s) for onboarding documents.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Onboarding documents
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-onboarding-documents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-onboarding-links-api
+  name: Monite Onboarding links API
+  description: The Onboarding links API from Monite — 2 operation(s) for onboarding links.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Onboarding links
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-onboarding-links-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-onboarding-requirements-api
+  name: Monite Onboarding requirements API
+  description: >-
+    The Onboarding requirements API from Monite — 2 operation(s) for onboarding requirements.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Onboarding requirements
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-onboarding-requirements-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-overdue-reminders-api
+  name: Monite Overdue reminders API
+  description: The Overdue reminders API from Monite — 2 operation(s) for overdue reminders.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Overdue reminders
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-overdue-reminders-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-partner-settings-api
+  name: Monite Partner settings API
+  description: The Partner settings API from Monite — 1 operation(s) for partner settings.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Partner settings
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-partner-settings-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payable-line-items-api
+  name: Monite Payable line items API
+  description: The Payable line items API from Monite — 2 operation(s) for payable line items.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payable line items
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payable-line-items-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payables-api
+  name: Monite Payables API
+  description: The Payables API from Monite — 19 operation(s) for payables.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payables
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payables-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-intents-api
+  name: Monite Payment intents API
+  description: The Payment intents API from Monite — 3 operation(s) for payment intents.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment intents
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-intents-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-links-api
+  name: Monite Payment links API
+  description: The Payment links API from Monite — 3 operation(s) for payment links.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment links
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-links-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-methods-api
+  name: Monite Payment methods API
+  description: The Payment methods API from Monite — 1 operation(s) for payment methods.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment methods
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-methods-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-records-api
+  name: Monite Payment records API
+  description: The Payment records API from Monite — 5 operation(s) for payment records.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment records
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-records-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-reminders-api
+  name: Monite Payment reminders API
+  description: The Payment reminders API from Monite — 2 operation(s) for payment reminders.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment reminders
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-reminders-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-payment-terms-api
+  name: Monite Payment terms API
+  description: The Payment terms API from Monite — 2 operation(s) for payment terms.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Payment terms
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-payment-terms-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-pdf-templates-api
+  name: Monite PDF templates API
+  description: The PDF templates API from Monite — 5 operation(s) for pdf templates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - PDF templates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-pdf-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-products-api
+  name: Monite Products API
+  description: The Products API from Monite — 2 operation(s) for products.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Products
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-products-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-projects-api
+  name: Monite Projects API
+  description: The Projects API from Monite — 2 operation(s) for projects.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Projects
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-projects-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-purchase-orders-api
+  name: Monite Purchase orders API
+  description: The Purchase orders API from Monite — 5 operation(s) for purchase orders.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Purchase orders
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-purchase-orders-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-receipts-api
+  name: Monite Receipts API
+  description: The Receipts API from Monite — 6 operation(s) for receipts.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Receipts
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-receipts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-receivables-api
+  name: Monite Receivables API
+  description: The Receivables API from Monite — 23 operation(s) for receivables.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Receivables
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-receivables-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-recurrences-api
+  name: Monite Recurrences API
+  description: The Recurrences API from Monite — 5 operation(s) for recurrences.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Recurrences
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-recurrences-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-roles-api
+  name: Monite Roles API
+  description: The Roles API from Monite — 2 operation(s) for roles.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Roles
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-roles-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-system-health-api
+  name: Monite System health API
+  description: The System health API from Monite — 1 operation(s) for system health.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - System health
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-system-health-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-tags-api
+  name: Monite Tags API
+  description: The Tags API from Monite — 2 operation(s) for tags.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Tags
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-tags-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-text-templates-api
+  name: Monite Text templates API
+  description: The Text templates API from Monite — 3 operation(s) for text templates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Text templates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-text-templates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-transactions-api
+  name: Monite Transactions API
+  description: The Transactions API from Monite — 3 operation(s) for transactions.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-transactions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-vat-rates-api
+  name: Monite VAT rates API
+  description: The VAT rates API from Monite — 1 operation(s) for vat rates.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - VAT rates
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-vat-rates-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-webhook-deliveries-api
+  name: Monite Webhook deliveries API
+  description: The Webhook deliveries API from Monite — 2 operation(s) for webhook deliveries.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Webhook deliveries
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-webhook-deliveries-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+- aid: monite:monite-webhook-subscriptions-api
+  name: Monite Webhook subscriptions API
+  description: The Webhook subscriptions API from Monite — 10 operation(s) for webhook subscriptions.
+  humanURL: https://docs.monite.com/api/concepts/overview
+  baseURL: https://api.monite.com/v1
+  tags:
+  - Webhook subscriptions
+  properties:
+  - type: OpenAPI
+    url: openapi/monite-webhook-subscriptions-api-openapi.yml
+  - type: Documentation
+    url: https://docs.monite.com/api/concepts/overview
+  - type: JSONSchema
+    url: json-schema/monite-payable-response-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-receivables-search-request-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-credit-note-response-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-delivery-note-resource-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-upload-with-data-schema-schema.json
+  - type: JSONSchema
+    url: json-schema/monite-payable-update-schema-schema.json
+x-enrichment:
+  date: '2026-10-09'
+  status: enriched
+  artifacts_added: 46
+  pass: modular-v1
+  engine: identity=anthropic,contract=anthropic,surfaces=anthropic,docs=anthropic,regulatory=anthropic
+x-coverage:
+  state: covered
+  reason: identity-verified
+  detail: 'Enriched 2026-10-09: website and identity verified (verified) from the provider''s own pages; probed URLs below.'
+  evidence:
+  - url: https://www.monite.com/
+    status: 200
+  - url: https://www.monite.com/terms
+    status: 200
+  - url: https://www.monite.com/pricing
+    status: 404

@@ -1,0 +1,1621 @@
+openapi: 3.2.0
+info:
+  title: Monite Analytics API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Analytics across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Analytics
+paths:
+  /analytics/credit_notes:
+    get:
+      tags:
+      - Analytics
+      summary: Get credit notes analytics
+      description: Retrieve aggregated statistics for payables with different breakdowns.
+      operationId: get_analytics_credit_notes
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: false
+        schema:
+          $ref: '#/components/schemas/CreditNoteDimensionEnum'
+        name: dimension
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/CreditNoteMetricEnum'
+        name: metric
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/AggregationFunctionEnum'
+        name: aggregation_function
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/DateDimensionBreakdownEnum'
+        name: date_dimension_breakdown
+        in: query
+      - description: The number of items (0 .. 400) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 400.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__icontains
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: has_file
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: total_amount__lte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+          minimum: 0.0
+        name: subtotal__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: based_on
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by_entity_user_id
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+        name: status
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+          type: array
+        name: status__in
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PayableCreditNoteStateEnum'
+          type: array
+        name: status__not_in
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/OriginEnum'
+        name: origin
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/CurrencyEnum'
+        name: currency
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: query
+      - required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: project_id__in
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayableAnalyticsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /analytics/payables:
+    get:
+      tags:
+      - Analytics
+      summary: Get payables analytics
+      description: Retrieve aggregated statistics for payables with different breakdowns.
+      operationId: get_analytics_payables
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: false
+        schema:
+          $ref: '#/components/schemas/PayableDimensionEnum'
+        name: dimension
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/PayableMetricEnum'
+        name: metric
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/AggregationFunctionEnum'
+        name: aggregation_function
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/DateDimensionBreakdownEnum'
+        name: date_dimension_breakdown
+        in: query
+      - description: The number of items (0 .. 400) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 400.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: Return only payables created in Monite after the specified date and time. The value must be in the ISO 8601 format YYYY-MM-DDThh:mm[:ss[.ffffff]][Z|±hh:mm].
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - description: Return only payables created in Monite before the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - description: Return only payables created in Monite on or after the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - description: Return only payables created in Monite before or on the specified date and time.
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - description: 'Return only payables that have the specified [status](https://docs.monite.com/accounts-payable/payables/index).
+
+
+          To query multiple statuses at once, use the `status__in` parameter instead.'
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/PayableStateEnum'
+        name: status
+        in: query
+      - description: 'Return only payables that have the specified [statuses](https://docs.monite.com/accounts-payable/payables/index).
+
+
+          To specify multiple statuses, repeat this parameter for each value: `status__in=draft&status__in=new`'
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/PayableStateEnum'
+          type: array
+        name: status__in
+        in: query
+      - description: 'Return only payables with specified IDs. Valid but nonexistent IDs do not raise errors but produce no results.
+
+
+          To specify multiple IDs, repeat this parameter for each value: `id__in=<id1>&id__in=<id2>`'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: id__in
+        in: query
+      - description: Return only payables with the exact specified total amount. The amount must be specified in the minor units of currency. For example, $12.5 is represented as 1250.
+        required: false
+        schema:
+          type: integer
+        name: total_amount
+        in: query
+      - description: Return only payables whose total amount (in minor units) exceeds the specified value.
+        required: false
+        schema:
+          type: integer
+        name: total_amount__gt
+        in: query
+      - description: Return only payables whose total amount (in minor units) is less than the specified value.
+        required: false
+        schema:
+          type: integer
+        name: total_amount__lt
+        in: query
+      - description: Return only payables whose total amount (in minor units) is greater than or equal to the specified value.
+        required: false
+        schema:
+          type: integer
+        name: total_amount__gte
+        in: query
+      - description: Return only payables whose total amount (in minor units) is less than or equal to the specified value.
+        required: false
+        schema:
+          type: integer
+        name: total_amount__lte
+        in: query
+      - description: Return only payables with the specified amount.
+        required: false
+        schema:
+          type: integer
+        name: amount
+        in: query
+      - description: Return only payables whose amount (in minor units) exceeds the specified value.
+        required: false
+        schema:
+          type: integer
+        name: amount__gt
+        in: query
+      - description: Return only payables whose amount (in minor units) is less than the specified value.
+        required: false
+        schema:
+          type: integer
+        name: amount__lt
+        in: query
+      - description: Return only payables whose amount (in minor units) is greater than or equal to the specified value.
+        required: false
+        schema:
+          type: integer
+        name: amount__gte
+        in: query
+      - description: Return only payables whose amount (in minor units) is less than or equal to the specified value.
+        required: false
+        schema:
+          type: integer
+        name: amount__lte
+        in: query
+      - description: Return only payables that use the specified currency.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+        name: currency
+        in: query
+      - description: 'Return only payables received from counterparts with the specified name (exact match, case-sensitive).
+
+
+          For counterparts of `type = individual`, the full name is formatted as `first_name last_name`.'
+        required: false
+        schema:
+          type: string
+        name: counterpart_name
+        in: query
+      - description: Return only payables received from counterparts whose name contains the specified string (case-sensitive).
+        required: false
+        schema:
+          type: string
+        name: counterpart_name__contains
+        in: query
+      - description: Return only payables received from counterparts whose name contains the specified string (case-insensitive).
+        required: false
+        schema:
+          type: string
+        name: counterpart_name__icontains
+        in: query
+      - description: Apply the `icontains` condition to search for the specified text in the `document_id` and `counterpart_name` fields in the payables.
+        required: false
+        schema:
+          type: string
+        name: search_text
+        in: query
+      - description: Return payables that are due on the specified date (YYYY-MM-DD)
+        required: false
+        schema:
+          type: string
+          format: date
+        name: due_date
+        in: query
+      - description: Return payables that are due after the specified date (exclusive, YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__gt
+        in: query
+      - description: Return payables that are due before the specified date (exclusive, YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__lt
+        in: query
+      - description: Return payables that are due on or after the specified date (YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__gte
+        in: query
+      - description: Return payables that are due before or on the specified date (YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__lte
+        in: query
+      - description: Return payables that are issued at the specified date (YYYY-MM-DD)
+        required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at
+        in: query
+      - description: Return payables that are issued after the specified date (exclusive, YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gt
+        in: query
+      - description: Return payables that are issued before the specified date (exclusive, YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lt
+        in: query
+      - description: Return payables that are issued on or after the specified date (YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__gte
+        in: query
+      - description: Return payables that are issued before or on the specified date (YYYY-MM-DD).
+        required: false
+        schema:
+          type: string
+          format: date
+        name: issued_at__lte
+        in: query
+      - description: 'Return a payable with the exact specified document number (case-sensitive).
+
+
+          The `document_id` is the user-facing document number such as INV-00042, not to be confused with Monite resource IDs (`id`).'
+        required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - description: Return only payables whose document number (`document_id`) contains the specified string (case-sensitive).
+        required: false
+        schema:
+          type: string
+        name: document_id__contains
+        in: query
+      - description: Return only payables whose document number (`document_id`) contains the specified string (case-insensitive).
+        required: false
+        schema:
+          type: string
+        name: document_id__icontains
+        in: query
+      - description: Return only payables created in Monite by the entity user with the specified ID.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: was_created_by_user_id
+        in: query
+      - description: 'Return only payables received from the counterpart with the specified ID.
+
+
+          Counterparts that have been deleted but have associated payables will still return results here because the payables contain a frozen copy of the counterpart data.
+
+
+          If the specified counterpart ID does not exist and never existed, no results are returned.'
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: query
+      - description: Return only payables coming from the specified source.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/SourceOfPayableDataEnum'
+        name: source_of_payable_data
+        in: query
+      - description: Return only payables with specific OCR statuses.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OcrStatusEnum'
+        name: ocr_status
+        in: query
+      - description: Search for a payable by the identifier of the line item associated with it.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: line_item_id
+        in: query
+      - description: Search for a payable by the identifier of the purchase order associated with it.
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: purchase_order_id
+        in: query
+      - description: 'Return only payables assigned to the project with the specified ID.
+
+
+          Valid but nonexistent project IDs do not raise errors but return no results.'
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: query
+      - description: Return only payables whose `project_id` include at least one of the project_id with the specified IDs. Valid but nonexistent project IDs do not raise errors but produce no results.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: project_id__in
+        in: query
+      - description: Return only payables whose `tags` include at least one of the tags with the specified IDs. Valid but nonexistent tag IDs do not raise errors but produce no results.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: tag_ids
+        in: query
+      - description: Return only payables whose `tags` do not include any of the tags with the specified IDs. Valid but nonexistent tag IDs do not raise errors but produce the results.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: tag_ids__not_in
+        in: query
+      - description: Filter objects based on whether they have tags. If true, only objects with tags are returned. If false, only objects without tags are returned.
+        required: false
+        schema:
+          type: boolean
+        name: has_tags
+        in: query
+      - description: Return only payables from a given origin ['einvoice', 'upload', 'email']
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/PayableOriginEnum'
+        name: origin
+        in: query
+      - description: Return only payables with or without attachments (files)
+        required: false
+        schema:
+          type: boolean
+        name: has_file
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PayableAnalyticsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /analytics/receivables:
+    get:
+      tags:
+      - Analytics
+      summary: Get receivables analytics
+      description: Retrieve aggregated statistics for receivables with different breakdowns.
+      operationId: get_analytics_receivables
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: false
+        schema:
+          $ref: '#/components/schemas/ReceivableDimensionEnum'
+        name: dimension
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/ReceivableMetricEnum'
+        name: metric
+        in: query
+      - required: true
+        schema:
+          $ref: '#/components/schemas/AggregationFunctionEnum'
+        name: aggregation_function
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/DateDimensionBreakdownEnum'
+        name: date_dimension_breakdown
+        in: query
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: "The number of items (0 .. 250) to return in a single page of the response. Default is 100. The response may contain fewer items if it is the last or only page. \n\nWhen using pagination with a non-default `limit`, you must provide the `limit` value alongside `pagination_token` in all subsequent pagination requests. Unlike other query parameters, `limit` is not inferred from `pagination_token`."
+        required: false
+        schema:
+          type: integer
+          maximum: 250.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters except `limit` are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: 'Return only receivables with the specified IDs. Valid but nonexistent IDs do not raise errors but produce no results.
+
+
+          To specify multiple IDs, repeat this parameter for each value:
+
+          `id__in=<id1>&id__in=<id2>`'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: id__in
+        in: query
+      - description: 'Return only receivables that have the specified statuses. See the applicable [invoice statuses](https://docs.monite.com/accounts-receivable/invoices/index), [quote statuses](https://docs.monite.com/accounts-receivable/quotes/index), and [credit note statuses](https://docs.monite.com/accounts-receivable/credit-notes#credit-note-lifecycle).
+
+
+          To specify multiple statuses, repeat this parameter for each value:
+
+          `status__in=draft&status__in=issued`'
+        required: false
+        schema:
+          items:
+            type: string
+            enum:
+            - draft
+            - issuing
+            - issued
+            - failed
+            - accepted
+            - expired
+            - declined
+            - recurring
+            - partially_paid
+            - paid
+            - overdue
+            - uncollectible
+            - canceled
+          type: array
+        name: status__in
+        in: query
+      - description: 'Return only receivables created by the entity users with the specified IDs.To specify multiple user IDs, repeat this parameter for each ID:
+
+          `entity_user_id__in=<user1>&entity_user_id__in=<user2>`
+
+
+          If the request is authenticated using an entity user token, this user must have the `receivable.read.allowed` (rather than `allowed_for_own`) permission to be able to query receivables created by other users.
+
+
+          IDs of deleted users will still produce results here if those users had associated receivables. Valid but nonexistent user IDs do not raise errors but produce no results.'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: entity_user_id__in
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ReceivableCursorFields'
+        name: sort
+        in: query
+      - description: 'Return only receivables whose [tags](https://docs.monite.com/common/tags) include at least one of the tags with the specified IDs.
+
+
+          For example, given receivables with the following tags:
+
+          1. tagA
+
+          2. tagB
+
+          3. tagA, tagB
+
+          4. tagC
+
+          5. tagB, tagC
+
+
+
+          `tag_ids__in=<tagA>&tag_ids__in=<tagB>` will return receivables 1, 2, 3, and 5.
+
+
+          Valid but nonexistent tag IDs do not raise errors but produce no results.'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: tag_ids__in
+        in: query
+      - description: 'Return only receivables whose [tags](https://docs.monite.com/common/tags) include all of the tags with the specified IDs and optionally other tags that are not specified.
+
+
+          For example, given receivables with the following tags:
+
+          1. tagA
+
+          2. tagB
+
+          3. tagA, tagB
+
+          4. tagC
+
+          5. tagA, tagB, tagC
+
+
+
+          `tag_ids=<tagA>&tag_ids=<tagB>` will return receivables 3 and 5.'
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: tag_ids
+        in: query
+      - description: "Return only receivables whose line items include at least one of the product IDs with the specified IDs. \n\nTo specify multiple product IDs, repeat this parameter for each ID:\n`product_ids__in=<product1>&product_ids__in=<product2>`\n\nFor example, given receivables with the following product IDs:\n1. productA\n2. productB\n3. productA, productB\n4. productC\n5. productB, productC\n\n\n`product_ids__in=<productA>&product_ids__in=<productB>` will return receivables 1, 2, 3, and 5.Valid but nonexistent product IDs do not raise errors but produce no results."
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: product_ids__in
+        in: query
+      - description: "Return only receivables whose line items include all of the product IDs with the specified IDs and optionally other products that are not specified. \n\nTo specify multiple product IDs, repeat this parameter for each ID:\n`product_ids=<product1>&product_ids=<product2>`\n\nFor example, given receivables with the following product IDs:\n1. productA\n2. productB\n3. productA, productB\n4. productC\n5. productA, productB, productC\n\n\n`product_ids=<productA>&product_ids=<productB>` will return receivables 3 and 5.\n\n"
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: product_ids
+        in: query
+      - description: Return only receivables whose `project_id` include at least one of the project_id with the specified IDs. Valid but nonexistent project IDs do not raise errors but produce no results.
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: project_id__in
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/ReceivableType'
+        name: type
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: document_id__icontains
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: counterpart_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: counterpart_name__icontains
+        in: query
+      - required: false
+        schema:
+          type: integer
+        name: amount
+        in: query
+      - required: false
+        schema:
+          type: integer
+        name: amount__gt
+        in: query
+      - required: false
+        schema:
+          type: integer
+        name: amount__lt
+        in: query
+      - required: false
+        schema:
+          type: integer
+        name: amount__gte
+        in: query
+      - required: false
+        schema:
+          type: integer
+        name: amount__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          enum:
+          - draft
+          - issuing
+          - issued
+          - failed
+          - accepted
+          - expired
+          - declined
+          - recurring
+          - partially_paid
+          - paid
+          - overdue
+          - uncollectible
+          - canceled
+        name: status
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: entity_user_id
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: based_on
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: due_date__lte
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: has_due_date
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: search_text
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReceivablesAnalyticsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    CreditNoteMetricEnum:
+      type: string
+      enum:
+      - id
+      - total_amount
+    AnalyticsDataPoint:
+      properties:
+        dimension_value:
+          type: string
+        metric_value:
+          type: number
+      additionalProperties: false
+      type: object
+      required:
+      - metric_value
+    DateDimensionBreakdownEnum:
+      type: string
+      enum:
+      - daily
+      - weekly
+      - monthly
+      - quarterly
+      - yearly
+    PayableDimensionEnum:
+      type: string
+      enum:
+      - created_at
+      - status
+      - counterpart_id
+      - currency
+      - issued_at
+      - due_date
+      - project_id
+    OcrStatusEnum:
+      type: string
+      enum:
+      - processing
+      - error
+      - success
+    PayableAnalyticsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AnalyticsDataPoint'
+          type: array
+      type: object
+      required:
+      - data
+    CreditNoteDimensionEnum:
+      type: string
+      enum:
+      - created_at
+      - status
+      - counterpart_id
+      - currency
+      - issued_at
+      - project_id
+    PayableMetricEnum:
+      type: string
+      enum:
+      - id
+      - total_amount
+      - amount_due
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    SourceOfPayableDataEnum:
+      type: string
+      enum:
+      - ocr
+      - user_specified
+      - einvoicing
+    AggregationFunctionEnum:
+      type: string
+      enum:
+      - count
+      - average
+      - summary
+      - min
+      - max
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    PayableCreditNoteStateEnum:
+      type: string
+      enum:
+      - new
+      - draft
+      - applied
+      - approved
+      - rejected
+      - canceled
+      - submitted_for_approval
+    ReceivableCursorFields:
+      type: string
+      enum:
+      - counterpart_name
+      - counterpart_id
+      - amount
+      - total_amount
+      - discounted_subtotal
+      - status
+      - due_date
+      - issue_date
+      - document_id
+      - created_at
+      - project_id
+    ReceivableMetricEnum:
+      type: string
+      enum:
+      - id
+      - total_amount
+      - product_amount
+      - product_quantity
+    ReceivableDimensionEnum:
+      type: string
+      enum:
+      - created_at
+      - status
+      - counterpart_id
+      - currency
+      - issue_date
+      - due_date
+      - project_id
+      - product_id
+    ReceivableType:
+      type: string
+      enum:
+      - quote
+      - invoice
+      - credit_note
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ReceivablesAnalyticsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ReceivablesAnalyticsDataPoint'
+          type: array
+      type: object
+      required:
+      - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ReceivablesAnalyticsDataPoint:
+      properties:
+        dimension_value:
+          type: string
+        metric_value:
+          type: integer
+      additionalProperties: false
+      type: object
+      required:
+      - metric_value
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    OriginEnum:
+      type: string
+      enum:
+      - upload
+      - einvoicing
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PayableStateEnum:
+      type: string
+      enum:
+      - draft
+      - new
+      - approve_in_progress
+      - waiting_to_be_paid
+      - partially_paid
+      - paid
+      - canceled
+      - rejected
+    PayableOriginEnum:
+      type: string
+      enum:
+      - upload
+      - email
+      - einvoicing
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+    OcrStatusEnum_2:
+      type: string
+      enum:
+      - processing
+      - error
+      - success
+      - canceled
+    OcrStatusEnum_3:
+      type: string
+      enum:
+      - processing
+      - error
+      - success
+      - canceled
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,24 @@
+name: Monite Rate Limits
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/api/concepts/rate-limiting
+limit_count: 1
+limits:
+- name: Default API rate limit
+  limit_text: 30 requests per second
+  limit: 30
+  max: 30
+  window: 1 second
+  scope: per partner client ID
+  note: Docs state Monite might change this limit, introduce different limits on intensive calls, and allow lower numbers for Sandbox accounts; increases via Account Manager.
+response_headers:
+- RateLimit-Limit
+- RateLimit-Remaining
+- RateLimit-Reset
+- X-RateLimit-Limit-Second
+- X-RateLimit-Remaining-Second
+- Retry-After
+exhaustion:
+  status: 429
+  body: '{"message": "API rate limit exceeded"}'
+  retry_header: Retry-After

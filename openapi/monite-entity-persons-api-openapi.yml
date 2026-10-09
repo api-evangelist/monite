@@ -1,0 +1,1650 @@
+openapi: 3.2.0
+info:
+  title: Monite Entity persons API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Entity persons across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Entity persons
+paths:
+  /persons:
+    get:
+      tags:
+      - Entity persons
+      summary: Get all persons
+      operationId: get_persons
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Entity persons
+      summary: Create a person
+      operationId: post_persons
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /persons/{person_id}:
+    get:
+      tags:
+      - Entity persons
+      summary: Get a person
+      operationId: get_persons_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: person_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Entity persons
+      summary: Update a person
+      operationId: patch_persons_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: person_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionalPersonRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PersonResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Entity persons
+      summary: Delete a person
+      operationId: delete_persons_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: person_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    OptionalPersonRequest:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonAddress'
+          - type: 'null'
+          description: The person's address
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The person's email address
+        first_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonRelationship'
+          - type: 'null'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+    PersonRequest:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddress'
+          - type: 'null'
+          description: The person's address
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        first_name:
+          type: string
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationship'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+      required:
+      - email
+      - first_name
+      - last_name
+      - relationship
+    OptionalPersonAddress:
+      properties:
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: City, district, suburb, town, or village
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+        line1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    PersonRelationship:
+      properties:
+        director:
+          type: boolean
+          description: Whether the person is a director of the account's legal entity
+          default: false
+        executive:
+          type: boolean
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
+        owner:
+          type: boolean
+          description: Whether the person is an owner of the account's legal entity
+          default: false
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          type: boolean
+          description: Whether the person is authorized as the primary representative of the account
+          default: false
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    PersonResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The person's unique identifier
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the person was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the person was updated
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddress'
+          - type: 'null'
+          description: The person's address
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        entity_id:
+          type: string
+          format: uuid
+          description: Entity ID
+        first_name:
+          type: string
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationship'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - email
+      - entity_id
+      - first_name
+      - last_name
+      - relationship
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    OptionalPersonRelationship:
+      properties:
+        director:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is a director of the account's legal entity
+        executive:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+        owner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is an owner of the account's legal entity
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is authorized as the primary representative of the account
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PersonsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PersonResponse'
+          type: array
+          description: array of objects of type person
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    PersonAddress:
+      properties:
+        city:
+          type: string
+          description: City, district, suburb, town, or village
+        country:
+          type: string
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+        line1:
+          type: string
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          type: string
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    OptionalPersonRequest_2:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonAddressRequest'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The person's email address
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonRelationship_2'
+          - type: 'null'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+    PersonRelationshipResponse:
+      properties:
+        director:
+          type: boolean
+          description: Whether the person is a director of the account's legal entity
+          default: false
+        executive:
+          type: boolean
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
+        owner:
+          type: boolean
+          description: Whether the person is an owner of the account's legal entity
+          default: false
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          type: boolean
+          description: Whether the person is authorized as the primary representative of the account
+          default: false
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    OptionalPersonAddressRequest:
+      properties:
+        city:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: City, district, suburb, town, or village
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+          examples:
+          - DE
+        line1:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          anyOf:
+          - type: string
+            maxLength: 10
+            minLength: 1
+          - type: 'null'
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+    PersonAddressRequest:
+      properties:
+        city:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: City, district, suburb, town, or village
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+          examples:
+          - DE
+        line1:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          type: string
+          maxLength: 10
+          minLength: 1
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+    PersonRequest_2:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddressRequest'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        first_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationshipRequest'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+      required:
+      - email
+      - first_name
+      - last_name
+      - relationship
+    PersonResponse_2:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The person's unique identifier
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the person was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the person was updated
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddressResponse'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        created_by_entity_user_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: ID of the entity user who created this person, or null if the person was created using a partner access token.
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        entity_id:
+          type: string
+          format: uuid
+          description: Entity ID
+        first_name:
+          type: string
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationshipResponse'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - created_by_entity_user_id
+      - email
+      - entity_id
+      - first_name
+      - last_name
+      - relationship
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    OptionalPersonRelationship_2:
+      properties:
+        director:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is a director of the account's legal entity
+        executive:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+        owner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is an owner of the account's legal entity
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is authorized as the primary representative of the account
+        title:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    PersonAddressResponse:
+      properties:
+        city:
+          type: string
+          description: City, district, suburb, town, or village
+        country:
+          type: string
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+        line1:
+          type: string
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          type: string
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+    PersonRelationshipRequest:
+      properties:
+        director:
+          type: boolean
+          description: Whether the person is a director of the account's legal entity
+          default: false
+        executive:
+          type: boolean
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
+        owner:
+          type: boolean
+          description: Whether the person is an owner of the account's legal entity
+          default: false
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          type: boolean
+          description: Whether the person is authorized as the primary representative of the account
+          default: false
+        title:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    OptionalPersonRequest_3:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonAddressRequest'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The person's email address
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalPersonRelationship_3'
+          - type: 'null'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+    PersonRequest_3:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddressRequest'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        first_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationshipRequest'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+      required:
+      - email
+      - first_name
+      - last_name
+      - relationship
+    PersonResponse_3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The person's unique identifier
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the person was created
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the person was updated
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddressResponse'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        created_by_entity_user_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: ID of the entity user who created this person, or null if the person was created using a partner access token.
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        entity_id:
+          type: string
+          format: uuid
+          description: Entity ID
+        first_name:
+          type: string
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationshipResponse'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - created_by_entity_user_id
+      - email
+      - entity_id
+      - first_name
+      - last_name
+      - relationship
+    OptionalPersonRelationship_3:
+      properties:
+        director:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is a director of the account's legal entity
+        executive:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+        owner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is an owner of the account's legal entity
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is authorized as the primary representative of the account
+        title:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

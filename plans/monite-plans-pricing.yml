@@ -1,0 +1,12 @@
+name: Monite Plans and Pricing
+generated: '2026-10-09'
+method: none
+source: https://www.monite.com/pricing
+audience: unclear
+pricing_basis: none
+published: false
+plan_count: 0
+plans: []
+delivery:
+  delivery: managed
+note: No public pricing page was found - https://www.monite.com/pricing and https://monite.com/pricing return HTTP 404 (2026-10-09) and the homepage links no pricing or plans page. The docs state Production use requires a signed contract with Monite (https://docs.monite.com/api/concepts/environments).

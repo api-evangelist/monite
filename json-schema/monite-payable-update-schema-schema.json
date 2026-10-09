@@ -1,0 +1,757 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-payable-update-schema-schema.json",
+  "title": "PayableUpdateSchema",
+  "description": "This schema is used to update the data of an existing payable.",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/PayableUpdateSchema",
+  "properties": {
+    "amount_paid": {
+      "type": "integer",
+      "minimum": 0.0,
+      "description": "How much was paid on the invoice (in minor units)."
+    },
+    "counterpart_address_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart address object stored in counterparts service"
+    },
+    "counterpart_bank_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart bank account object stored in counterparts service"
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the counterpart object that represents the vendor or supplier."
+    },
+    "counterpart_raw_data": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CounterpartRawDataUpdateRequest"
+        }
+      ],
+      "description": "Allows to fix some data in counterpart recognised fields to correct them in order to make autolinking happen."
+    },
+    "counterpart_vat_id_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of counterpart VAT ID object stored in counterparts service"
+    },
+    "currency": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CurrencyEnum"
+        }
+      ],
+      "description": "The [currency code](https://docs.monite.com/references/currencies) of the currency used in the payable."
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "An arbitrary description of this payable."
+    },
+    "discount": {
+      "type": "integer",
+      "description": "The value of the additional discount that will be applied to the total amount. in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "document_id": {
+      "type": "string",
+      "description": "A unique invoice number assigned by the invoice issuer for payment tracking purposes."
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "description": "The date by which the payable must be paid, in the YYYY-MM-DD format. If the payable specifies payment terms with early payment discounts, this is the final payment date."
+    },
+    "enforce_approval_policy_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of an existing approval policy that should be enforced when submitting the payable for approval.If this field is set, no other policies will be evaluated via their triggers - the specified policy will always be applied instead."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date",
+      "description": "The date when the payable was issued, in the YYYY-MM-DD format."
+    },
+    "partner_metadata": {
+      "type": "object",
+      "description": "Metadata for partner needs"
+    },
+    "payment_terms": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/PayablePaymentTermsCreatePayload"
+        }
+      ],
+      "description": "The number of days to pay with potential discount for options shorter than due_date"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The project ID of the payable."
+    },
+    "purchase_order_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The identifier of the purchase order to which this payable belongs."
+    },
+    "sender": {
+      "type": "string",
+      "format": "email",
+      "description": "The email address from which the invoice was sent to the entity."
+    },
+    "subtotal": {
+      "type": "integer",
+      "description": "The subtotal amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "suggested_payment_term": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/SuggestedPaymentTerm"
+        }
+      ],
+      "description": "The suggested date and corresponding discount in which payable could be paid. The date is in the YYYY-MM-DD format. The discount is calculated as X * (10^-4) - for example, 100 is 1%, 25 is 0,25%, 10000 is 100 %. Date varies depending on the payment terms and may even be equal to the due date with discount 0."
+    },
+    "tag_ids": {
+      "items": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "type": "array",
+      "description": "A list of IDs of user-defined tags (labels) assigned to this payable. Tags can be used to trigger a specific approval policy for this payable."
+    },
+    "tax": {
+      "type": "integer",
+      "description": "Registered tax percentage applied for a service price in minor units, e.g. 200 means 2%, 1050 means 10.5%."
+    },
+    "tax_amount": {
+      "type": "integer",
+      "description": "Tax amount in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "The total amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250."
+    }
+  },
+  "additionalProperties": false,
+  "type": "object",
+  "$defs": {
+    "AllowedCountries": {
+      "type": "string",
+      "enum": [
+        "AF",
+        "AX",
+        "AL",
+        "DZ",
+        "AS",
+        "AD",
+        "AO",
+        "AI",
+        "AQ",
+        "AG",
+        "AR",
+        "AM",
+        "AW",
+        "AU",
+        "AT",
+        "AZ",
+        "BS",
+        "BH",
+        "BD",
+        "BB",
+        "BY",
+        "BE",
+        "BZ",
+        "BJ",
+        "BM",
+        "BT",
+        "BO",
+        "BA",
+        "BW",
+        "BV",
+        "BR",
+        "IO",
+        "BN",
+        "BG",
+        "BF",
+        "BI",
+        "KH",
+        "CM",
+        "CA",
+        "IC",
+        "CV",
+        "KY",
+        "CF",
+        "EA",
+        "TD",
+        "CL",
+        "CN",
+        "CX",
+        "CC",
+        "CO",
+        "KM",
+        "CG",
+        "CD",
+        "CK",
+        "CR",
+        "CI",
+        "HR",
+        "CU",
+        "CY",
+        "CZ",
+        "DK",
+        "DJ",
+        "DM",
+        "DO",
+        "EC",
+        "EG",
+        "SV",
+        "GQ",
+        "ER",
+        "EE",
+        "SZ",
+        "ET",
+        "FK",
+        "FO",
+        "FJ",
+        "FI",
+        "FR",
+        "GF",
+        "PF",
+        "TF",
+        "GA",
+        "GM",
+        "GE",
+        "DE",
+        "GH",
+        "GI",
+        "GR",
+        "GL",
+        "GD",
+        "GP",
+        "GU",
+        "GT",
+        "GG",
+        "GN",
+        "GW",
+        "GY",
+        "HT",
+        "HM",
+        "VA",
+        "HN",
+        "HK",
+        "HU",
+        "IS",
+        "IN",
+        "ID",
+        "IR",
+        "IQ",
+        "IE",
+        "IM",
+        "IL",
+        "IT",
+        "JM",
+        "JP",
+        "JE",
+        "JO",
+        "KZ",
+        "KE",
+        "KI",
+        "KP",
+        "KR",
+        "KW",
+        "KG",
+        "LA",
+        "LV",
+        "LB",
+        "LS",
+        "LR",
+        "LY",
+        "LI",
+        "LT",
+        "LU",
+        "MO",
+        "MG",
+        "MW",
+        "MY",
+        "MV",
+        "ML",
+        "MT",
+        "MH",
+        "MQ",
+        "MR",
+        "MU",
+        "YT",
+        "MX",
+        "FM",
+        "MD",
+        "MC",
+        "MN",
+        "ME",
+        "MS",
+        "MA",
+        "MZ",
+        "MM",
+        "NA",
+        "NR",
+        "NP",
+        "NL",
+        "AN",
+        "NC",
+        "NZ",
+        "NI",
+        "NE",
+        "NG",
+        "NU",
+        "NF",
+        "MP",
+        "MK",
+        "NO",
+        "OM",
+        "PK",
+        "PW",
+        "PS",
+        "PA",
+        "PG",
+        "PY",
+        "PE",
+        "PH",
+        "PN",
+        "PL",
+        "PT",
+        "PR",
+        "QA",
+        "RE",
+        "RO",
+        "RU",
+        "RW",
+        "SH",
+        "KN",
+        "LC",
+        "PM",
+        "VC",
+        "WS",
+        "SM",
+        "ST",
+        "SA",
+        "SN",
+        "RS",
+        "SC",
+        "SL",
+        "SG",
+        "SK",
+        "SI",
+        "SB",
+        "SO",
+        "ZA",
+        "SS",
+        "GS",
+        "ES",
+        "LK",
+        "SD",
+        "SR",
+        "SJ",
+        "SE",
+        "CH",
+        "SY",
+        "TW",
+        "TJ",
+        "TZ",
+        "TH",
+        "TL",
+        "TG",
+        "TK",
+        "TO",
+        "TT",
+        "TN",
+        "TR",
+        "TM",
+        "TC",
+        "TV",
+        "UG",
+        "UA",
+        "AE",
+        "GB",
+        "US",
+        "UM",
+        "UY",
+        "UZ",
+        "VU",
+        "VE",
+        "VN",
+        "VG",
+        "VI",
+        "WF",
+        "EH",
+        "YE",
+        "ZM",
+        "ZW",
+        "BL",
+        "BQ",
+        "CW",
+        "MF",
+        "SX"
+      ]
+    },
+    "CounterpartRawAddressUpdateRequest": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "country": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AllowedCountries"
+            }
+          ],
+          "description": "Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))."
+        },
+        "line1": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "line2": {
+          "type": "string",
+          "description": "Additional address information (if any)."
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "ZIP or postal code."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province, or county."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Address information."
+    },
+    "CounterpartRawBankAccountUpdateRequest": {
+      "properties": {
+        "account_holder_name": {
+          "type": "string",
+          "description": "Vendor's bank account name."
+        },
+        "account_number": {
+          "type": "string",
+          "description": "Vendor's bank account number, IBAN, or similar (if specified in the payable document)."
+        },
+        "bic": {
+          "type": "string",
+          "maxLength": 11,
+          "description": "SWIFT code (BIC) of the vendor's bank."
+        },
+        "iban": {
+          "type": "string",
+          "maxLength": 34,
+          "description": "required for non-GB bank accounts"
+        },
+        "routing_number": {
+          "type": "string",
+          "description": "required for US bank accounts"
+        },
+        "sort_code": {
+          "type": "string",
+          "description": "required for GB bank accounts"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "CounterpartRawDataUpdateRequest": {
+      "properties": {
+        "address": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawAddressUpdateRequest"
+            }
+          ],
+          "description": "The address of the vendor or supplier."
+        },
+        "bank_account": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawBankAccountUpdateRequest"
+            }
+          ],
+          "description": "Object representing counterpart bank account."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the organization"
+        },
+        "name": {
+          "type": "string",
+          "description": "Vendor or supplier name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the organization"
+        },
+        "tax_id": {
+          "type": "string",
+          "maxLength": 30,
+          "description": "The tax id of the counterpart."
+        },
+        "vat_id": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawVatIDUpdateRequest"
+            }
+          ],
+          "description": "VAT ID of the vendor or supplier which was used in the invoice."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "CounterpartRawVatIDUpdateRequest": {
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/AllowedCountries"
+        },
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "maxLength": 32
+        }
+      },
+      "additionalProperties": false,
+      "type": "object"
+    },
+    "CurrencyEnum": {
+      "type": "string",
+      "enum": [
+        "AED",
+        "AFN",
+        "ALL",
+        "AMD",
+        "ANG",
+        "AOA",
+        "ARS",
+        "AUD",
+        "AWG",
+        "AZN",
+        "BAM",
+        "BBD",
+        "BDT",
+        "BGN",
+        "BHD",
+        "BIF",
+        "BMD",
+        "BND",
+        "BOB",
+        "BRL",
+        "BSD",
+        "BTN",
+        "BWP",
+        "BYN",
+        "BZD",
+        "CAD",
+        "CDF",
+        "CHF",
+        "CLP",
+        "CNY",
+        "COP",
+        "CRC",
+        "CVE",
+        "CZK",
+        "DJF",
+        "DKK",
+        "DOP",
+        "DZD",
+        "EGP",
+        "ETB",
+        "EUR",
+        "FJD",
+        "FKP",
+        "GBP",
+        "GEL",
+        "GHS",
+        "GIP",
+        "GMD",
+        "GNF",
+        "GTQ",
+        "GYD",
+        "HKD",
+        "HNL",
+        "HTG",
+        "HUF",
+        "IDR",
+        "ILS",
+        "INR",
+        "IQD",
+        "ISK",
+        "JMD",
+        "JOD",
+        "JPY",
+        "KES",
+        "KGS",
+        "KHR",
+        "KMF",
+        "KRW",
+        "KWD",
+        "KYD",
+        "KZT",
+        "LAK",
+        "LBP",
+        "LKR",
+        "LRD",
+        "LSL",
+        "LYD",
+        "MAD",
+        "MDL",
+        "MGA",
+        "MKD",
+        "MMK",
+        "MNT",
+        "MOP",
+        "MUR",
+        "MVR",
+        "MWK",
+        "MXN",
+        "MYR",
+        "MZN",
+        "NAD",
+        "NGN",
+        "NIO",
+        "NOK",
+        "NPR",
+        "NZD",
+        "OMR",
+        "PAB",
+        "PEN",
+        "PGK",
+        "PHP",
+        "PKR",
+        "PLN",
+        "PYG",
+        "QAR",
+        "RON",
+        "RSD",
+        "RUB",
+        "RWF",
+        "SAR",
+        "SBD",
+        "SCR",
+        "SEK",
+        "SGD",
+        "SHP",
+        "SLE",
+        "SOS",
+        "SRD",
+        "SSP",
+        "SVC",
+        "SZL",
+        "THB",
+        "TJS",
+        "TMT",
+        "TND",
+        "TOP",
+        "TRY",
+        "TTD",
+        "TWD",
+        "TZS",
+        "UAH",
+        "UGX",
+        "USD",
+        "UYU",
+        "UZS",
+        "VND",
+        "VUV",
+        "WST",
+        "XAF",
+        "XCD",
+        "XOF",
+        "XPF",
+        "YER",
+        "ZAR",
+        "ZMW"
+      ]
+    },
+    "PayablePaymentTermDiscount": {
+      "properties": {
+        "discount": {
+          "type": "integer",
+          "description": "The discount percentage in minor units. E.g., 200 means 2%, 1050 means 10.5%."
+        },
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "discount",
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermFinal": {
+      "properties": {
+        "number_of_days": {
+          "type": "integer",
+          "description": "The amount of days after the invoice issue date."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "number_of_days"
+      ]
+    },
+    "PayablePaymentTermsCreatePayload": {
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "term_1": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_2": {
+          "$ref": "#/$defs/PayablePaymentTermDiscount"
+        },
+        "term_final": {
+          "$ref": "#/$defs/PayablePaymentTermFinal"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "name",
+        "term_final"
+      ]
+    },
+    "SuggestedPaymentTerm": {
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "discount": {
+          "type": "integer",
+          "maximum": 10000.0,
+          "minimum": 0.0
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "date"
+      ],
+      "description": "Suggested payment date and corresponding discount"
+    }
+  }
+}

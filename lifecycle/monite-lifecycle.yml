@@ -1,0 +1,29 @@
+name: Monite API Lifecycle
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/api/concepts/versioning
+versioning:
+  scheme: date-based (YYYY-MM-DD)
+  mechanism: X-Monite-Version request header, required on every request (missing header returns HTTP 400 missing_api_version); echoed in responses
+  current: '2024-05-25'
+  documented_versions: ['2024-05-25', '2024-01-31', '2023-09-01']
+  default_version_setting: api_version partner setting via PATCH /settings (used for asynchronous operations such as OCR)
+  breaking_change_policy: Breaking changes (renaming/deleting endpoints, fields, headers or query params, type changes, status code changes, new required inputs, narrowed allowed values, significant business logic changes) are introduced in a new API version; additive changes may appear in the current version.
+  docs: https://docs.monite.com/api/concepts/versioning
+deprecation:
+  policy: No dated deprecation or sunset policy is published; deprecated fields are announced in the changelog (e.g. deduction_amount/deduction_memo deprecated 2025-09-22).
+  sunset_headers: none documented
+  deprecated_operations:
+  - get_entities_me
+  - patch_entities_me
+  - post_entities_id_documents
+  - put_entities_id_onboarding_data
+  - get_entities_id_onboarding_requirements
+  - get_payables_analytics
+  - post_persons_id_documents
+  - post_receivables_id_mark_as_partially_paid
+  deprecated_operations_source: openapi/monite-openapi.yml (deprecated true)
+sla: Sandbox SLAs are best-effort and may be significantly lower than Production (https://docs.monite.com/api/concepts/environments); no Production SLA figure published in docs.
+status_page: null
+status_page_note: status.monite.com did not resolve (DNS failure) on 2026-10-09; GET /health endpoint added 2025-09-10 for API health checks.
+changelog: https://docs.monite.com/intro/release-notes/changelog

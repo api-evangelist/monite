@@ -1,0 +1,285 @@
+openapi: 3.2.0
+info:
+  title: Monite Payment methods API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Payment methods across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Payment Methods
+paths:
+  /entities/{entity_id}/payment_methods:
+    get:
+      tags:
+      - Payment Methods
+      summary: Get Enabled Payment Methods
+      description: Get all enabled payment methods.
+      operationId: get_entities_id_payment_methods
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: entity_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingPaymentMethodsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    put:
+      tags:
+      - Payment Methods
+      summary: Enable Payment Methods
+      description: Set which payment methods should be enabled.
+      operationId: put_entities_id_payment_methods
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: entity_id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnabledPaymentMethods'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingPaymentMethodsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    PaymentMethodDirection:
+      type: string
+      enum:
+      - receive
+      - send
+    MoniteAllPaymentMethodsTypes:
+      type: string
+      enum:
+      - sepa_credit
+      - us_ach
+      - blik
+      - card
+      - bacs_direct_debit
+      - bancontact
+      - eps
+      - giropay
+      - ideal
+      - p24
+      - sepa_debit
+      - sofort
+      - applepay
+      - googlepay
+      - affirm
+      - klarna
+    MoniteAllPaymentMethods:
+      type: string
+      enum:
+      - SEPA Payments
+      - US ACH Payments
+      - BLIK
+      - Card payments
+      - Bacs Direct Debit
+      - Bancontact
+      - Electronic Payment Standard
+      - Giropay
+      - iDEAL
+      - Przelewy24
+      - SEPA Direct Debit
+      - SOFORT
+      - Apple Pay
+      - Google Pay
+      - Affirm
+      - Klarna
+    PaymentMethodStatus:
+      type: string
+      enum:
+      - active
+      - inactive
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    OnboardingPaymentMethodsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentMethod'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    EnabledPaymentMethods:
+      properties:
+        payment_methods:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Deprecated. Use payment_methods_receive instead.
+          deprecated: true
+        payment_methods_receive:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Enable payment methods to receive money.
+        payment_methods_send:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+          description: Enable payment methods to send money.
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PaymentMethod:
+      properties:
+        direction:
+          $ref: '#/components/schemas/PaymentMethodDirection'
+        name:
+          $ref: '#/components/schemas/MoniteAllPaymentMethods'
+        status:
+          $ref: '#/components/schemas/PaymentMethodStatus'
+        type:
+          $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+      additionalProperties: false
+      type: object
+      required:
+      - direction
+      - name
+      - status
+      - type
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,75 @@
+name: Monite Packages
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/sdks/index
+description: First-party Monite client libraries and UI SDKs. Versions and dates read from registry metadata endpoints (registry.npmjs.org, pypi.org/pypi/<pkg>/json, proxy.golang.org) on 2026-10-09. API version wrapped is 2024-05-25.
+packages:
+- name: '@monite/sdk-react'
+  registry: npm
+  url: https://www.npmjs.com/package/@monite/sdk-react
+  language: JavaScript/TypeScript (React)
+  official: true
+  version: 4.6.8
+  published: '2025-10-07'
+  docs: https://docs.monite.com/sdks/react/index
+  note: React UI SDK with prebuilt components connected to the Monite API; license MIT per registry.
+- name: '@monite/sdk-drop-in'
+  registry: npm
+  url: https://www.npmjs.com/package/@monite/sdk-drop-in
+  language: JavaScript (Web Components)
+  official: true
+  version: 2.5.8
+  published: '2025-10-07'
+  docs: https://docs.monite.com/sdks/drop-in/index
+  note: Framework-agnostic Drop-in library of Web Components ("npm install @monite/sdk-drop-in").
+- name: '@monite/sdk-api'
+  registry: npm
+  url: https://www.npmjs.com/package/@monite/sdk-api
+  language: JavaScript/TypeScript
+  official: true
+  version: 3.22.1
+  published: '2025-02-26'
+  note: '@monite scope package (license MIT); not named on the current SDK docs pages, last release 2025-02-26.'
+- name: '@monite/node-client'
+  registry: npm
+  url: https://www.npmjs.com/package/@monite/node-client
+  language: TypeScript/Node.js
+  official: true
+  version: 0.3.4
+  published: '2025-08-15'
+  source_code: https://github.com/team-monite/monite-node-client
+  note: Install command "npm i -s @monite/node-client" from the team-monite/monite-node-client README.
+- name: monite
+  registry: npm
+  url: https://www.npmjs.com/package/monite
+  language: TypeScript/Node.js
+  official: true
+  version: 0.1.0
+  published: '2024-11-14'
+  source_code: https://github.com/team-monite/monite-node-client
+  note: Earlier unscoped name whose registry repository field points at team-monite/monite-node-client; superseded by @monite/node-client.
+- name: monite
+  registry: pypi
+  url: https://pypi.org/project/monite/
+  language: Python
+  official: true
+  version: 0.5.4
+  published: '2025-08-15'
+  source_code: https://github.com/team-monite/monite-python-client
+  note: '"pip install monite" per the team-monite/monite-python-client README, which links this PyPI project.'
+- name: github.com/team-monite/monite-go-client
+  registry: go
+  url: https://pkg.go.dev/github.com/team-monite/monite-go-client
+  language: Go
+  official: true
+  version: v0.2.1
+  published: '2025-03-03'
+  source_code: https://github.com/team-monite/monite-go-client
+- name: monite-ruby-client
+  registry: github
+  url: https://github.com/team-monite/monite-ruby-client
+  language: Ruby
+  official: true
+  version: null
+  published: null
+  note: Repository exists in the team-monite org (last push 2025-04-01) but no 'monite' gem is on RubyGems (rubygems.org API 404) and the README names no install command.

@@ -1,0 +1,810 @@
+openapi: 3.2.0
+info:
+  title: Monite E-invoicing connections API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged E-invoicing connections across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: E-invoicing connections
+paths:
+  /einvoicing_connections:
+    get:
+      tags:
+      - E-invoicing connections
+      summary: Get all e-invoicing connections
+      operationId: get_einvoicing_connections
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EInvoicingRetrieveListData'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - E-invoicing connections
+      summary: Create an e-invoicing connection
+      operationId: post_einvoicing_connections
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EinvoicingConnectionCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicingConnectionResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /einvoicing_connections/{einvoicing_connection_id}:
+    get:
+      tags:
+      - E-invoicing connections
+      summary: Get an e-invoicing connection by ID
+      operationId: get_einvoicing_connections_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: einvoicing_connection_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicingConnectionResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - E-invoicing connections
+      summary: Update an e-invoicing connection
+      operationId: patch_einvoicing_connections_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: einvoicing_connection_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EinvoicingConnectionUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicingConnectionResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - E-invoicing connections
+      summary: Delete an e-invoicing connection
+      operationId: delete_einvoicing_connections_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: einvoicing_connection_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /einvoicing_connections/{einvoicing_connection_id}/network_credentials:
+    post:
+      tags:
+      - E-invoicing connections
+      summary: Create an e-invoicing credential
+      operationId: post_einvoicing_connections_id_network_credentials
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: einvoicing_connection_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EinvoicingNetworkCredentialsCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EinvoicingNetworkCredentialsResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    EinvoicingAddress:
+      properties:
+        address_line1:
+          type: string
+          description: Street address line 1
+        address_line2:
+          type: string
+          description: Street address line 2
+        city:
+          type: string
+          description: City name
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedEinvoicingCountryCodes'
+          description: Country name
+        postal_code:
+          type: string
+          description: Postal/ZIP code
+        state:
+          type: string
+          description: State/Province/County
+      additionalProperties: false
+      type: object
+      required:
+      - address_line1
+      - city
+      - country
+      - postal_code
+    EinvoicingConnectionUpdateRequest:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/UpdateEinvoicingAddress'
+          description: Integration Address
+        is_receiver:
+          type: boolean
+          description: Set to `true` if the entity needs to receive e-invoices.
+        is_sender:
+          type: boolean
+          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
+      additionalProperties: false
+      type: object
+    EinvoicingConnectionCreateRequest:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/EinvoicingAddress'
+          description: Integration Address
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier for the integration
+        is_receiver:
+          type: boolean
+          description: Set to `true` if the entity needs to receive e-invoices.
+          default: true
+        is_sender:
+          type: boolean
+          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - address
+    EInvoicingRetrieveListData:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EinvoicingConnectionResponse'
+          type: array
+          description: List of connections for the current page
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    UpdateEinvoicingAddress:
+      properties:
+        address_line1:
+          type: string
+          description: Street address line 1
+        address_line2:
+          type: string
+          description: Street address line 2
+        city:
+          type: string
+          description: City name
+        postal_code:
+          type: string
+          description: Postal/ZIP code
+        state:
+          type: string
+          description: State/Province/County
+      additionalProperties: false
+      type: object
+      required:
+      - address_line1
+      - city
+      - postal_code
+    EinvoicingNetworkCredentialsCreateRequest:
+      properties:
+        network_credentials_identifier:
+          type: string
+          description: Network participant identifier
+          example: '12345678'
+        network_credentials_schema:
+          allOf:
+          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
+          description: Network scheme identifier
+          example: NL:KVK
+      additionalProperties: false
+      type: object
+      required:
+      - network_credentials_identifier
+      - network_credentials_schema
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllowedEinvoicingCountryCodes:
+      type: string
+      enum:
+      - DE
+      - NL
+      - BE
+    EinvoiceSchemaTypeEnum:
+      type: string
+      enum:
+      - DE:VAT
+      - NL:KVK
+      - NL:VAT
+      - BE:VAT
+      - BE:EN
+    EinvoicingNetworkCredentialsResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the credentials
+        created_at:
+          type: string
+          format: date-time
+          description: Date of credential
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update of credential
+        einvoicing_connection_id:
+          type: string
+          format: uuid
+          description: ID of the Einvoicing connection
+        network_credentials_identifier:
+          type: string
+          description: Network participant identifier
+          example: '12345678'
+        network_credentials_schema:
+          allOf:
+          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
+          description: Network scheme identifier
+          example: NL:KVK
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - einvoicing_connection_id
+      - network_credentials_identifier
+      - network_credentials_schema
+    EinvoicingConnectionResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+          description: Date of Integration
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update of Integration
+        address:
+          allOf:
+          - $ref: '#/components/schemas/EinvoicingAddress'
+          description: Integration Address
+        credentials:
+          items:
+            $ref: '#/components/schemas/EinvoicingNetworkCredentialsResponse'
+          type: array
+          description: List of credentials
+        entity_id:
+          type: string
+          format: uuid
+          description: ID of the entity
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        is_receiver:
+          type: boolean
+          description: Set to `true` if the entity needs to receive e-invoices.
+          default: true
+        is_sender:
+          type: boolean
+          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
+          default: true
+        legal_name:
+          type: string
+          description: Legal name of the Entity
+        provider_id:
+          type: string
+          description: ID assigned by integration partner
+          example: '12345'
+        status:
+          type: string
+          description: Current status of the integration
+          example: active
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - address
+      - credentials
+      - entity_id
+      - legal_name
+      - status
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

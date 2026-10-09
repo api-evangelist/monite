@@ -1,0 +1,1427 @@
+openapi: 3.2.0
+info:
+  title: Monite Webhook subscriptions API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Webhook subscriptions across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Webhook Subscriptions
+paths:
+  /webhook_settings:
+    get:
+      tags:
+      - Webhook Subscriptions
+      summary: Get webhook subscriptions
+      operationId: get_webhook_settings
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookSubscriptionCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: object_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookObjectType'
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionPaginationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Subscribe to a webhook
+      operationId: post_webhook_settings
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookSubscriptionRequest'
+      callbacks:
+        webhook_notification:
+          '{$request.body.url}':
+            post:
+              summary: Webhook Notification
+              operationId: webhook_notification__request_body_url__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/EventResourceForWebhookClient'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResourceWithSecret'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_settings/{webhook_subscription_id}:
+    get:
+      tags:
+      - Webhook Subscriptions
+      summary: Get a webhook subscription
+      operationId: get_webhook_settings_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Webhook Subscriptions
+      summary: Update a webhook subscription
+      operationId: patch_webhook_settings_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookSubscriptionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Webhook Subscriptions
+      summary: Delete a webhook subscription
+      operationId: delete_webhook_settings_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_settings/{webhook_subscription_id}/disable:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Disable a webhook subscription
+      operationId: post_webhook_settings_id_disable
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_settings/{webhook_subscription_id}/enable:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Enable a webhook subscription
+      operationId: post_webhook_settings_id_enable
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_settings/{webhook_subscription_id}/regenerate_secret:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Regenerate a webhook secret and return the new webhook subscription
+      operationId: post_webhook_settings_id_regenerate_secret
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResourceWithSecret'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_subscriptions:
+    get:
+      tags:
+      - Webhook Subscriptions
+      summary: Get webhook subscriptions
+      operationId: get_webhook_subscriptions
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookSubscriptionCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: object_type
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookObjectType'
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionPaginationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Subscribe to a webhook
+      operationId: post_webhook_subscriptions
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateWebhookSubscriptionRequest'
+      callbacks:
+        webhook_notification:
+          '{$request.body.url}':
+            post:
+              summary: Webhook Notification
+              operationId: webhook_notification__request_body_url__post
+              requestBody:
+                required: true
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/EventResourceForWebhookClient_2'
+              responses:
+                '200':
+                  description: Successful Response
+                  content:
+                    application/json:
+                      schema: {}
+                '422':
+                  description: Validation Error
+                  content:
+                    application/json:
+                      schema:
+                        $ref: '#/components/schemas/HTTPValidationError'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResourceWithSecret'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_subscriptions/{webhook_subscription_id}:
+    get:
+      tags:
+      - Webhook Subscriptions
+      summary: Get a webhook subscription
+      operationId: get_webhook_subscriptions_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Webhook Subscriptions
+      summary: Update a webhook subscription
+      operationId: patch_webhook_subscriptions_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateWebhookSubscriptionRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Webhook Subscriptions
+      summary: Delete a webhook subscription
+      operationId: delete_webhook_subscriptions_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_subscriptions/{webhook_subscription_id}/disable:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Disable a webhook subscription
+      operationId: post_webhook_subscriptions_id_disable
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_subscriptions/{webhook_subscription_id}/enable:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Enable a webhook subscription
+      operationId: post_webhook_subscriptions_id_enable
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /webhook_subscriptions/{webhook_subscription_id}/regenerate_secret:
+    post:
+      tags:
+      - Webhook Subscriptions
+      summary: Regenerate a webhook secret and return the new webhook subscription
+      operationId: post_webhook_subscriptions_id_regenerate_secret
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: webhook_subscription_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WebhookSubscriptionResourceWithSecret'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    MessageResponse:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    UpdateWebhookSubscriptionRequest:
+      properties:
+        event_types:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+        object_type:
+          anyOf:
+          - $ref: '#/components/schemas/WebhookObjectType'
+          - type: 'null'
+        url:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+      additionalProperties: false
+      type: object
+    CreateWebhookSubscriptionRequest:
+      properties:
+        event_types:
+          items:
+            type: string
+          type: array
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
+      type: object
+      required:
+      - object_type
+      - url
+    WebhookObjectType:
+      type: string
+      enum:
+      - account
+      - accounting_connection
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - batch_payment
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_user
+      - export
+      - overdue_reminder
+      - partner_settings
+      - payable
+      - payables_credit_note
+      - payables_purchase_order
+      - payable.line_item
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_reminder
+      - product
+      - project
+      - receivable
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - workflow
+      - workflow_pipeline
+      - ocr_task
+      - delivery_note
+      - receipt
+      - transaction
+    EventResourceForWebhookClient:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: The timestamp that was generated at the time of making the database transaction that has initially caused the event
+        action:
+          type: string
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+        entity_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        object:
+          anyOf:
+          - {}
+          - type: 'null'
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        significance:
+          type: string
+          default: medium
+        webhook_subscription_id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - id
+      - action
+      - api_version
+      - entity_id
+      - name
+      - object_id
+      - object_type
+      - webhook_subscription_id
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    WebhookSubscriptionCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    WebhookSubscriptionResourceWithSecret:
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_types:
+          items:
+            type: string
+          type: array
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        secret:
+          type: string
+        status:
+          $ref: '#/components/schemas/WebhookSubscriptionStatus'
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      type: object
+      required:
+      - id
+      - event_types
+      - object_type
+      - secret
+      - status
+      - url
+    WebhookSubscriptionStatus:
+      type: string
+      enum:
+      - enabled
+      - disabled
+    WebhookSubscriptionPaginationResource:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/WebhookSubscriptionResource'
+          type: array
+          description: A set of webhook settings of different types returned per page
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    WebhookSubscriptionResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_types:
+          items:
+            type: string
+          type: array
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        status:
+          $ref: '#/components/schemas/WebhookSubscriptionStatus'
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      type: object
+      required:
+      - id
+      - event_types
+      - object_type
+      - status
+      - url
+    EventResourceForWebhookClient_2:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: The timestamp that was generated at the time of making the database transaction that has initially caused the event
+        action:
+          type: string
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        object:
+          anyOf:
+          - {}
+          - type: 'null'
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        webhook_subscription_id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - id
+      - action
+      - api_version
+      - description
+      - entity_id
+      - object_type
+      - webhook_subscription_id
+    EventResourceForWebhookClient_3:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: The timestamp that was generated at the time of making the database transaction that has initially caused the event
+        action:
+          type: string
+        api_version:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        object:
+          anyOf:
+          - {}
+          - type: 'null'
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        webhook_subscription_id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - id
+      - action
+      - api_version
+      - description
+      - entity_id
+      - object_type
+      - webhook_subscription_id
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,1143 @@
+openapi: 3.2.0
+info:
+  title: Monite Entity users API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Entity users across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Entity users
+paths:
+  /entity_users:
+    get:
+      tags:
+      - Entity users
+      summary: Get all entity users
+      description: Retrieve a list of all entity users.
+      operationId: get_entity_users
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          maximum: 100
+          minimum: 1
+          default: 100
+        description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+      - name: pagination_token
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+        description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+      - name: sort
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - $ref: '#/components/schemas/EntityUserCursorFields'
+          - type: 'null'
+        description: The field to sort the results by. Typically used together with the `order` parameter.
+      - name: id__in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+              format: uuid
+          - type: 'null'
+      - name: id__not_in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+              format: uuid
+          - type: 'null'
+      - name: role_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+      - name: role_id__in
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: array
+            items:
+              type: string
+              format: uuid
+          - type: 'null'
+      - name: login
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: first_name
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: name__istartswith
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: created_at__gt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lt
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__gte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: created_at__lte
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Entity users
+      summary: Create an entity user
+      description: Create a new entity user from the specified values.
+      operationId: post_entity_users
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEntityUserRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /entity_users/me:
+    get:
+      tags:
+      - Entity users
+      summary: Get current entity user
+      description: Retrieve an entity user by its ID.
+      operationId: get_entity_users_me
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Entity users
+      summary: Update current entity user
+      description: Change the specified fields with provided values.
+      operationId: patch_entity_users_me
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMeEntityUserRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /entity_users/my_role:
+    get:
+      tags:
+      - Entity users
+      summary: Get a role of this entity user
+      description: Retrieves information of a role assigned to this entity user.
+      operationId: get_entity_users_my_role
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /entity_users/{entity_user_id}:
+    get:
+      tags:
+      - Entity users
+      summary: Get an entity user
+      description: Retrieve an entity user by its ID.
+      operationId: get_entity_users_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: entity_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Entity users
+      summary: Update an entity user
+      description: Change the specified fields with provided values.
+      operationId: patch_entity_users_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: entity_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityUserRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityUserResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Entity users
+      summary: Delete an entity user
+      operationId: delete_entity_users_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - name: entity_user_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    UpdateEntityUserRequest:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: First name
+          examples:
+          - Casey
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Last name
+          examples:
+          - Peters
+        login:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Login
+          examples:
+          - caseyp
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        role_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: UUID of the role assigned to this entity user
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Title
+          examples:
+          - Finance Manager
+      additionalProperties: false
+      type: object
+    RoleResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID role ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        name:
+          type: string
+          minLength: 1
+          description: Role name
+        permissions:
+          $ref: '#/components/schemas/BizObjectsSchema-Output'
+          description: Access permissions
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+      type: object
+      required:
+      - id
+      - name
+      - permissions
+      - status
+      - created_at
+      - updated_at
+    PayableActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/PayableActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      additionalProperties: false
+      type: object
+    ActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+    PermissionEnum:
+      type: string
+      enum:
+      - allowed
+      - allowed_for_own
+      - not_allowed
+    UpdateMeEntityUserRequest:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: First name
+          examples:
+          - Casey
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Last name
+          examples:
+          - Peters
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Title
+          examples:
+          - Finance Manager
+      additionalProperties: false
+      type: object
+    CommonSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/ActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          enum:
+          - person
+          - onboarding
+          - comment
+          - counterpart
+          - entity_user
+          - entity
+          - entity_vat_ids
+          - counterpart_vat_id
+          - entity_bank_account
+          - export
+          - mailbox
+          - payables_purchase_order
+          - payment_reminder
+          - overdue_reminder
+          - product
+          - project
+          - receivable
+          - delivery_note
+          - ocr_task
+          - reconciliation
+          - role
+          - tag
+          - todo_task
+          - todo_task_mute
+          - transaction
+          - workflow
+          - approval_request
+          - approval_policy
+          - payment_record
+          - receipt
+          - accounting_tax_rate
+          - ledger_account
+          - cost_center
+          description: Object type
+          default: comment
+      additionalProperties: false
+      type: object
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    BizObjectsSchema-Output:
+      properties:
+        objects:
+          items:
+            $ref: '#/components/schemas/RootSchema-Output'
+          type: array
+          description: List of objects
+      additionalProperties: false
+      type: object
+    EntityUserCursorFields:
+      type: string
+      enum:
+      - updated_at
+    PayableSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/PayableActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          const: payable
+          description: Object type
+          default: payable
+      additionalProperties: false
+      type: object
+    ActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/ActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      type: object
+    CreateEntityUserRequest:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          type: string
+          maxLength: 255
+          description: First name
+          examples:
+          - Casey
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Last name
+          examples:
+          - Peters
+        login:
+          type: string
+          maxLength: 255
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        role_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: UUID of the role assigned to this entity user
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Title
+          examples:
+          - Finance Manager
+      additionalProperties: false
+      type: object
+      required:
+      - first_name
+      - login
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PayableActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+      - pay
+      - approve
+      - cancel
+      - submit
+      - create_from_mail
+      - reopen
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    EntityUserResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID entity user ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          type: string
+          description: First name
+        last_name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Last name
+        login:
+          type: string
+          description: Login
+          examples:
+          - caseyp
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        role_id:
+          type: string
+          format: uuid
+          description: UUID role ID
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+        userpic_file_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - login
+      - role_id
+      - status
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    RootSchema-Output:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Output'
+      - $ref: '#/components/schemas/PayableSchema-Output'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
+          approval_policy: '#/components/schemas/CommonSchema-Output'
+          approval_request: '#/components/schemas/CommonSchema-Output'
+          comment: '#/components/schemas/CommonSchema-Output'
+          cost_center: '#/components/schemas/CommonSchema-Output'
+          counterpart: '#/components/schemas/CommonSchema-Output'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
+          delivery_note: '#/components/schemas/CommonSchema-Output'
+          entity: '#/components/schemas/CommonSchema-Output'
+          entity_bank_account: '#/components/schemas/CommonSchema-Output'
+          entity_user: '#/components/schemas/CommonSchema-Output'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
+          export: '#/components/schemas/CommonSchema-Output'
+          ledger_account: '#/components/schemas/CommonSchema-Output'
+          mailbox: '#/components/schemas/CommonSchema-Output'
+          ocr_task: '#/components/schemas/CommonSchema-Output'
+          onboarding: '#/components/schemas/CommonSchema-Output'
+          overdue_reminder: '#/components/schemas/CommonSchema-Output'
+          payable: '#/components/schemas/PayableSchema-Output'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
+          payment_record: '#/components/schemas/CommonSchema-Output'
+          payment_reminder: '#/components/schemas/CommonSchema-Output'
+          person: '#/components/schemas/CommonSchema-Output'
+          product: '#/components/schemas/CommonSchema-Output'
+          project: '#/components/schemas/CommonSchema-Output'
+          receipt: '#/components/schemas/CommonSchema-Output'
+          receivable: '#/components/schemas/CommonSchema-Output'
+          reconciliation: '#/components/schemas/CommonSchema-Output'
+          role: '#/components/schemas/CommonSchema-Output'
+          tag: '#/components/schemas/CommonSchema-Output'
+          todo_task: '#/components/schemas/CommonSchema-Output'
+          todo_task_mute: '#/components/schemas/CommonSchema-Output'
+          transaction: '#/components/schemas/CommonSchema-Output'
+          workflow: '#/components/schemas/CommonSchema-Output'
+    EntityUserPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EntityUserResponse'
+          type: array
+          description: array of records
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

@@ -1,0 +1,69 @@
+name: Monite Sandbox
+generated: '2026-10-09'
+method: searched
+source: https://docs.monite.com/api/concepts/environments
+description: Separate Sandbox environment with its own Partner Portal and API base URL; data and settings cannot be migrated to Production, SLAs are best-effort, and data retention is not guaranteed. Payment flows can be tested against sandbox banks on the payment page.
+docs:
+- https://docs.monite.com/api/concepts/environments
+- https://docs.monite.com/payments/testing
+- https://docs.monite.com/references/go-live-checklist
+modes:
+- name: sandbox
+  api_base: https://api.sandbox.monite.com
+  portal: https://portal.sandbox.monite.com
+- name: production (Europe)
+  api_base: https://api.monite.com
+  portal: https://portal.monite.com
+- name: production (North America)
+  api_base: https://us.api.monite.com
+  portal: https://us.portal.monite.com
+key_formats:
+  note: Credentials are a Client ID and Client Secret pair generated separately in each environment's Partner Portal; no key prefixes are documented. Production use requires a signed contract.
+test_bank_accounts:
+  docs: https://docs.monite.com/payments/testing
+  sepa_credit:
+  - bank: Belfius Bank Sandbox
+    payer_country: Belgium
+    iban: any Belgium IBAN, for example, BE68539007547034
+    note: No bank login required, the payment is immediately initiated after user confirmation.
+  - bank: Deutsche Bank Sandbox
+    payer_country: Germany
+    payee_iban: DE25648730420109480400
+    payer_iban: DE17215730140403340300
+    branch_number: '615'
+    account_number: 4033403 or 4033411
+    note: Maximum amount for a successful payment is 50 EUR. Click SCA OK for success or SCA NOK for failed authorization.
+  - bank: Deutsche Postbank Sandbox
+    payer_country: Germany
+    payee_iban: DE25648730420109480400
+    payer_iban: DE17215730140403340300
+    login_id: 6154033403 or 6154033411
+    note: Maximum amount for a successful payment is 50 EUR. SCA OK / SCA NOK buttons.
+  - bank: Fiducia Sandbox
+    payer_country: Germany
+    iban: DE39499999600000005111
+    bank_login: [VRK1234567890ALL, VRK1234567890SMS, VRK1234567890HHD]
+    bank_password: password
+    sca_verification_code: '123456'
+  - bank: Fineco Sandbox
+    payer_country: Italy or Ireland
+    iban_examples: [IT31X0301503200000003517230, IE29AIBK93115212345678]
+    bank_username: '00000000'
+    bank_password: '11111111'
+    note: Click Accetta to trigger successful payment or Rifiuta to reject.
+  - bank: KBC Belgium Sandbox
+    payer_country: Belgium
+    iban: any Belgium IBAN, for example, BE68539007547034
+  - bank: Modelo Sandbox
+    payer_country: UK
+    bank_username: mits
+    bank_password: mits
+  - bank: Natwest Bank Sandbox
+    payer_country: UK
+    customer_number: '123456789012'
+  - bank: SNS Bank Sandbox
+    payer_country: Netherlands
+    note: No login required; click "Geef toe stemming" to accept.
+rate_limits:
+  note: Sandbox accounts might have lower rate limits than Production.
+  docs: https://docs.monite.com/api/concepts/rate-limiting

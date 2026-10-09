@@ -1,0 +1,984 @@
+openapi: 3.2.0
+info:
+  title: Monite Mail templates API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Mail templates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Mail templates
+paths:
+  /mail_templates:
+    get:
+      tags:
+      - Mail templates
+      summary: Get All With Filters
+      description: Get all custom templates
+      operationId: get_mail_templates
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/CustomTemplatesCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          $ref: '#/components/schemas/DocumentObjectTypeRequestEnum'
+        name: type
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/DocumentObjectTypeRequestEnum'
+          type: array
+        name: type__in
+        in: query
+      - required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/DocumentObjectTypeRequestEnum'
+          type: array
+        name: type__not_in
+        in: query
+      - required: false
+        schema:
+          type: boolean
+        name: is_default
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__icontains
+        in: query
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplatesPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Mail templates
+      summary: Create
+      description: Create custom template
+      operationId: post_mail_templates
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCustomTemplateSchema'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplateDataSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mail_templates/preview:
+    post:
+      tags:
+      - Mail templates
+      summary: Preview
+      description: Preview rendered template
+      operationId: post_mail_templates_preview
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PreviewTemplateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PreviewTemplateResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mail_templates/system:
+    get:
+      tags:
+      - Mail templates
+      summary: Get All System Templates
+      description: Get all system templates
+      operationId: get_mail_templates_system
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemTemplates'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mail_templates/{template_id}:
+    get:
+      tags:
+      - Mail templates
+      summary: Get
+      description: Get custom template by ID
+      operationId: get_mail_templates_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: template_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplateDataSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Mail templates
+      summary: Update
+      description: Update custom template by ID
+      operationId: patch_mail_templates_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: template_id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCustomTemplateSchemaRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplateDataSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Mail templates
+      summary: Delete
+      description: Delete custom template bt ID
+      operationId: delete_mail_templates_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: template_id
+        in: path
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /mail_templates/{template_id}/make_default:
+    post:
+      tags:
+      - Mail templates
+      summary: Make Default
+      description: Make template default
+      operationId: post_mail_templates_id_make_default
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: template_id
+        in: path
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplateDataSchema'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    CustomTemplatesPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CustomTemplateDataSchema'
+          type: array
+          description: All user-defined email templates
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    SystemTemplates:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SystemTemplateDataSchema'
+          type: array
+          description: All pre-defined email templates
+      type: object
+      required:
+      - data
+    DocumentObjectTypeRequestEnum:
+      type: string
+      enum:
+      - receivables_quote
+      - receivables_invoice
+      - receivables_paid_invoice
+      - receivables_credit_note
+      - receivables_discount_reminder
+      - receivables_final_reminder
+      - payables_purchase_order
+      - payables_notify_approver
+      - payables_notify_payer
+    CustomTemplatesCursorFields:
+      type: string
+      enum:
+      - type
+      - name
+    UpdateCustomTemplateSchemaRequest:
+      properties:
+        body_template:
+          type: string
+          description: Jinja2 compatible string with email body
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: Lowercase ISO code of language
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+          description: Custom template name
+          serialization_alias: template_name
+        subject_template:
+          type: string
+          description: Jinja2 compatible string with email subject
+      additionalProperties: false
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    SystemTemplateDataSchema:
+      properties:
+        available_templates:
+          items:
+            $ref: '#/components/schemas/TemplateDataSchema'
+          type: array
+          description: Array of templates
+        template_name:
+          type: string
+          description: Name of the template
+      additionalProperties: false
+      type: object
+      required:
+      - available_templates
+      - template_name
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AddCustomTemplateSchema:
+      properties:
+        body_template:
+          type: string
+          minLength: 1
+          description: Jinja2 compatible string with email body
+        is_default:
+          type: boolean
+          description: Is default template
+          default: false
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: Lowercase ISO code of language
+          default: en
+        name:
+          type: string
+          maxLength: 128
+          minLength: 1
+          description: Custom template name
+        subject_template:
+          type: string
+          minLength: 1
+          description: Jinja2 compatible string with email subject
+        type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentObjectTypeRequestEnum'
+          description: Document type of content
+      additionalProperties: false
+      type: object
+      required:
+      - body_template
+      - name
+      - subject_template
+      - type
+    PreviewTemplateResponse:
+      properties:
+        body_preview:
+          type: string
+        subject_preview:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body_preview
+      - subject_preview
+    TemplateDataSchema:
+      properties:
+        body_template:
+          type: string
+          description: Jinja2 compatible email body template
+        language:
+          type: string
+          description: Lowercase ISO code of language
+        subject_template:
+          type: string
+          description: Jinja2 compatible email subject template
+      additionalProperties: false
+      type: object
+      required:
+      - body_template
+      - language
+      - subject_template
+    PreviewTemplateRequest:
+      properties:
+        body:
+          type: string
+          description: Body text of the template
+        document_type:
+          allOf:
+          - $ref: '#/components/schemas/DocumentObjectTypeRequestEnum'
+          description: Document type of content
+        language_code:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: Lowercase ISO code of language
+        subject:
+          type: string
+          description: Subject text of the template
+      additionalProperties: false
+      type: object
+      required:
+      - body
+      - document_type
+      - language_code
+      - subject
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    CustomTemplateDataSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of email template
+        created_at:
+          type: string
+          format: date-time
+          description: Template created date and time
+        updated_at:
+          type: string
+          format: date-time
+          description: Template updated date and time
+        body_template:
+          type: string
+          description: Jinja2 compatible email body template
+        is_default:
+          type: boolean
+          description: Is default template
+        language:
+          type: string
+          maxLength: 4
+          description: Lowercase ISO code of language
+        name:
+          type: string
+          maxLength: 128
+          description: Name of the template
+        subject_template:
+          type: string
+          maxLength: 2048
+          description: Jinja2 compatible email subject template
+        type:
+          type: string
+          description: Document type of content
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - body_template
+      - is_default
+      - language
+      - name
+      - subject_template
+      - type
+    LanguageCodeEnum:
+      type: string
+      enum:
+      - ab
+      - aa
+      - af
+      - ak
+      - sq
+      - am
+      - ar
+      - an
+      - hy
+      - av
+      - ae
+      - ay
+      - az
+      - bm
+      - ba
+      - eu
+      - be
+      - bn
+      - bi
+      - bs
+      - br
+      - bg
+      - my
+      - ca
+      - ch
+      - ce
+      - ny
+      - zh
+      - cu
+      - cv
+      - kw
+      - co
+      - cr
+      - hr
+      - cs
+      - da
+      - dv
+      - nl
+      - dz
+      - en
+      - eo
+      - et
+      - ee
+      - fo
+      - fj
+      - fi
+      - fr
+      - fy
+      - ff
+      - gd
+      - gl
+      - lg
+      - ka
+      - de
+      - el
+      - kl
+      - gn
+      - gu
+      - ht
+      - ha
+      - he
+      - hz
+      - hi
+      - ho
+      - hu
+      - io
+      - ig
+      - id
+      - ia
+      - ie
+      - iu
+      - ik
+      - ga
+      - it
+      - ja
+      - jv
+      - kn
+      - kr
+      - ks
+      - kk
+      - km
+      - ki
+      - rw
+      - ky
+      - kv
+      - kg
+      - ko
+      - kj
+      - ku
+      - lo
+      - la
+      - lv
+      - li
+      - ln
+      - lt
+      - lu
+      - lb
+      - mk
+      - mg
+      - ms
+      - ml
+      - mt
+      - gv
+      - mi
+      - mr
+      - mh
+      - mn
+      - na
+      - nv
+      - nd
+      - nr
+      - ng
+      - ne
+      - 'no'
+      - nb
+      - nn
+      - ii
+      - oc
+      - oj
+      - om
+      - os
+      - pi
+      - ps
+      - fa
+      - pl
+      - pt
+      - pa
+      - qu
+      - ro
+      - rm
+      - rn
+      - ru
+      - se
+      - sm
+      - sg
+      - sa
+      - sc
+      - sr
+      - sn
+      - sd
+      - si
+      - sk
+      - sl
+      - so
+      - st
+      - es
+      - su
+      - sw
+      - ss
+      - sv
+      - tl
+      - ty
+      - tg
+      - ta
+      - tt
+      - te
+      - th
+      - bo
+      - ti
+      - to
+      - ts
+      - tn
+      - tr
+      - tk
+      - tw
+      - ug
+      - uk
+      - ur
+      - uz
+      - ve
+      - vi
+      - vo
+      - wa
+      - cy
+      - wo
+      - xh
+      - yi
+      - yo
+      - za
+      - zu
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

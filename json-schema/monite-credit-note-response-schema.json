@@ -1,0 +1,658 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/monite/main/json-schema/monite-credit-note-response-schema.json",
+  "title": "CreditNoteResponse",
+  "description": "Schema for credit note response. Includes all fields that can be returned from the API.",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/monite-openapi.yml#/components/schemas/CreditNoteResponse",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The unique identifier of the credit note"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the credit note was created in the system"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time of the last update to the credit note"
+    },
+    "based_on": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the payable this credit note is based on"
+    },
+    "based_on_document_id": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "The document ID of the original payable that this credit note refers to"
+    },
+    "counterpart": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CounterpartRawData"
+        }
+      ],
+      "description": "Object representing de-normalized counterpart data"
+    },
+    "counterpart_address_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the counterpart's address"
+    },
+    "counterpart_bank_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the counterpart's bank account"
+    },
+    "counterpart_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the counterpart"
+    },
+    "counterpart_raw": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/CounterpartRawData"
+        }
+      ],
+      "description": "Object representing counterpart data which was extracted by OCR. Used for informational purposes."
+    },
+    "counterpart_vat_id_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the counterpart's VAT registration"
+    },
+    "created_by_external_user_id": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "External system's user ID for the creator"
+    },
+    "created_by_external_user_name": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Name of the external user who created the credit note"
+    },
+    "created_by_user_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the user who created the credit note"
+    },
+    "currency": {
+      "type": "string",
+      "maxLength": 5,
+      "description": "The currency code"
+    },
+    "currency_exchange": {
+      "$ref": "#/$defs/CurrencyExchangeSchema"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Description of the credit note"
+    },
+    "document_id": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "The credit note's unique document number"
+    },
+    "entity_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The ID of the entity to which the credit note belongs"
+    },
+    "file_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "The id of the credit note file stored in the file saver."
+    },
+    "file_url": {
+      "type": "string",
+      "description": "The URL of the credit note file stored in the file saver."
+    },
+    "issued_at": {
+      "type": "string",
+      "format": "date",
+      "description": "Date when the credit note was issued"
+    },
+    "ocr_request_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the OCR processing request"
+    },
+    "ocr_status": {
+      "type": "string",
+      "maxLength": 10,
+      "description": "Status of OCR processing"
+    },
+    "origin": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "The origin or source system of the credit note"
+    },
+    "project_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "ID of the associated project"
+    },
+    "sender": {
+      "type": "string",
+      "maxLength": 255,
+      "description": "Email address of the sender"
+    },
+    "source_of_data": {
+      "type": "string",
+      "maxLength": 128,
+      "description": "How the data was input (ocr/user_specified)"
+    },
+    "status": {
+      "type": "string",
+      "maxLength": 30,
+      "description": "The current status of the credit note in its lifecycle"
+    },
+    "subtotal": {
+      "type": "integer",
+      "description": "The subtotal amount before taxes"
+    },
+    "tags": {
+      "items": {
+        "$ref": "#/$defs/TagReadSchema"
+      },
+      "type": "array",
+      "description": "List of tags associated with this credit note"
+    },
+    "tax": {
+      "type": "integer",
+      "description": "The tax percentage"
+    },
+    "tax_amount": {
+      "type": "integer",
+      "description": "The calculated tax amount"
+    },
+    "total_amount": {
+      "type": "integer",
+      "description": "The total amount including taxes"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "created_at",
+    "updated_at",
+    "entity_id",
+    "origin",
+    "source_of_data",
+    "status"
+  ],
+  "$defs": {
+    "AllowedCountries": {
+      "type": "string",
+      "enum": [
+        "AF",
+        "AX",
+        "AL",
+        "DZ",
+        "AS",
+        "AD",
+        "AO",
+        "AI",
+        "AQ",
+        "AG",
+        "AR",
+        "AM",
+        "AW",
+        "AU",
+        "AT",
+        "AZ",
+        "BS",
+        "BH",
+        "BD",
+        "BB",
+        "BY",
+        "BE",
+        "BZ",
+        "BJ",
+        "BM",
+        "BT",
+        "BO",
+        "BA",
+        "BW",
+        "BV",
+        "BR",
+        "IO",
+        "BN",
+        "BG",
+        "BF",
+        "BI",
+        "KH",
+        "CM",
+        "CA",
+        "IC",
+        "CV",
+        "KY",
+        "CF",
+        "EA",
+        "TD",
+        "CL",
+        "CN",
+        "CX",
+        "CC",
+        "CO",
+        "KM",
+        "CG",
+        "CD",
+        "CK",
+        "CR",
+        "CI",
+        "HR",
+        "CU",
+        "CY",
+        "CZ",
+        "DK",
+        "DJ",
+        "DM",
+        "DO",
+        "EC",
+        "EG",
+        "SV",
+        "GQ",
+        "ER",
+        "EE",
+        "SZ",
+        "ET",
+        "FK",
+        "FO",
+        "FJ",
+        "FI",
+        "FR",
+        "GF",
+        "PF",
+        "TF",
+        "GA",
+        "GM",
+        "GE",
+        "DE",
+        "GH",
+        "GI",
+        "GR",
+        "GL",
+        "GD",
+        "GP",
+        "GU",
+        "GT",
+        "GG",
+        "GN",
+        "GW",
+        "GY",
+        "HT",
+        "HM",
+        "VA",
+        "HN",
+        "HK",
+        "HU",
+        "IS",
+        "IN",
+        "ID",
+        "IR",
+        "IQ",
+        "IE",
+        "IM",
+        "IL",
+        "IT",
+        "JM",
+        "JP",
+        "JE",
+        "JO",
+        "KZ",
+        "KE",
+        "KI",
+        "KP",
+        "KR",
+        "KW",
+        "KG",
+        "LA",
+        "LV",
+        "LB",
+        "LS",
+        "LR",
+        "LY",
+        "LI",
+        "LT",
+        "LU",
+        "MO",
+        "MG",
+        "MW",
+        "MY",
+        "MV",
+        "ML",
+        "MT",
+        "MH",
+        "MQ",
+        "MR",
+        "MU",
+        "YT",
+        "MX",
+        "FM",
+        "MD",
+        "MC",
+        "MN",
+        "ME",
+        "MS",
+        "MA",
+        "MZ",
+        "MM",
+        "NA",
+        "NR",
+        "NP",
+        "NL",
+        "AN",
+        "NC",
+        "NZ",
+        "NI",
+        "NE",
+        "NG",
+        "NU",
+        "NF",
+        "MP",
+        "MK",
+        "NO",
+        "OM",
+        "PK",
+        "PW",
+        "PS",
+        "PA",
+        "PG",
+        "PY",
+        "PE",
+        "PH",
+        "PN",
+        "PL",
+        "PT",
+        "PR",
+        "QA",
+        "RE",
+        "RO",
+        "RU",
+        "RW",
+        "SH",
+        "KN",
+        "LC",
+        "PM",
+        "VC",
+        "WS",
+        "SM",
+        "ST",
+        "SA",
+        "SN",
+        "RS",
+        "SC",
+        "SL",
+        "SG",
+        "SK",
+        "SI",
+        "SB",
+        "SO",
+        "ZA",
+        "SS",
+        "GS",
+        "ES",
+        "LK",
+        "SD",
+        "SR",
+        "SJ",
+        "SE",
+        "CH",
+        "SY",
+        "TW",
+        "TJ",
+        "TZ",
+        "TH",
+        "TL",
+        "TG",
+        "TK",
+        "TO",
+        "TT",
+        "TN",
+        "TR",
+        "TM",
+        "TC",
+        "TV",
+        "UG",
+        "UA",
+        "AE",
+        "GB",
+        "US",
+        "UM",
+        "UY",
+        "UZ",
+        "VU",
+        "VE",
+        "VN",
+        "VG",
+        "VI",
+        "WF",
+        "EH",
+        "YE",
+        "ZM",
+        "ZW",
+        "BL",
+        "BQ",
+        "CW",
+        "MF",
+        "SX"
+      ]
+    },
+    "CounterpartRawAddress": {
+      "properties": {
+        "city": {
+          "type": "string",
+          "description": "City name."
+        },
+        "country": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/AllowedCountries"
+            }
+          ],
+          "description": "Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2))."
+        },
+        "line1": {
+          "type": "string",
+          "description": "Street address."
+        },
+        "line2": {
+          "type": "string",
+          "description": "Additional address information (if any)."
+        },
+        "postal_code": {
+          "type": "string",
+          "description": "ZIP or postal code."
+        },
+        "state": {
+          "type": "string",
+          "description": "State, region, province, or county."
+        }
+      },
+      "type": "object",
+      "description": "Address information."
+    },
+    "CounterpartRawBankAccount": {
+      "properties": {
+        "account_holder_name": {
+          "type": "string",
+          "description": "Vendor's bank account name."
+        },
+        "account_number": {
+          "type": "string",
+          "description": "Vendor's bank account number, IBAN, or similar (if specified in the payable document)."
+        },
+        "bic": {
+          "type": "string",
+          "description": "SWIFT code (BIC) of the vendor's bank."
+        },
+        "iban": {
+          "type": "string",
+          "description": "required for non-GB bank accounts"
+        },
+        "routing_number": {
+          "type": "string",
+          "description": "required for US bank accounts"
+        },
+        "sort_code": {
+          "type": "string",
+          "description": "required for GB bank accounts"
+        }
+      },
+      "type": "object"
+    },
+    "CounterpartRawData": {
+      "properties": {
+        "address": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawAddress"
+            }
+          ],
+          "description": "The address of the vendor or supplier."
+        },
+        "bank_account": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawBankAccount"
+            }
+          ],
+          "description": "Object representing counterpart bank account."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "The email address of the organization"
+        },
+        "name": {
+          "type": "string",
+          "description": "Vendor or supplier name."
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the organization"
+        },
+        "tax_id": {
+          "type": "string",
+          "description": "The tax id of the counterpart."
+        },
+        "vat_id": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/CounterpartRawVatID"
+            }
+          ],
+          "description": "VAT ID of the vendor or supplier which was used in the invoice."
+        }
+      },
+      "type": "object"
+    },
+    "CounterpartRawVatID": {
+      "properties": {
+        "country": {
+          "$ref": "#/$defs/AllowedCountries"
+        },
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "CurrencyExchangeSchema": {
+      "properties": {
+        "default_currency_code": {
+          "type": "string"
+        },
+        "rate": {
+          "type": "number",
+          "exclusiveMinimum": 0.0
+        },
+        "total": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "default_currency_code",
+        "rate",
+        "total"
+      ]
+    },
+    "TagCategory": {
+      "type": "string",
+      "enum": [
+        "document_type",
+        "department",
+        "project",
+        "cost_center",
+        "vendor_type",
+        "payment_method",
+        "approval_status"
+      ]
+    },
+    "TagReadSchema": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "A unique ID of this tag."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard."
+        },
+        "category": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/TagCategory"
+            }
+          ],
+          "description": "The tag category."
+        },
+        "created_by_entity_user_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "ID of the user who created the tag."
+        },
+        "description": {
+          "type": "string",
+          "maxLength": 255,
+          "minLength": 1,
+          "description": "The tag description."
+        },
+        "name": {
+          "type": "string",
+          "description": "The tag name."
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "created_at",
+        "updated_at",
+        "name"
+      ],
+      "description": "Represents a user-defined tag that can be assigned to resources to filter them."
+    }
+  }
+}

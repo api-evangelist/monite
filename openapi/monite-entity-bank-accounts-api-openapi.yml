@@ -1,0 +1,1504 @@
+openapi: 3.2.0
+info:
+  title: Monite Entity bank accounts API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Entity bank accounts across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Entity bank accounts
+paths:
+  /bank_accounts:
+    get:
+      tags:
+      - Entity bank accounts
+      summary: Get an entity's bank accounts
+      description: Get all bank accounts of this entity.
+      operationId: get_bank_accounts
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Entity bank accounts
+      summary: Create an entity bank account
+      description: 'Add a new bank account for the specified entity.
+
+
+        The minimum required fields are `currency` and `country`. Other required fields depend on the currency:
+
+
+        * EUR accounts require `iban`.
+
+        * GBP accounts require `account_holder_name`, `account_number`, and `sort_code`.
+
+        * USD accounts require `account_holder_name`, `account_number`, and `routing_number`.
+
+        * Accounts in other currencies require one of:
+
+        * `iban`
+
+        * `account_number` and `sort_code`
+
+        * `account_number` and `routing_number`'
+      operationId: post_bank_accounts
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateEntityBankAccountRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}:
+    get:
+      tags:
+      - Entity bank accounts
+      summary: Get an entity's bank account
+      description: Retrieve a bank account by its ID.
+      operationId: get_bank_accounts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Entity bank accounts
+      summary: Update an entity's bank account
+      description: Change the specified fields with the provided values.
+      operationId: patch_bank_accounts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEntityBankAccountRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Entity bank accounts
+      summary: Delete an entity's bank account
+      description: Delete the bank account specified by its ID.
+      operationId: delete_bank_accounts_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}/make_default:
+    post:
+      tags:
+      - Entity bank accounts
+      summary: Set an entity's bank account as the default for its currency
+      description: Set a bank account as the default for this entity per currency.
+      operationId: post_bank_accounts_id_make_default
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /bank_accounts/{bank_account_id}/verify:
+    post:
+      tags:
+      - Entity bank accounts
+      summary: Verify an entity bank account
+      operationId: post_bank_accounts_id_verify
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: bank_account_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntityBankAccountResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '409':
+          description: Business logic error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    EntityBankAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the bank account.
+        account_holder_name:
+          type: string
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        account_number_last4:
+          type: string
+          description: The last 4 digits of the bank account number.
+          example: '5678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          description: The SWIFT/BIC code of the bank.
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          description: The IBAN of the bank account. Required if the account currency is EUR.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: Indicates whether this bank account is the default one for its currency.
+          default: false
+        open_banking_verification_error:
+          type: string
+          description: Last verification error message
+        open_banking_verification_status:
+          allOf:
+          - $ref: '#/components/schemas/OpenBankingVerificationStatusEnum'
+          description: Open banking verification status
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN). Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who added this bank account, or `null` if it was added using a partner access token.
+      type: object
+      required:
+      - id
+      - open_banking_verification_status
+      description: Represents a bank account owned by an entity.
+    UpdateEntityBankAccountRequest:
+      properties:
+        account_holder_name:
+          type: string
+          description: The name of the person or business that owns this bank account. If the account currency is GBP or USD, the holder name cannot be changed to an empty string.
+          example: Cayla Lloyd
+        display_name:
+          type: string
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+      additionalProperties: false
+      type: object
+      description: Data that can be updated in existing bank accounts of an entity.
+    CreateEntityBankAccountRequest:
+      properties:
+        account_holder_name:
+          type: string
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          maxLength: 11
+          description: The SWIFT/BIC code of the bank.
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          maxLength: 34
+          description: The IBAN of the bank account. Required if the account currency is EUR.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: If set to `true` or if this is the first bank account added for the given currency, this account becomes the default one for its currency.
+          default: false
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN). Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+      additionalProperties: false
+      type: object
+      required:
+      - country
+      - currency
+      description: Represents a bank account owned by an entity.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    AllowedCountries:
+      type: string
+      enum:
+      - AF
+      - AX
+      - AL
+      - DZ
+      - AS
+      - AD
+      - AO
+      - AI
+      - AQ
+      - AG
+      - AR
+      - AM
+      - AW
+      - AU
+      - AT
+      - AZ
+      - BS
+      - BH
+      - BD
+      - BB
+      - BY
+      - BE
+      - BZ
+      - BJ
+      - BM
+      - BT
+      - BO
+      - BA
+      - BW
+      - BV
+      - BR
+      - IO
+      - BN
+      - BG
+      - BF
+      - BI
+      - KH
+      - CM
+      - CA
+      - IC
+      - CV
+      - KY
+      - CF
+      - EA
+      - TD
+      - CL
+      - CN
+      - CX
+      - CC
+      - CO
+      - KM
+      - CG
+      - CD
+      - CK
+      - CR
+      - CI
+      - HR
+      - CU
+      - CY
+      - CZ
+      - DK
+      - DJ
+      - DM
+      - DO
+      - EC
+      - EG
+      - SV
+      - GQ
+      - ER
+      - EE
+      - SZ
+      - ET
+      - FK
+      - FO
+      - FJ
+      - FI
+      - FR
+      - GF
+      - PF
+      - TF
+      - GA
+      - GM
+      - GE
+      - DE
+      - GH
+      - GI
+      - GR
+      - GL
+      - GD
+      - GP
+      - GU
+      - GT
+      - GG
+      - GN
+      - GW
+      - GY
+      - HT
+      - HM
+      - VA
+      - HN
+      - HK
+      - HU
+      - IS
+      - IN
+      - ID
+      - IR
+      - IQ
+      - IE
+      - IM
+      - IL
+      - IT
+      - JM
+      - JP
+      - JE
+      - JO
+      - KZ
+      - KE
+      - KI
+      - KP
+      - KR
+      - KW
+      - KG
+      - LA
+      - LV
+      - LB
+      - LS
+      - LR
+      - LY
+      - LI
+      - LT
+      - LU
+      - MO
+      - MG
+      - MW
+      - MY
+      - MV
+      - ML
+      - MT
+      - MH
+      - MQ
+      - MR
+      - MU
+      - YT
+      - MX
+      - FM
+      - MD
+      - MC
+      - MN
+      - ME
+      - MS
+      - MA
+      - MZ
+      - MM
+      - NA
+      - NR
+      - NP
+      - NL
+      - AN
+      - NC
+      - NZ
+      - NI
+      - NE
+      - NG
+      - NU
+      - NF
+      - MP
+      - MK
+      - 'NO'
+      - OM
+      - PK
+      - PW
+      - PS
+      - PA
+      - PG
+      - PY
+      - PE
+      - PH
+      - PN
+      - PL
+      - PT
+      - PR
+      - QA
+      - RE
+      - RO
+      - RU
+      - RW
+      - SH
+      - KN
+      - LC
+      - PM
+      - VC
+      - WS
+      - SM
+      - ST
+      - SA
+      - SN
+      - RS
+      - SC
+      - SL
+      - SG
+      - SK
+      - SI
+      - SB
+      - SO
+      - ZA
+      - SS
+      - GS
+      - ES
+      - LK
+      - SD
+      - SR
+      - SJ
+      - SE
+      - CH
+      - SY
+      - TW
+      - TJ
+      - TZ
+      - TH
+      - TL
+      - TG
+      - TK
+      - TO
+      - TT
+      - TN
+      - TR
+      - TM
+      - TC
+      - TV
+      - UG
+      - UA
+      - AE
+      - GB
+      - US
+      - UM
+      - UY
+      - UZ
+      - VU
+      - VE
+      - VN
+      - VG
+      - VI
+      - WF
+      - EH
+      - YE
+      - ZM
+      - ZW
+      - BL
+      - BQ
+      - CW
+      - MF
+      - SX
+    OpenBankingVerificationStatusEnum:
+      type: string
+      enum:
+      - not_verified
+      - verified
+      - failed
+      - expired
+      - pending
+      - not_applicable
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    EntityBankAccountPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EntityBankAccountResponse'
+          type: array
+          description: A list of an entity's bank accounts.
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: A paginated list of an entity's bank accounts.
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+    EntityBankAccountResponse_2:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the bank account.
+        account_holder_name:
+          type: string
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        account_number_last4:
+          type: string
+          description: The last 4 digits of bank account number. Required if the account currency is GBP or USD and there is no information about the full account number.
+          example: '5678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          description: 'The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long. Monite verifies the BIC length, country code, and whether the structure conforms to ISO 9362.
+
+
+            If `bic` is specified, `iban` must also be specified.'
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          description: The IBAN of the bank account, up to 34 characters. Required if the account currency is EUR. Monite verifies the IBAN length, checksum digits, and country-specific format according to ISO 13616.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: Indicates whether this bank account is the default one for its currency.
+          default: false
+        open_banking_verification_error:
+          type: string
+          description: Last verification error message
+        open_banking_verification_status:
+          allOf:
+          - $ref: '#/components/schemas/OpenBankingVerificationStatusEnum'
+          description: Open banking verification status
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN) or branch code. Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who added this bank account, or `null` if it was added using a partner access token.
+      type: object
+      required:
+      - id
+      - open_banking_verification_status
+      description: Represents a bank account owned by an entity.
+    UpdateEntityBankAccountRequest_2:
+      properties:
+        account_holder_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: The name of the person or business that owns this bank account. If the account currency is GBP or USD, the holder name cannot be changed to an empty string.
+          example: Cayla Lloyd
+        display_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+      additionalProperties: false
+      type: object
+      description: Data that can be updated in existing bank accounts of an entity.
+    CreateEntityBankAccountRequest_2:
+      properties:
+        account_holder_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          description: 'The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long. Monite verifies the BIC length, country code, and whether the structure conforms to ISO 9362.
+
+
+            If `bic` is specified, `iban` must also be specified.'
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          description: The IBAN of the bank account, up to 34 characters. Required if the account currency is EUR. Monite verifies the IBAN length, checksum digits, and country-specific format according to ISO 13616.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: If set to `true` or if this is the first bank account added for the given currency, this account becomes the default one for its currency.
+          default: false
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN) or branch code. Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+      additionalProperties: false
+      type: object
+      required:
+      - country
+      - currency
+      description: Represents a bank account owned by an entity.
+    EntityBankAccountResponse_3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the bank account.
+        account_holder_name:
+          type: string
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        account_number_last4:
+          type: string
+          description: The last 4 digits of bank account number. Required if the account currency is GBP or USD and there is no information about the full account number.
+          example: '5678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          description: 'The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long. Monite verifies the BIC length, country code, and whether the structure conforms to ISO 9362.
+
+
+            If `bic` is specified, `iban` must also be specified.'
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          description: The IBAN of the bank account, up to 34 characters. Required if the account currency is EUR. Monite verifies the IBAN length, checksum digits, and country-specific format according to ISO 13616.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: Indicates whether this bank account is the default one for its currency.
+          default: false
+        open_banking_verification_error:
+          type: string
+          description: Last verification error message
+        open_banking_verification_status:
+          allOf:
+          - $ref: '#/components/schemas/OpenBankingVerificationStatusEnum'
+          description: Open banking verification status
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN) or branch code. Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who added this bank account, or `null` if it was added using a partner access token.
+      type: object
+      required:
+      - id
+      - open_banking_verification_status
+      description: Represents a bank account owned by an entity.
+    UpdateEntityBankAccountRequest_3:
+      properties:
+        account_holder_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: The name of the person or business that owns this bank account. If the account currency is GBP or USD, the holder name cannot be changed to an empty string.
+          example: Cayla Lloyd
+        display_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+      additionalProperties: false
+      type: object
+      description: Data that can be updated in existing bank accounts of an entity.
+    CreateEntityBankAccountRequest_3:
+      properties:
+        account_holder_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: 'The name of the person or business that owns this bank account. Required in the following cases:
+
+            * the account currency is GBP or USD,
+
+            * the account currency is EUR and the entity wishes to receive SEPA Credit transfers to this account.'
+          example: Cayla Lloyd
+        account_number:
+          type: string
+          description: The bank account number. Required if the account currency is GBP or USD. UK account numbers typically contain 8 digits. US bank account numbers contain 9 to 12 digits.
+          example: '12345678'
+        bank_name:
+          type: string
+          description: The bank name.
+          example: Deutsche Bank
+        bic:
+          type: string
+          description: 'The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long. Monite verifies the BIC length, country code, and whether the structure conforms to ISO 9362.
+
+
+            If `bic` is specified, `iban` must also be specified.'
+          example: DEUTDEFFXXX
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: The country in which the bank account is registered, repsesented as a two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency of the bank account, represented as a three-letter ISO [currency code](https://docs.monite.com/docs/currencies).
+          example: EUR
+        display_name:
+          type: string
+          maxLength: 200
+          minLength: 1
+          description: User-defined name of this bank account, such as 'Primary account' or 'Savings account'.
+          example: Primary account
+        iban:
+          type: string
+          description: The IBAN of the bank account, up to 34 characters. Required if the account currency is EUR. Monite verifies the IBAN length, checksum digits, and country-specific format according to ISO 13616.
+          example: DE74500700100100000900
+        is_default_for_currency:
+          type: boolean
+          description: If set to `true` or if this is the first bank account added for the given currency, this account becomes the default one for its currency.
+          default: false
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN) or branch code. Required if the account currency is USD. US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code. Required if the account currency is GBP.
+          example: '123456'
+      additionalProperties: false
+      type: object
+      required:
+      - country
+      - currency
+      description: Represents a bank account owned by an entity.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

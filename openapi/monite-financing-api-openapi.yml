@@ -1,0 +1,1000 @@
+openapi: 3.2.0
+info:
+  title: Monite Financing API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Financing across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Financing
+paths:
+  /financing_invoices:
+    get:
+      tags:
+      - Financing
+      summary: Get invoices
+      description: Returns a list of invoices requested for financing
+      operationId: get_financing_invoices
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/FinancingInvoiceCursorFields'
+        name: sort
+        in: query
+      - description: 'ID of a payable or receivable invoice. '
+        required: false
+        schema:
+          type: string
+          format: uuid
+        name: invoice_id
+        in: query
+      - description: 'List of invoice IDs. '
+        required: false
+        schema:
+          items:
+            type: string
+            format: uuid
+          type: array
+        name: invoice_id__in
+        in: query
+      - description: 'Status of the invoice. '
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/WCInvoiceStatus'
+        name: status
+        in: query
+      - description: 'List of invoice statuses. '
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/WCInvoiceStatus'
+          type: array
+        name: status__in
+        in: query
+      - description: 'Type of the invoice. payable or receivable. '
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/FinancingInvoiceType'
+        name: type
+        in: query
+      - description: 'List of invoice types. '
+        required: false
+        schema:
+          items:
+            $ref: '#/components/schemas/FinancingInvoiceType'
+          type: array
+        name: type__in
+        in: query
+      - description: 'Document ID of the invoice. '
+        required: false
+        schema:
+          type: string
+        name: document_id
+        in: query
+      - description: 'List of document IDs. '
+        required: false
+        schema:
+          items:
+            type: string
+          type: array
+        name: document_id__in
+        in: query
+      - description: 'Issue date greater than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__gt
+        in: query
+      - description: 'Issue date less than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__lt
+        in: query
+      - description: 'Issue date greater than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__gte
+        in: query
+      - description: 'Issue date less than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: issue_date__lte
+        in: query
+      - description: 'Due date greater than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: due_date__gt
+        in: query
+      - description: 'Due date less than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: due_date__lt
+        in: query
+      - description: 'Due date greater than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: due_date__gte
+        in: query
+      - description: 'Due date less than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: due_date__lte
+        in: query
+      - description: 'Created date greater than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - description: 'Created date less than. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - description: 'Created date greater than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - description: 'Created date less than or equal. '
+        required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - description: 'Total amount of the invoice in minor units. '
+        required: false
+        schema:
+          type: integer
+        name: total_amount
+        in: query
+      - description: 'Total amount greater than. '
+        required: false
+        schema:
+          type: integer
+        name: total_amount__gt
+        in: query
+      - description: 'Total amount less than. '
+        required: false
+        schema:
+          type: integer
+        name: total_amount__lt
+        in: query
+      - description: 'Total amount greater than or equal. '
+        required: false
+        schema:
+          type: integer
+        name: total_amount__gte
+        in: query
+      - description: 'Total amount less than or equal. '
+        required: false
+        schema:
+          type: integer
+        name: total_amount__lte
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancingInvoiceListResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Financing
+      summary: Request financing for invoices
+      description: Returns a session token and a connect token to open Kanmon SDK for confirming invoice details.
+      operationId: post_financing_invoices
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancingPushInvoicesRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancingPushInvoicesResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /financing_offers:
+    get:
+      tags:
+      - Financing
+      summary: Get financing offers and the business status
+      description: Returns a list of financing offers and the business's onboarding status
+      operationId: get_financing_offers
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancingOffersResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /financing_tokens:
+    post:
+      tags:
+      - Financing
+      summary: Create a token for Kanmon SDK
+      description: Returns a token for Kanmon SDK. Creates a business and user on Kanmon if not already exist.
+      operationId: post_financing_tokens
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinancingTokenResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    FinancingInvoiceType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    FinancingPushInvoicesResponse:
+      properties:
+        connect_token:
+          type: string
+          description: A connect token for Kanmon SDK.
+        session_token:
+          type: string
+          description: An embedded session token for Kanmon SDK.
+      type: object
+      required:
+      - connect_token
+      - session_token
+    FinancingInvoice:
+      properties:
+        advance_amount:
+          type: integer
+          minimum: 0.0
+          description: Amount after fees the business will receive in minor units.
+        advance_rate_percentage:
+          type: integer
+          minimum: 0.0
+          description: Advance rate percentage. 10000 means 100%
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: Currency code.
+        description:
+          type: string
+          description: Description of the invoice.
+        document_id:
+          type: string
+          description: Monite document ID.
+        due_date:
+          type: string
+          format: date
+          description: Monite invoice due date.
+        fee_amount:
+          type: integer
+          minimum: 0.0
+          description: Fee amount in minor units.
+        fee_percentage:
+          type: integer
+          minimum: 0.0
+          description: Fee percentage. 300 means 3%
+        invoice_id:
+          type: string
+          format: uuid
+          description: Monite invoice ID.
+        issue_date:
+          type: string
+          format: date
+          description: Monite invoice issue date.
+        payer_business_name:
+          type: string
+          description: Payer business name. Only applicable for BUSINESS payer type.
+        payer_first_name:
+          type: string
+          description: Payer first name. Only applicable for INDIVIDUAL payer type.
+        payer_last_name:
+          type: string
+          description: Payer last name. Only applicable for INDIVIDUAL payer type.
+        payer_type:
+          type: string
+          description: Payer type. BUSINESS or INDIVIDUAL
+        principal_amount:
+          type: integer
+          minimum: 0.0
+          description: Principal amount of the loan in minor units.
+        repayment_amount:
+          type: integer
+          minimum: 0.0
+          description: Amount the business will repay in minor units.
+        repayment_schedule:
+          allOf:
+          - $ref: '#/components/schemas/RepaymentSchedule'
+          description: Repayment schedule of the invoice.
+          example:
+            repayment_date: '2025-03-01'
+            repayment_amount: 100000
+            repayment_fee_amount: 3000
+            repayment_principal_amount: 97000
+        requested_amount:
+          type: integer
+          minimum: 0.0
+          description: Amount the business requests to be financed in minor units.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/WCInvoiceStatus'
+          description: Status of the invoice.
+        total_amount:
+          type: integer
+          minimum: 0.0
+          description: Total amount of the invoice in minor units.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FinancingInvoiceType'
+          description: The type of the invoice i.e. receivable or payable.
+      type: object
+      required:
+      - type
+      - status
+      - invoice_id
+      - document_id
+      - due_date
+      - issue_date
+      - total_amount
+      - currency
+      - payer_type
+    FinancingPushInvoicesRequest:
+      properties:
+        invoices:
+          items:
+            $ref: '#/components/schemas/FinancingPushInvoicesRequestInvoice'
+          type: array
+          maxItems: 10
+          minItems: 1
+          description: A list of invoices to request financing for.
+      type: object
+      required:
+      - invoices
+    FinancingInvoiceListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FinancingInvoice'
+          type: array
+          description: A list of invoices requested for financing.
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+    PricingPlan:
+      properties:
+        advance_rate_percentage:
+          type: integer
+          description: Advance rate percentage. 10000 means 100%
+        fee_percentage:
+          type: integer
+          description: Transaction fee percentage. 300 means 3.00%
+        repayment_duration_days:
+          type: integer
+          description: This amount of days after which the repayment duration is due. This is only applicable for FIXED_DURATION repayment type
+        repayment_type:
+          allOf:
+          - $ref: '#/components/schemas/WCRepaymentType'
+          description: Repayment type of the loan.
+      type: object
+      required:
+      - advance_rate_percentage
+      - fee_percentage
+      - repayment_type
+      description: A pricing plan of a financing offer
+    FinancingOffer:
+      properties:
+        available_amount:
+          type: integer
+          description: The available credit limit in minor units.
+          example: 500000
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency code.
+          example: USD
+        pricing_plans:
+          items:
+            $ref: '#/components/schemas/PricingPlan'
+          type: array
+          minItems: 1
+          description: A list of pricing plans for the offer.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/WCOfferStatus'
+          description: The status of the financing offer.
+          example: CURRENT
+        total_amount:
+          type: integer
+          description: The total credit limit in minor units.
+          example: 1000000
+      type: object
+      required:
+      - status
+      - total_amount
+      - currency
+      - pricing_plans
+    WCBusinessStatus:
+      type: string
+      enum:
+      - NEW
+      - INPUT_REQUIRED
+      - ONBOARDED
+      description: '- NEW: A business has been created within Kanmon
+
+        - ONBOARDED: A business has completed all of the onboarding steps within Kanmon and is now awaiting underwriting.
+
+        - INPUT_REQUIRED: A business will be asked to provide required data'
+    FinancingTokenResponse:
+      properties:
+        connect_token:
+          type: string
+          description: A connect token for Kanmon SDK.
+      type: object
+      required:
+      - connect_token
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    WCInvoiceStatus:
+      type: string
+      enum:
+      - DRAFT
+      - NEW
+      - FUNDED
+      - PAID
+      - LATE
+      - REJECTED
+      - DEFAULTED
+      description: '- DRAFT: The invoice is in draft state. The business has not submitted the invoice for funding.
+
+        - NEW: The business has submitted an invoice and it is under review.
+
+        - FUNDED: The funds for the invoice have been disbursed. The business is now expected to pay back the funds.
+
+        - PAID: A payment was made that fully paid off an outstanding invoice.
+
+        - LATE: A payment was not made towards an outstanding invoice.
+
+        - REJECTED: An invoice was rejected during the funding step.
+
+        - DEFAULTED: A payment was not made towards an outstanding invoice.'
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    WCOfferStatus:
+      type: string
+      enum:
+      - NEW
+      - ACCEPTED
+      - EXPIRED
+      - CURRENT
+      - LATE
+      - CLOSED
+      - DEFAULTED
+      description: '- NEW: A new offer has been extended to the business.
+
+        - ACCEPTED: Business has accepted an offer and is waiting on the closing process.
+
+        - EXPIRED: Business has not accepted the offer, and the offer has expired.
+
+        - CURRENT: A loan has been originated and does not currently have any outstanding delayed payments.
+
+        - LATE: One or more repayments on the issued product have failed.
+
+        - CLOSED: The issued product is no longer available to the business.
+
+        - DEFAULTED: The business has failed to meet agreed-upon terms of the loan agreement.'
+    FinancingPushInvoicesRequestInvoice:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The invoice ID.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FinancingInvoiceType'
+          description: The invoice type.
+      type: object
+      required:
+      - id
+      - type
+    WCRepaymentType:
+      type: string
+      enum:
+      - MULTIPLE_DURATION
+      - FIXED_DURATION
+      - FIXED_DATE
+      description: '- MULTIPLE_DURATION: The business can repay the loan over multiple durations.
+
+        - FIXED_DURATION: The business must repay the loan over a fixed duration.
+
+        - FIXED_DATE: The business must repay the loan on a fixed date.'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    RepaymentSchedule:
+      properties:
+        repayment_amount:
+          type: integer
+          description: Repayment amount in minor units
+        repayment_date:
+          type: string
+          description: Repayment date in ISO 8601 format
+        repayment_fee_amount:
+          type: integer
+          description: Repayment fee amount in minor units
+        repayment_principal_amount:
+          type: integer
+          description: Repayment principal amount in minor units
+      type: object
+      required:
+      - repayment_date
+      - repayment_amount
+      - repayment_fee_amount
+      - repayment_principal_amount
+      description: Repayment schedule model
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    FinancingInvoiceCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    FinancingOffersResponse:
+      properties:
+        business_status:
+          allOf:
+          - $ref: '#/components/schemas/WCBusinessStatus'
+          description: The business's onboarding status.
+          example: ONBOARDED
+        offers:
+          items:
+            $ref: '#/components/schemas/FinancingOffer'
+          type: array
+          description: A list of financing offers extended to the business.
+      type: object
+      required:
+      - offers
+      - business_status
+    CurrencyEnum:
+      type: string
+      enum:
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

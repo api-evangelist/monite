@@ -1,0 +1,31 @@
+overlay: 1.0.0
+info:
+  title: Monite Partner API — API Evangelist enrichment overlay
+  version: 1.0.0
+  x-generated: '2026-10-09'
+  x-method: generated
+extends: ../openapi/_original/monite-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: monite
+    x-llms-txt: https://docs.monite.com/llms.txt
+    x-mcp-server:
+      endpoint: https://docs.monite.com/_mcp/server
+      kind: documentation-search
+      tools:
+      - searchDocs
+    x-documentation: https://docs.monite.com/api/concepts/overview
+- target: $.components.securitySchemes.HTTPBearer
+  update:
+    description: Bearer access token obtained from POST /auth/token (operationId post_auth_token) using partner client credentials or an entity
+      user grant. See https://docs.monite.com/api/concepts/authentication
+- target: $.paths['/auth/token'].post
+  update:
+    x-agent-hint: 'Call first; send the returned access_token as "Authorization: Bearer <token>" plus the x-monite-version header on every request.'
+- target: $.paths['/receivables/{receivable_id}/issue'].post
+  update:
+    x-agent-hint: Moves a draft receivable to issued, after which invoices can then be sent (post_receivables_id_send) or marked as paid.
+- target: $.paths['/payables/{payable_id}/submit_for_approval'].post
+  update:
+    x-agent-hint: Starts the approval workflow for a payable; approval policies determine who must approve.

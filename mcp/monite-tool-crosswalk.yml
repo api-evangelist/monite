@@ -1,0 +1,24 @@
+type: ToolCrosswalk
+name: Monite MCP tool crosswalk
+provider: Monite
+generated: '2026-10-09'
+method: derived
+source: https://docs.monite.com/_mcp/server
+surfaces:
+  openapi: openapi/monite-openapi.yml
+  openapi_operations: 385
+  mcp: {url: https://docs.monite.com/_mcp/server, gated: false, kind: documentation-search}
+  graphql: null
+crosswalk: []
+mcp_only:
+- tool: searchDocs
+  reason: Documentation search over docs.monite.com; no Monite Partner API REST operation backs it.
+rest_only:
+  count: 385
+  note: All 385 Partner API operations in openapi/monite-openapi.yml have no MCP tool.
+coverage:
+  mcp_tools: 1
+  tools_bound_to_rest: 0
+  mcp_only: 1
+  rest_operations: 385
+  rest_operations_with_tool: 0

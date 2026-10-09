@@ -1,0 +1,884 @@
+openapi: 3.2.0
+info:
+  title: Monite Projects API
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  version: '1.0'
+  description: 'Operations tagged Projects across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Projects
+paths:
+  /projects:
+    get:
+      tags:
+      - Projects
+      summary: Get all projects for entity
+      description: Get all projects for an entity
+      operationId: get_projects
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: Sort order (ascending by default). Typically used together with the `sort` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderEnum'
+          default: asc
+        name: order
+        in: query
+      - description: The number of items (0 .. 100) to return in a single page of the response. The response may contain fewer items if it is the last or only page.
+        required: false
+        schema:
+          type: integer
+          maximum: 100.0
+          minimum: 1.0
+          default: 100
+        name: limit
+        in: query
+      - description: 'A pagination token obtained from a previous call to this endpoint. Use it to get the next or previous page of results for your initial query. If `pagination_token` is specified, all other query parameters are ignored and inferred from the initial query.
+
+
+          If not specified, the first page of results will be returned.'
+        required: false
+        schema:
+          type: string
+        name: pagination_token
+        in: query
+      - description: The field to sort the results by. Typically used together with the `order` parameter.
+        required: false
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/ProjectCursorFields'
+        name: sort
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date-time
+        name: created_at__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: start_date
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: start_date__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: start_date__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: start_date__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: start_date__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: end_date
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: end_date__gt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: end_date__lt
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: end_date__gte
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: date
+        name: end_date__lte
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__iexact
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__contains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: name__icontains
+        in: query
+      - required: false
+        schema:
+          type: string
+        name: code
+        in: query
+      - required: false
+        schema:
+          type: string
+          format: uuid
+        name: created_by_entity_user_id
+        in: query
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectPaginationResponse'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '406':
+          description: Not Acceptable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    post:
+      tags:
+      - Projects
+      summary: Create a project
+      description: Create a new project.
+      operationId: post_projects
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreateRequest'
+        required: true
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /projects/{project_id}:
+    get:
+      tags:
+      - Projects
+      summary: Get a project by ID
+      description: Get a project with the given ID.
+      operationId: get_projects_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    patch:
+      tags:
+      - Projects
+      summary: Update a project
+      description: Update a project.
+      operationId: patch_projects_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdateRequest'
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    delete:
+      tags:
+      - Projects
+      summary: Delete a project
+      description: Delete a project.
+      operationId: delete_projects_id
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2023-09-01'
+        name: x-monite-version
+        in: header
+      - required: true
+        schema:
+          type: string
+          format: uuid
+        name: project_id
+        in: path
+      - description: The ID of the entity that owns the requested resource.
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        name: x-monite-entity-id
+        in: header
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse2'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+      security:
+      - HTTPBearer: []
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    ProjectCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ProjectUpdateRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 20
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: Project code
+        color:
+          type: string
+          maxLength: 128
+          description: Project color
+        description:
+          type: string
+          maxLength: 1024
+          description: Description of project
+        end_date:
+          type: string
+          format: date
+          description: Project end date
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The project name.
+          example: Marketing
+        parent_id:
+          type: string
+          format: uuid
+          description: Parent project ID
+        partner_metadata:
+          type: object
+          description: Project metadata
+        start_date:
+          type: string
+          format: date
+          description: Project start date
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this project.
+          default: []
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ProjectResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID assigned to this project.
+        created_at:
+          type: string
+          format: date-time
+          description: Project created at
+        updated_at:
+          type: string
+          format: date-time
+          description: Last time project was updated at
+        code:
+          type: string
+          maxLength: 20
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: Project code
+        color:
+          type: string
+          maxLength: 128
+          description: Project color
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Project created by entity user
+        description:
+          type: string
+          maxLength: 1024
+          description: Description of project
+        end_date:
+          type: string
+          format: date
+          description: Project end date
+        entity_id:
+          type: string
+          format: uuid
+          description: The ID of the entity to which the project was issued.
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The project name.
+          example: Marketing
+        parent_id:
+          type: string
+          format: uuid
+          description: Parent project ID
+        partner_metadata:
+          type: object
+          description: Project metadata
+        start_date:
+          type: string
+          format: date
+          description: Project start date
+        tags:
+          items:
+            $ref: '#/components/schemas/TagReadSchema'
+          type: array
+          description: A list of user-defined tags (labels) assigned to this project.
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - entity_id
+      - name
+    ProjectPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ProjectResource'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of projects.
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    ProjectCreateRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 20
+          minLength: 1
+          pattern: ^[a-zA-Z0-9]+$
+          description: Project code
+        color:
+          type: string
+          maxLength: 128
+          description: Project color
+        description:
+          type: string
+          maxLength: 1024
+          description: Description of project
+        end_date:
+          type: string
+          format: date
+          description: Project end date
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The project name.
+          example: Marketing
+        parent_id:
+          type: string
+          format: uuid
+          description: Parent project ID
+        partner_metadata:
+          type: object
+          description: Project metadata
+        start_date:
+          type: string
+          format: date
+          description: Project start date
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this project.
+          default: []
+      additionalProperties: false
+      type: object
+      required:
+      - name
+    TagReadSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/TagCategory'
+          description: The tag category.
+          example: department
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        description:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The tag description.
+          example: Tag for the Marketing Department
+        name:
+          type: string
+          description: The tag name.
+          example: Marketing
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - name
+      description: Represents a user-defined tag that can be assigned to resources to filter them.
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2023-09-01.json
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

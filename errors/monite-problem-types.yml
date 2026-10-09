@@ -1,0 +1,100 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/monite-openapi.yml
+format: custom
+envelope:
+  media_type: application/json
+  schema: ErrorSchemaResponse
+coverage:
+  operations: 408
+  statuses_declared: 13
+problems:
+- status: 400
+  title: Bad Request
+  description: Bad Request
+  operations: 194
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 401
+  title: Unauthorized
+  description: Unauthorized
+  operations: 231
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 403
+  title: Forbidden
+  description: Forbidden
+  operations: 236
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 404
+  title: Not Found
+  description: Not found
+  operations: 210
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 405
+  title: Method Not Allowed
+  description: Method Not Allowed
+  operations: 408
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 406
+  title: Not Acceptable
+  description: Not Acceptable
+  operations: 23
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse2
+- status: 409
+  title: Conflict
+  description: Business logic error
+  operations: 105
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse
+- status: 413
+  title: Content Too Large
+  description: File size exceeds the limit for OCR processing.
+  operations: 2
+  media_types: []
+  schema: null
+- status: 415
+  title: Unsupported Media Type
+  description: Unsupported file format. OCR supports only PNG, JPG, and PDF.
+  operations: 2
+  media_types: []
+  schema: null
+- status: 421
+  title: Misdirected Request
+  description: The specified file URL is not reachable.
+  operations: 1
+  media_types: []
+  schema: null
+- status: 422
+  title: Unprocessable Content
+  description: Validation Error
+  operations: 408
+  media_types:
+  - application/json
+  schema: HTTPValidationError
+- status: 424
+  title: Failed Dependency
+  description: The specified file URL is reachable but returned an HTTP error status code.
+  operations: 1
+  media_types: []
+  schema: null
+- status: 500
+  title: Internal Server Error
+  description: Internal Server Error
+  operations: 408
+  media_types:
+  - application/json
+  schema: ErrorSchemaResponse

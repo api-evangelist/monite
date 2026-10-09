@@ -1,0 +1,983 @@
+openapi: 3.2.0
+info:
+  title: Monite AI API
+  version: '2024-05-25'
+  contact:
+    name: Monite team
+    url: https://monite.com/about/
+    email: developers@monite.com
+  termsOfService: https://monite.com/terms
+  description: 'Operations tagged Monite AI across 2 of this provider''s published API definitions: monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.dev.monite.com/v1
+  description: Development environment
+- url: https://api.sandbox.monite.com/v1
+  description: Sandbox environment
+- url: https://api.monite.com/v1
+  description: Production environment (Europe)
+- url: https://us.api.monite.com/v1
+  description: Production environment (North America)
+- url: https://api.monite.oaknorth.co.uk/v1
+  description: Oak POC environment
+tags:
+- name: Monite AI
+paths:
+  /ai/conversations:
+    get:
+      tags:
+      - Monite AI
+      summary: Get conversations
+      description: 'Retrieve all historical conversations for the authenticated user.
+
+
+        This endpoint returns a paginated list of conversations sorted by recency.
+
+        Each conversation includes basic metadata such as ID, title, and creation timestamp.
+
+
+        You can control the number of results using the `limit` parameter.'
+      operationId: get_ai_conversations
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 100
+      - name: title__icontains
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationResourceList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Monite AI
+      summary: Create conversation
+      description: 'Create a new empty conversation for the authenticated user.
+
+
+        This endpoint initializes a conversation record that can be used with the chat endpoint.
+
+        The response includes the new conversation''s unique ID which should be used in subsequent
+
+        chat API calls.'
+      operationId: post_ai_conversations
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/conversations/{conversation_id}:
+    get:
+      tags:
+      - Monite AI
+      summary: Get conversation by ID
+      description: 'Retrieve a specific conversation and its messages by ID.
+
+
+        This endpoint returns the conversation metadata along with all messages exchanged
+
+        between the user and the assistant. Messages are ordered chronologically.
+
+        The conversation is only accessible to the user who created it.'
+      operationId: get_ai_conversations_id
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: conversation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversationResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Conversation not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/conversations/{conversation_id}/messages:
+    post:
+      tags:
+      - Monite AI
+      summary: Chat with the Monite assistant
+      description: 'Send a message to the Monite assistant to start a new chat or continue an existing conversation.
+
+
+        This endpoint allows:
+
+        - Continuing an existing conversation by providing a valid conversation_id
+
+        - Sending user messages to receive AI-generated responses
+
+        - Streaming responses back to the client in real-time
+
+
+        The response is a StreamingResponse that delivers chunks of the assistant''s
+
+        message as they are generated. The stream contains JSON-formatted message parts,
+
+        token usage statistics, and completion indicators.'
+      operationId: post_ai_conversations_id_messages
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: conversation_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-entity-name
+        in: header
+        required: false
+        schema:
+          type: string
+          default: '[NO NAME PROVIDED]'
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClientMessage'
+      responses:
+        '201':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/message_feedbacks:
+    post:
+      tags:
+      - Monite AI
+      summary: Mark a message as helpful or not
+      operationId: post_ai_message_feedbacks
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageFeedbackPayload'
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/message_feedbacks/commentary:
+    post:
+      tags:
+      - Monite AI
+      summary: Post feedback commentary for a message
+      operationId: post_ai_message_feedbacks_commentary
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageFeedbackCommentaryPayload'
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/prompts:
+    get:
+      tags:
+      - Monite AI
+      summary: Get user prompts
+      description: Retrieve all saved prompts for the authenticated user. This endpoint returns a list of prompts saved by the user. Each prompt includes its ID, content, and creation timestamp.
+      operationId: get_ai_prompts
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResourceList'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    post:
+      tags:
+      - Monite AI
+      summary: Create a prompt
+      description: 'Save a new prompt to the user''s prompt library.
+
+
+        This endpoint allows users to save frequently used prompts for later reuse.'
+      operationId: post_ai_prompts
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptCreateRequest'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+  /ai/prompts/{prompt_id}:
+    get:
+      tags:
+      - Monite AI
+      summary: Get prompt by ID
+      description: Retrieve a specific prompt of entity user by prompt ID.
+      operationId: get_ai_prompts_id
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptResource'
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Prompt not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    patch:
+      tags:
+      - Monite AI
+      summary: Update prompt by ID
+      description: Update a specific prompt of entity user by prompt ID.
+      operationId: patch_ai_prompts_id
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptUpdateRequest'
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '404':
+          description: Prompt not found
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    delete:
+      tags:
+      - Monite AI
+      summary: Delete prompt by ID
+      description: Delete a specific prompt of entity user by prompt ID.
+      operationId: delete_ai_prompts_id
+      security:
+      - HTTPBearer: []
+      parameters:
+      - required: true
+        schema:
+          type: string
+          format: date
+        example: '2024-05-25'
+        name: x-monite-version
+        in: header
+      - name: prompt_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      - name: x-monite-entity-id
+        in: header
+        required: true
+        schema:
+          type: string
+          format: uuid
+          examples:
+          - 9d2b4c8f-2087-4738-ba91-7359683c49a4
+        description: The ID of the entity that owns the requested resource.
+      responses:
+        '204':
+          description: Successful Response
+        '405':
+          description: Method Not Allowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorSchemaResponse'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    servers:
+    - url: https://api.dev.monite.com/v1
+      description: Development environment
+    - url: https://api.sandbox.monite.com/v1
+      description: Sandbox environment
+    - url: https://api.monite.com/v1
+      description: Production environment (Europe)
+    - url: https://us.api.monite.com/v1
+      description: Production environment (North America)
+    - url: https://api.monite.oaknorth.co.uk/v1
+      description: Oak POC environment
+components:
+  schemas:
+    Message:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the message
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time the message was created
+        content:
+          type: string
+          description: Text content of the message, including charts and any other data attached with html tags
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          description: Role of the message sender
+      type: object
+      required:
+      - id
+      - created_at
+      - role
+      - content
+    PromptUpdateRequest:
+      properties:
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - content
+    PromptResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PromptResource'
+          type: array
+          description: List of saved prompts
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+      type: object
+      required:
+      - data
+      - prev_pagination_token
+      - next_pagination_token
+    MessageFeedbackCommentaryPayload:
+      properties:
+        comment:
+          type: string
+          description: Commentary for the message
+        message_id:
+          type: string
+          format: uuid
+          description: Unique identifier of the message
+      type: object
+      required:
+      - message_id
+      - comment
+    PromptCreateRequest:
+      properties:
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - content
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    MessageFeedbackPayload:
+      properties:
+        action:
+          type: string
+          enum:
+          - like
+          - dislike
+          description: Action to mark the message as helpful or not
+        message_id:
+          type: string
+          format: uuid
+          description: Unique identifier of the message
+      type: object
+      required:
+      - message_id
+      - action
+    PromptResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - id
+      - content
+      - created_at
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ClientMessage:
+      properties:
+        attachments:
+          anyOf:
+          - items:
+              type: string
+              minLength: 1
+              format: uri
+            type: array
+          - type: 'null'
+        text_prompt:
+          type: string
+      additionalProperties: true
+      type: object
+      required:
+      - text_prompt
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ConversationResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the conversation
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time the conversation was created
+        is_starred:
+          type: boolean
+          description: Indicates if the conversation is starred by the user
+        messages:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Message'
+            type: array
+          - type: 'null'
+          description: List of messages in the conversation. Filled only when conversation is retrieved individually
+        title:
+          type: string
+          description: Title of the conversation generated by LLM
+      type: object
+      required:
+      - id
+      - title
+      - created_at
+      - is_starred
+    ConversationResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ConversationResource'
+          type: array
+          description: List of conversations
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Token to retrieve the next page of conversations
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Token to retrieve the previous page of conversations
+      type: object
+      required:
+      - data
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+  securitySchemes:
+    HTTPBearer:
+      type: http
+      scheme: bearer
+x-refined-from:
+- monite-openapi-2024-05-25.json
+- monite-openapi.yml

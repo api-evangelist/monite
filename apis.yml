@@ -41,6 +41,9 @@ maintainers:
 image: https://framerusercontent.com/images/PH8mkvz4WO907aVf6N6yabuqhA.png
 
 common:
+- type: CapabilityMap
+  url: capabilities/monite-capability-edges.yml
+  name: Monite Business Capability Map
 - type: AgenticAccess
   url: agentic-access/monite-agentic-access.yml
 - type: RateLimits

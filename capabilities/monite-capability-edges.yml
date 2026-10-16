@@ -1,0 +1,207 @@
+slug: monite
+provider: Monite
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 19
+edges:
+- tag: Payables
+  spec_file: monite-payables-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.94
+  evidence: POST /payables/upload_from_file  Upload a payable from a file; POST /payables/{payable_id}/approve_payment_operation  Approve
+    a payable for payment; schema OCRResponseInvoiceReceiptData
+  reason: Full payable (vendor invoice) lifecycle including OCR capture, validation and approval for payment
+    — accounts payable invoice processing.
+- tag: Receivables
+  spec_file: monite-receivables-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.9
+  evidence: POST /receivables  Create a receivable; "Get required field names for invoice creation"; "Cancel
+    an invoice"; schema UpdateIssuedInvoice
+  reason: Operations create, issue, cancel and clone customer-facing invoices, quotes and credit notes
+    — the outbound invoicing side of accounts receivable, which is exactly Accounts Receivable Management.
+- tag: Purchase orders
+  spec_file: monite-purchase-orders-api-openapi.yml
+  capability_id: BC-500.30
+  capability_id_l1: BC-500
+  capability_name: Purchase Order Management
+  confidence: 0.88
+  evidence: POST /payable_purchase_orders  Create a purchase order; POST /payable_purchase_orders/{purchase_order_id}/send  Send
+    a purchase order via email
+  reason: Creation, update and issuance of purchase orders to counterparts is purchase order management
+    within procurement.
+- tag: Payable line items
+  spec_file: monite-payable-line-items-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.82
+  evidence: GET /payables/{payable_id}/line_items  Get the line items of a payable; POST  Add a line item
+    to a payable
+  reason: Operations manage the line-item detail of payables (vendor invoices), which is the invoice-processing
+    detail of accounts payable.
+- tag: Webhook Subscriptions
+  spec_file: monite-webhook-subscriptions-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.82
+  evidence: POST /webhook_subscriptions  Subscribe to a webhook; "Regenerate a webhook secret"; schemas
+    WebhookSubscriptionResource, WebhookObjectType
+  reason: Lifecycle of outbound webhook subscriptions (create, enable/disable, rotate secret) on a platform
+    API maps directly to Webhook & Event Subscription Management.
+- tag: Credit notes
+  spec_file: monite-credit-notes-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.8
+  evidence: GET /payable_credit_notes 'Get credit notes'; 'Upload a credit note from a file'; 'Approve
+    a credit note'; 'Cancel OCR of a credit note'; PayableCreditNoteStateEnum
+  reason: All paths are /payable_credit_notes with OCR capture, validation, approval and cancellation
+    workflow — i.e. supplier-side document processing within accounts payable automation, which is the
+    vendor's stated AP capability.
+- tag: Ledger accounts
+  spec_file: monite-ledger-accounts-api-openapi.yml
+  capability_id: BC-200.10
+  capability_id_l1: BC-200
+  capability_name: General Ledger Management
+  confidence: 0.8
+  evidence: POST /ledger_accounts "Create a new ledger account"; schemas LedgerAccountCreateRequest, LedgerAccountListResponse
+  reason: CRUD over ledger accounts is maintenance of the chart of accounts, the core of General Ledger
+    Management.
+- tag: VAT rates
+  spec_file: monite-vat-rates-api-openapi.yml
+  capability_id: BC-220.20
+  capability_id_l1: BC-220
+  capability_name: Indirect Tax Management
+  confidence: 0.8
+  evidence: GET /vat_rates  Get VAT rates; schemas VatRateComponent, VatRateStatusEnum, AllowedCountries
+  reason: Provides VAT rate determination by country for invoicing, which is indirect tax management (VAT/GST).
+- tag: Overdue reminders
+  spec_file: monite-overdue-reminders-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.78
+  evidence: POST /overdue_reminders  Create an overdue reminder configuration; schemas OverdueReminderTerm,
+    Recipients
+  reason: Configuration of automated chasing of overdue customer invoices — i.e. receivables collections/dunning
+    on issued invoices, which is accounts receivable management.
+- tag: Roles
+  spec_file: monite-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.78
+  evidence: POST /roles  Create a role; schemas PermissionEnum, ActionEnum, ActionSchema, BizObjectsSchema-Input
+  reason: The tag manages roles with permissions and allowed actions on business objects — role-based
+    access control, i.e. Identity & Access Management, not a finance capability.
+- tag: Accounting data pull
+  spec_file: monite-accounting-data-pull-api-openapi.yml
+  capability_id: BC-200
+  capability_id_l1: BC-200
+  capability_name: Financial Management
+  confidence: 0.75
+  evidence: GET /accounting/payables  Get payables list from accounting system; GET /accounting/receivables  Get
+    invoice list from accounting system
+  reason: The surface exposes payable and receivable (customer invoice) records with schemas AccountingPayable,
+    AccountingReceivable, AccountingVendorRefObject and AccountingLineItem — i.e. core financial accounting
+    data. L1 Financial Management is clear; L2 left null because the tag spans both payables and receivables
+    equally.
+- tag: Webhook deliveries
+  spec_file: monite-webhook-deliveries-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.75
+  evidence: GET /webhook_deliveries  Get the webhook delivery log; schema WebhookDeliveryResource
+  reason: Exposes the delivery log for outbound webhooks — the delivery-reliability aspect of webhook/event
+    subscription management on the developer platform.
+- tag: Payment reminders
+  spec_file: monite-payment-reminders-api-openapi.yml
+  capability_id: BC-200.30
+  capability_id_l1: BC-200
+  capability_name: Accounts Receivable Management
+  confidence: 0.72
+  evidence: POST /payment_reminders  Create a payment reminder configuration; schemas Recipients, Reminder,
+    GetAllPaymentReminders
+  reason: Configures reminders sent to invoice recipients to prompt payment, which is receivables collections/dunning
+    activity.
+- tag: Accounting tax rates
+  spec_file: monite-accounting-tax-rates-api-openapi.yml
+  capability_id: BC-220
+  capability_id_l1: BC-220
+  capability_name: Tax Management
+  confidence: 0.7
+  evidence: POST /accounting_tax_rates  Create a new tax rate; schemas AccountingTaxRateCreateRequest,
+    TaxComponentResponse
+  reason: 'CRUD over tax rate accounts and tax components used to compute tax on invoices — genuinely
+    Tax Management. L2 left null: the context does not state whether these are strictly indirect (VAT/GST)
+    rates, though that is the likely reading for invoice tax rates.'
+- tag: Batch payments
+  spec_file: monite-batch-payments-api-openapi.yml
+  capability_id: BC-200.20
+  capability_id_l1: BC-200
+  capability_name: Accounts Payable Management
+  confidence: 0.7
+  evidence: POST /batch_payments  Create a batch payment; schemas PaymentObjectPayable, PaymentIntentsRecipient,
+    PaymentIntentPayoutMethod
+  reason: Batch payment creation over payable objects with payout method and recipient details — the payment-run
+    step of accounts payable processing. Moderate-high confidence; the alternative reading (pure payment
+    initiation plumbing) is narrower but the payable linkage grounds AP.
+- tag: Cost centers
+  spec_file: monite-cost-centers-api-openapi.yml
+  capability_id: BC-200.50
+  capability_id_l1: BC-200
+  capability_name: Cost Accounting Management
+  confidence: 0.7
+  evidence: POST /cost_centers  Create a new cost center; schemas AccountingCostCenterCreateRequest, AccountingCostCenterResponse
+  reason: CRUD over accounting cost centers — the cost objects used to allocate and classify spend, which
+    is Cost Accounting Management. Some chance it is better seen as finance master data, hence 0.7 rather
+    than higher.
+- tag: Counterparts
+  spec_file: monite-counterparts-api-openapi.yml
+  capability_id: BC-610.20
+  capability_id_l1: BC-610
+  capability_name: Master Data Management
+  confidence: 0.7
+  evidence: GET /counterparts 'Get all counterparts'; schemas CounterpartOrganizationCreatePayload, CounterpartIndividualCreatePayload,
+    PartnerMetadata
+  reason: Core registry of business partners (organisations and individuals) that act as customers and
+    vendors in Monite's invoicing and payables flows — lifecycle CRUD plus metadata on the golden record.
+    Maps to master data management rather than customer-specific CRM because counterparts serve both AR
+    and AP sides.
+- tag: Custom VAT rates
+  spec_file: monite-custom-vat-rates-api-openapi.yml
+  capability_id: BC-220.20
+  capability_id_l1: BC-220
+  capability_name: Indirect Tax Management
+  confidence: 0.7
+  evidence: POST /custom_vat_rates 'Create a custom VAT rate'; schemas VatRateComponent, CustomVatRateRequest
+  reason: Definition and maintenance of VAT rates (with rate components) used to compute tax on invoices
+    — indirect tax determination configuration. Not a filing/reporting surface, so the narrower indirect-tax
+    sub-capability is the best available fit at moderate confidence.
+- tag: Payment records
+  spec_file: monite-payment-records-api-openapi.yml
+  capability_id: BC-200
+  capability_id_l1: BC-200
+  capability_name: Financial Management
+  confidence: 0.7
+  evidence: POST /payment_records  Create a payment record; POST /payment_records/{payment_record_id}/mark_as_succeeded  Mark
+    a payment record as succeeded
+  reason: Records and tracks the status of payments against invoice objects — core financial accounting
+    of payments, but the surface does not distinguish payable- from receivable-side, so no L2 is asserted.

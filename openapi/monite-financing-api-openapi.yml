@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Financing across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Financing across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -473,11 +473,166 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    FinancingInvoiceListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/FinancingInvoice'
+          type: array
+          description: A list of invoices requested for financing.
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    WCOfferStatus:
+      type: string
+      enum:
+      - NEW
+      - ACCEPTED
+      - EXPIRED
+      - CURRENT
+      - LATE
+      - CLOSED
+      - DEFAULTED
+      description: '- NEW: A new offer has been extended to the business.
+
+        - ACCEPTED: Business has accepted an offer and is waiting on the closing process.
+
+        - EXPIRED: Business has not accepted the offer, and the offer has expired.
+
+        - CURRENT: A loan has been originated and does not currently have any outstanding delayed payments.
+
+        - LATE: One or more repayments on the issued product have failed.
+
+        - CLOSED: The issued product is no longer available to the business.
+
+        - DEFAULTED: The business has failed to meet agreed-upon terms of the loan agreement.'
+    FinancingPushInvoicesRequest:
+      properties:
+        invoices:
+          items:
+            $ref: '#/components/schemas/FinancingPushInvoicesRequestInvoice'
+          type: array
+          maxItems: 10
+          minItems: 1
+          description: A list of invoices to request financing for.
+      type: object
+      required:
+      - invoices
+    FinancingPushInvoicesRequestInvoice:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: The invoice ID.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/FinancingInvoiceType'
+          description: The invoice type.
+      type: object
+      required:
+      - id
+      - type
+    WCRepaymentType:
+      type: string
+      enum:
+      - MULTIPLE_DURATION
+      - FIXED_DURATION
+      - FIXED_DATE
+      description: '- MULTIPLE_DURATION: The business can repay the loan over multiple durations.
+
+        - FIXED_DURATION: The business must repay the loan over a fixed duration.
+
+        - FIXED_DATE: The business must repay the loan on a fixed date.'
+    WCInvoiceStatus:
+      type: string
+      enum:
+      - DRAFT
+      - NEW
+      - FUNDED
+      - PAID
+      - LATE
+      - REJECTED
+      - DEFAULTED
+      description: '- DRAFT: The invoice is in draft state. The business has not submitted the invoice for funding.
+
+        - NEW: The business has submitted an invoice and it is under review.
+
+        - FUNDED: The funds for the invoice have been disbursed. The business is now expected to pay back the funds.
+
+        - PAID: A payment was made that fully paid off an outstanding invoice.
+
+        - LATE: A payment was not made towards an outstanding invoice.
+
+        - REJECTED: An invoice was rejected during the funding step.
+
+        - DEFAULTED: A payment was not made towards an outstanding invoice.'
     FinancingInvoiceType:
       type: string
       enum:
       - payable
       - receivable
+    RepaymentSchedule:
+      properties:
+        repayment_amount:
+          type: integer
+          description: Repayment amount in minor units
+        repayment_date:
+          type: string
+          description: Repayment date in ISO 8601 format
+        repayment_fee_amount:
+          type: integer
+          description: Repayment fee amount in minor units
+        repayment_principal_amount:
+          type: integer
+          description: Repayment principal amount in minor units
+      type: object
+      required:
+      - repayment_date
+      - repayment_amount
+      - repayment_fee_amount
+      - repayment_principal_amount
+      description: Repayment schedule model
+    WCBusinessStatus:
+      type: string
+      enum:
+      - NEW
+      - INPUT_REQUIRED
+      - ONBOARDED
+      description: '- NEW: A business has been created within Kanmon
+
+        - ONBOARDED: A business has completed all of the onboarding steps within Kanmon and is now awaiting underwriting.
+
+        - INPUT_REQUIRED: A business will be asked to provide required data'
     FinancingPushInvoicesResponse:
       properties:
         connect_token:
@@ -490,6 +645,50 @@ components:
       required:
       - connect_token
       - session_token
+    FinancingOffer:
+      properties:
+        available_amount:
+          type: integer
+          description: The available credit limit in minor units.
+          example: 500000
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency code.
+          example: USD
+        pricing_plans:
+          items:
+            $ref: '#/components/schemas/PricingPlan'
+          type: array
+          minItems: 1
+          description: A list of pricing plans for the offer.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/WCOfferStatus'
+          description: The status of the financing offer.
+          example: CURRENT
+        total_amount:
+          type: integer
+          description: The total credit limit in minor units.
+          example: 1000000
+      type: object
+      required:
+      - status
+      - total_amount
+      - currency
+      - pricing_plans
+    FinancingInvoiceCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     FinancingInvoice:
       properties:
         advance_amount:
@@ -586,34 +785,42 @@ components:
       - total_amount
       - currency
       - payer_type
-    FinancingPushInvoicesRequest:
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    FinancingOffersResponse:
       properties:
-        invoices:
+        business_status:
+          allOf:
+          - $ref: '#/components/schemas/WCBusinessStatus'
+          description: The business's onboarding status.
+          example: ONBOARDED
+        offers:
           items:
-            $ref: '#/components/schemas/FinancingPushInvoicesRequestInvoice'
+            $ref: '#/components/schemas/FinancingOffer'
           type: array
-          maxItems: 10
-          minItems: 1
-          description: A list of invoices to request financing for.
+          description: A list of financing offers extended to the business.
       type: object
       required:
-      - invoices
-    FinancingInvoiceListResponse:
+      - offers
+      - business_status
+    FinancingTokenResponse:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/FinancingInvoice'
-          type: array
-          description: A list of invoices requested for financing.
-        next_pagination_token:
+        connect_token:
           type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+          description: A connect token for Kanmon SDK.
       type: object
       required:
-      - data
+      - connect_token
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     PricingPlan:
       properties:
         advance_rate_percentage:
@@ -635,213 +842,6 @@ components:
       - fee_percentage
       - repayment_type
       description: A pricing plan of a financing offer
-    FinancingOffer:
-      properties:
-        available_amount:
-          type: integer
-          description: The available credit limit in minor units.
-          example: 500000
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The currency code.
-          example: USD
-        pricing_plans:
-          items:
-            $ref: '#/components/schemas/PricingPlan'
-          type: array
-          minItems: 1
-          description: A list of pricing plans for the offer.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/WCOfferStatus'
-          description: The status of the financing offer.
-          example: CURRENT
-        total_amount:
-          type: integer
-          description: The total credit limit in minor units.
-          example: 1000000
-      type: object
-      required:
-      - status
-      - total_amount
-      - currency
-      - pricing_plans
-    WCBusinessStatus:
-      type: string
-      enum:
-      - NEW
-      - INPUT_REQUIRED
-      - ONBOARDED
-      description: '- NEW: A business has been created within Kanmon
-
-        - ONBOARDED: A business has completed all of the onboarding steps within Kanmon and is now awaiting underwriting.
-
-        - INPUT_REQUIRED: A business will be asked to provide required data'
-    FinancingTokenResponse:
-      properties:
-        connect_token:
-          type: string
-          description: A connect token for Kanmon SDK.
-      type: object
-      required:
-      - connect_token
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    WCInvoiceStatus:
-      type: string
-      enum:
-      - DRAFT
-      - NEW
-      - FUNDED
-      - PAID
-      - LATE
-      - REJECTED
-      - DEFAULTED
-      description: '- DRAFT: The invoice is in draft state. The business has not submitted the invoice for funding.
-
-        - NEW: The business has submitted an invoice and it is under review.
-
-        - FUNDED: The funds for the invoice have been disbursed. The business is now expected to pay back the funds.
-
-        - PAID: A payment was made that fully paid off an outstanding invoice.
-
-        - LATE: A payment was not made towards an outstanding invoice.
-
-        - REJECTED: An invoice was rejected during the funding step.
-
-        - DEFAULTED: A payment was not made towards an outstanding invoice.'
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    WCOfferStatus:
-      type: string
-      enum:
-      - NEW
-      - ACCEPTED
-      - EXPIRED
-      - CURRENT
-      - LATE
-      - CLOSED
-      - DEFAULTED
-      description: '- NEW: A new offer has been extended to the business.
-
-        - ACCEPTED: Business has accepted an offer and is waiting on the closing process.
-
-        - EXPIRED: Business has not accepted the offer, and the offer has expired.
-
-        - CURRENT: A loan has been originated and does not currently have any outstanding delayed payments.
-
-        - LATE: One or more repayments on the issued product have failed.
-
-        - CLOSED: The issued product is no longer available to the business.
-
-        - DEFAULTED: The business has failed to meet agreed-upon terms of the loan agreement.'
-    FinancingPushInvoicesRequestInvoice:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The invoice ID.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/FinancingInvoiceType'
-          description: The invoice type.
-      type: object
-      required:
-      - id
-      - type
-    WCRepaymentType:
-      type: string
-      enum:
-      - MULTIPLE_DURATION
-      - FIXED_DURATION
-      - FIXED_DATE
-      description: '- MULTIPLE_DURATION: The business can repay the loan over multiple durations.
-
-        - FIXED_DURATION: The business must repay the loan over a fixed duration.
-
-        - FIXED_DATE: The business must repay the loan on a fixed date.'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    RepaymentSchedule:
-      properties:
-        repayment_amount:
-          type: integer
-          description: Repayment amount in minor units
-        repayment_date:
-          type: string
-          description: Repayment date in ISO 8601 format
-        repayment_fee_amount:
-          type: integer
-          description: Repayment fee amount in minor units
-        repayment_principal_amount:
-          type: integer
-          description: Repayment principal amount in minor units
-      type: object
-      required:
-      - repayment_date
-      - repayment_amount
-      - repayment_fee_amount
-      - repayment_principal_amount
-      description: Repayment schedule model
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    FinancingInvoiceCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-    FinancingOffersResponse:
-      properties:
-        business_status:
-          allOf:
-          - $ref: '#/components/schemas/WCBusinessStatus'
-          description: The business's onboarding status.
-          example: ONBOARDED
-        offers:
-          items:
-            $ref: '#/components/schemas/FinancingOffer'
-          type: array
-          description: A list of financing offers extended to the business.
-      type: object
-      required:
-      - offers
-      - business_status
     CurrencyEnum:
       type: string
       enum:
@@ -997,4 +997,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -1,13 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Monite AI API
+  title: Monite Partner Monite AI API
   version: '2024-05-25'
+  description: The Monite REST API, for Monite partners to integrate with our solution.
+  termsOfService: https://monite.com/terms
   contact:
     name: Monite team
     url: https://monite.com/about/
     email: developers@monite.com
-  termsOfService: https://monite.com/terms
-  description: 'Operations tagged Monite AI across 2 of this provider''s published API definitions: monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -151,17 +151,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/conversations/{conversation_id}:
     get:
       tags:
@@ -228,17 +217,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/conversations/{conversation_id}/messages:
     post:
       tags:
@@ -320,17 +298,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/message_feedbacks:
     post:
       tags:
@@ -383,17 +350,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/message_feedbacks/commentary:
     post:
       tags:
@@ -446,17 +402,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/prompts:
     get:
       tags:
@@ -567,17 +512,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
   /ai/prompts/{prompt_id}:
     get:
       tags:
@@ -749,73 +683,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPValidationError'
-    servers:
-    - url: https://api.dev.monite.com/v1
-      description: Development environment
-    - url: https://api.sandbox.monite.com/v1
-      description: Sandbox environment
-    - url: https://api.monite.com/v1
-      description: Production environment (Europe)
-    - url: https://us.api.monite.com/v1
-      description: Production environment (North America)
-    - url: https://api.monite.oaknorth.co.uk/v1
-      description: Oak POC environment
 components:
   schemas:
-    Message:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier of the message
-        created_at:
-          type: string
-          format: date-time
-          description: Date and time the message was created
-        content:
-          type: string
-          description: Text content of the message, including charts and any other data attached with html tags
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-          description: Role of the message sender
-      type: object
-      required:
-      - id
-      - created_at
-      - role
-      - content
-    PromptUpdateRequest:
-      properties:
-        content:
-          type: string
-          maxLength: 512
-          description: Text of the saved prompt
-      type: object
-      required:
-      - content
-    PromptResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PromptResource'
-          type: array
-          description: List of saved prompts
-        next_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-        prev_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-      type: object
-      required:
-      - data
-      - prev_pagination_token
-      - next_pagination_token
     MessageFeedbackCommentaryPayload:
       properties:
         comment:
@@ -829,55 +698,35 @@ components:
       required:
       - message_id
       - comment
-    PromptCreateRequest:
-      properties:
-        content:
-          type: string
-          maxLength: 512
-          description: Text of the saved prompt
-      type: object
-      required:
-      - content
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    MessageFeedbackPayload:
-      properties:
-        action:
-          type: string
-          enum:
-          - like
-          - dislike
-          description: Action to mark the message as helpful or not
-        message_id:
-          type: string
-          format: uuid
-          description: Unique identifier of the message
-      type: object
-      required:
-      - message_id
-      - action
-    PromptResource:
+    ConversationResource:
       properties:
         id:
           type: string
           format: uuid
+          description: Unique identifier of the conversation
         created_at:
           type: string
           format: date-time
-        content:
+          description: Date and time the conversation was created
+        is_starred:
+          type: boolean
+          description: Indicates if the conversation is starred by the user
+        messages:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Message'
+            type: array
+          - type: 'null'
+          description: List of messages in the conversation. Filled only when conversation is retrieved individually
+        title:
           type: string
-          maxLength: 512
-          description: Text of the saved prompt
+          description: Title of the conversation generated by LLM
       type: object
       required:
       - id
-      - content
+      - title
       - created_at
+      - is_starred
     ValidationError:
       properties:
         loc:
@@ -911,42 +760,22 @@ components:
       type: object
       required:
       - text_prompt
-    ErrorSchemaResponse:
+    MessageFeedbackPayload:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ConversationResource:
-      properties:
-        id:
+        action:
+          type: string
+          enum:
+          - like
+          - dislike
+          description: Action to mark the message as helpful or not
+        message_id:
           type: string
           format: uuid
-          description: Unique identifier of the conversation
-        created_at:
-          type: string
-          format: date-time
-          description: Date and time the conversation was created
-        is_starred:
-          type: boolean
-          description: Indicates if the conversation is starred by the user
-        messages:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Message'
-            type: array
-          - type: 'null'
-          description: List of messages in the conversation. Filled only when conversation is retrieved individually
-        title:
-          type: string
-          description: Title of the conversation generated by LLM
+          description: Unique identifier of the message
       type: object
       required:
-      - id
-      - title
-      - created_at
-      - is_starred
+      - message_id
+      - action
     ConversationResourceList:
       properties:
         data:
@@ -967,6 +796,51 @@ components:
       type: object
       required:
       - data
+    PromptUpdateRequest:
+      properties:
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - content
+    PromptResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PromptResource'
+          type: array
+          description: List of saved prompts
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+      type: object
+      required:
+      - data
+      - prev_pagination_token
+      - next_pagination_token
+    PromptCreateRequest:
+      properties:
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - content
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     ErrorSchema:
       properties:
         message:
@@ -974,10 +848,56 @@ components:
       type: object
       required:
       - message
+    PromptResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        content:
+          type: string
+          maxLength: 512
+          description: Text of the saved prompt
+      type: object
+      required:
+      - id
+      - content
+      - created_at
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    Message:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the message
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time the message was created
+        content:
+          type: string
+          description: Text content of the message, including charts and any other data attached with html tags
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          description: Role of the message sender
+      type: object
+      required:
+      - id
+      - created_at
+      - role
+      - content
   securitySchemes:
     HTTPBearer:
       type: http
       scheme: bearer
-x-refined-from:
-- monite-openapi-2024-05-25.json
-- monite-openapi.yml

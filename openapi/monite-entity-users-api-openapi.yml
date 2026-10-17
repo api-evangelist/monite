@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entity users across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entity users across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -669,6 +669,185 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    EntityUserCursorFields:
+      type: string
+      enum:
+      - updated_at
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PayableActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+      - pay
+      - approve
+      - cancel
+      - submit
+      - create_from_mail
+      - reopen
+    ActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+    CommonSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/ActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          enum:
+          - person
+          - onboarding
+          - comment
+          - counterpart
+          - entity_user
+          - entity
+          - entity_vat_ids
+          - counterpart_vat_id
+          - entity_bank_account
+          - export
+          - mailbox
+          - payables_purchase_order
+          - payment_reminder
+          - overdue_reminder
+          - product
+          - project
+          - receivable
+          - delivery_note
+          - ocr_task
+          - reconciliation
+          - role
+          - tag
+          - todo_task
+          - todo_task_mute
+          - transaction
+          - workflow
+          - approval_request
+          - approval_policy
+          - payment_record
+          - receipt
+          - accounting_tax_rate
+          - ledger_account
+          - cost_center
+          description: Object type
+          default: comment
+      additionalProperties: false
+      type: object
+    CreateEntityUserRequest:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          type: string
+          maxLength: 255
+          description: First name
+          examples:
+          - Casey
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Last name
+          examples:
+          - Peters
+        login:
+          type: string
+          maxLength: 255
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        role_id:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: UUID of the role assigned to this entity user
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Title
+          examples:
+          - Finance Manager
+      additionalProperties: false
+      type: object
+      required:
+      - first_name
+      - login
+    PermissionEnum:
+      type: string
+      enum:
+      - allowed
+      - allowed_for_own
+      - not_allowed
+    RootSchema-Output:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Output'
+      - $ref: '#/components/schemas/PayableSchema-Output'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
+          approval_policy: '#/components/schemas/CommonSchema-Output'
+          approval_request: '#/components/schemas/CommonSchema-Output'
+          comment: '#/components/schemas/CommonSchema-Output'
+          cost_center: '#/components/schemas/CommonSchema-Output'
+          counterpart: '#/components/schemas/CommonSchema-Output'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
+          delivery_note: '#/components/schemas/CommonSchema-Output'
+          entity: '#/components/schemas/CommonSchema-Output'
+          entity_bank_account: '#/components/schemas/CommonSchema-Output'
+          entity_user: '#/components/schemas/CommonSchema-Output'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
+          export: '#/components/schemas/CommonSchema-Output'
+          ledger_account: '#/components/schemas/CommonSchema-Output'
+          mailbox: '#/components/schemas/CommonSchema-Output'
+          ocr_task: '#/components/schemas/CommonSchema-Output'
+          onboarding: '#/components/schemas/CommonSchema-Output'
+          overdue_reminder: '#/components/schemas/CommonSchema-Output'
+          payable: '#/components/schemas/PayableSchema-Output'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
+          payment_record: '#/components/schemas/CommonSchema-Output'
+          payment_reminder: '#/components/schemas/CommonSchema-Output'
+          person: '#/components/schemas/CommonSchema-Output'
+          product: '#/components/schemas/CommonSchema-Output'
+          project: '#/components/schemas/CommonSchema-Output'
+          receipt: '#/components/schemas/CommonSchema-Output'
+          receivable: '#/components/schemas/CommonSchema-Output'
+          reconciliation: '#/components/schemas/CommonSchema-Output'
+          role: '#/components/schemas/CommonSchema-Output'
+          tag: '#/components/schemas/CommonSchema-Output'
+          todo_task: '#/components/schemas/CommonSchema-Output'
+          todo_task_mute: '#/components/schemas/CommonSchema-Output'
+          transaction: '#/components/schemas/CommonSchema-Output'
+          workflow: '#/components/schemas/CommonSchema-Output'
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     UpdateEntityUserRequest:
       properties:
         email:
@@ -722,167 +901,23 @@ components:
           - Finance Manager
       additionalProperties: false
       type: object
-    RoleResponse:
+    ValidationError:
       properties:
-        id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
           type: string
-          format: uuid
-          description: UUID role ID
-        created_at:
+        type:
           type: string
-          format: date-time
-          description: UTC datetime
-        updated_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        name:
-          type: string
-          minLength: 1
-          description: Role name
-        permissions:
-          $ref: '#/components/schemas/BizObjectsSchema-Output'
-          description: Access permissions
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-          description: record status, 'active' by default
       type: object
       required:
-      - id
-      - name
-      - permissions
-      - status
-      - created_at
-      - updated_at
-    PayableActionSchema:
-      properties:
-        action_name:
-          $ref: '#/components/schemas/PayableActionEnum'
-          description: Action name
-          default: read
-        permission:
-          $ref: '#/components/schemas/PermissionEnum'
-          description: Permission type
-          default: allowed
-      additionalProperties: false
-      type: object
-    ActionEnum:
-      type: string
-      enum:
-      - create
-      - read
-      - update
-      - delete
-    PermissionEnum:
-      type: string
-      enum:
-      - allowed
-      - allowed_for_own
-      - not_allowed
-    UpdateMeEntityUserRequest:
-      properties:
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: An entity user business email
-        first_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: First name
-          examples:
-          - Casey
-        last_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: Last name
-          examples:
-          - Peters
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: An entity user phone number in the international format
-        title:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: Title
-          examples:
-          - Finance Manager
-      additionalProperties: false
-      type: object
-    CommonSchema-Output:
-      properties:
-        actions:
-          items:
-            $ref: '#/components/schemas/ActionSchema'
-          type: array
-          description: List of actions
-        object_type:
-          type: string
-          enum:
-          - person
-          - onboarding
-          - comment
-          - counterpart
-          - entity_user
-          - entity
-          - entity_vat_ids
-          - counterpart_vat_id
-          - entity_bank_account
-          - export
-          - mailbox
-          - payables_purchase_order
-          - payment_reminder
-          - overdue_reminder
-          - product
-          - project
-          - receivable
-          - delivery_note
-          - ocr_task
-          - reconciliation
-          - role
-          - tag
-          - todo_task
-          - todo_task_mute
-          - transaction
-          - workflow
-          - approval_request
-          - approval_policy
-          - payment_record
-          - receipt
-          - accounting_tax_rate
-          - ledger_account
-          - cost_center
-          description: Object type
-          default: comment
-      additionalProperties: false
-      type: object
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    BizObjectsSchema-Output:
-      properties:
-        objects:
-          items:
-            $ref: '#/components/schemas/RootSchema-Output'
-          type: array
-          description: List of objects
-      additionalProperties: false
-      type: object
-    EntityUserCursorFields:
-      type: string
-      enum:
-      - updated_at
+      - loc
+      - msg
+      - type
     PayableSchema-Output:
       properties:
         actions:
@@ -897,91 +932,6 @@ components:
           default: payable
       additionalProperties: false
       type: object
-    ActionSchema:
-      properties:
-        action_name:
-          $ref: '#/components/schemas/ActionEnum'
-          description: Action name
-          default: read
-        permission:
-          $ref: '#/components/schemas/PermissionEnum'
-          description: Permission type
-          default: allowed
-      type: object
-    CreateEntityUserRequest:
-      properties:
-        email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: An entity user business email
-        first_name:
-          type: string
-          maxLength: 255
-          description: First name
-          examples:
-          - Casey
-        last_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: Last name
-          examples:
-          - Peters
-        login:
-          type: string
-          maxLength: 255
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: An entity user phone number in the international format
-        role_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          description: UUID of the role assigned to this entity user
-        title:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: Title
-          examples:
-          - Finance Manager
-      additionalProperties: false
-      type: object
-      required:
-      - first_name
-      - login
-    StatusEnum:
-      type: string
-      enum:
-      - active
-      - deleted
-    PayableActionEnum:
-      type: string
-      enum:
-      - create
-      - read
-      - update
-      - delete
-      - pay
-      - approve
-      - cancel
-      - submit
-      - create_from_mail
-      - reopen
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
     EntityUserResponse:
       properties:
         id:
@@ -1040,54 +990,84 @@ components:
       - login
       - role_id
       - status
-    HTTPValidationError:
+    ActionSchema:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+        action_name:
+          $ref: '#/components/schemas/ActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
       type: object
-    RootSchema-Output:
-      oneOf:
-      - $ref: '#/components/schemas/CommonSchema-Output'
-      - $ref: '#/components/schemas/PayableSchema-Output'
-      discriminator:
-        propertyName: object_type
-        mapping:
-          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
-          approval_policy: '#/components/schemas/CommonSchema-Output'
-          approval_request: '#/components/schemas/CommonSchema-Output'
-          comment: '#/components/schemas/CommonSchema-Output'
-          cost_center: '#/components/schemas/CommonSchema-Output'
-          counterpart: '#/components/schemas/CommonSchema-Output'
-          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
-          delivery_note: '#/components/schemas/CommonSchema-Output'
-          entity: '#/components/schemas/CommonSchema-Output'
-          entity_bank_account: '#/components/schemas/CommonSchema-Output'
-          entity_user: '#/components/schemas/CommonSchema-Output'
-          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
-          export: '#/components/schemas/CommonSchema-Output'
-          ledger_account: '#/components/schemas/CommonSchema-Output'
-          mailbox: '#/components/schemas/CommonSchema-Output'
-          ocr_task: '#/components/schemas/CommonSchema-Output'
-          onboarding: '#/components/schemas/CommonSchema-Output'
-          overdue_reminder: '#/components/schemas/CommonSchema-Output'
-          payable: '#/components/schemas/PayableSchema-Output'
-          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
-          payment_record: '#/components/schemas/CommonSchema-Output'
-          payment_reminder: '#/components/schemas/CommonSchema-Output'
-          person: '#/components/schemas/CommonSchema-Output'
-          product: '#/components/schemas/CommonSchema-Output'
-          project: '#/components/schemas/CommonSchema-Output'
-          receipt: '#/components/schemas/CommonSchema-Output'
-          receivable: '#/components/schemas/CommonSchema-Output'
-          reconciliation: '#/components/schemas/CommonSchema-Output'
-          role: '#/components/schemas/CommonSchema-Output'
-          tag: '#/components/schemas/CommonSchema-Output'
-          todo_task: '#/components/schemas/CommonSchema-Output'
-          todo_task_mute: '#/components/schemas/CommonSchema-Output'
-          transaction: '#/components/schemas/CommonSchema-Output'
-          workflow: '#/components/schemas/CommonSchema-Output'
+    PayableActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/PayableActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      additionalProperties: false
+      type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    UpdateMeEntityUserRequest:
+      properties:
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An entity user business email
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: First name
+          examples:
+          - Casey
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Last name
+          examples:
+          - Peters
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: An entity user phone number in the international format
+        title:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: Title
+          examples:
+          - Finance Manager
+      additionalProperties: false
+      type: object
+    BizObjectsSchema-Output:
+      properties:
+        objects:
+          items:
+            $ref: '#/components/schemas/RootSchema-Output'
+          type: array
+          description: List of objects
+      additionalProperties: false
+      type: object
     EntityUserPaginationResponse:
       properties:
         data:
@@ -1109,23 +1089,11 @@ components:
       type: object
       required:
       - data
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
     ErrorSchemaResponse:
       properties:
         error:
@@ -1133,6 +1101,38 @@ components:
       type: object
       required:
       - error
+    RoleResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID role ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        name:
+          type: string
+          minLength: 1
+          description: Role name
+        permissions:
+          $ref: '#/components/schemas/BizObjectsSchema-Output'
+          description: Access permissions
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+      type: object
+      required:
+      - id
+      - name
+      - permissions
+      - status
+      - created_at
+      - updated_at
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1140,4 +1140,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

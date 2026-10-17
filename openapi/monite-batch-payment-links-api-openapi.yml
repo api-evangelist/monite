@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Batch payment links across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Batch payment links across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -225,44 +225,30 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    InvoiceFile:
+    PaymentObject:
       properties:
-        mimetype:
+        id:
           type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-        url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
+          format: uuid
+        type:
+          $ref: '#/components/schemas/PaymentObjectType'
       additionalProperties: false
       type: object
       required:
-      - mimetype
-      - name
-      - url
-    MoniteAllPaymentMethodsTypes:
-      type: string
-      enum:
-      - sepa_credit
-      - us_ach
-      - blik
-      - card
-      - bacs_direct_debit
-      - bancontact
-      - eps
-      - giropay
-      - ideal
-      - p24
-      - sepa_debit
-      - sofort
-      - applepay
-      - googlepay
-      - affirm
-      - klarna
+      - id
+      - type
+    Invoice:
+      properties:
+        due_date:
+          type: string
+          format: date
+        file:
+          $ref: '#/components/schemas/InvoiceFile'
+        issue_date:
+          type: string
+          format: date
+      additionalProperties: false
+      type: object
     PaymentIntentResponse:
       properties:
         id:
@@ -312,6 +298,132 @@ components:
       - payment_methods
       - recipient
       - status
+    PaymentObjectType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    InvoiceFile:
+      properties:
+        mimetype:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
+      type: object
+      required:
+      - mimetype
+      - name
+      - url
+    MoniteAllPaymentMethodsTypes:
+      type: string
+      enum:
+      - sepa_credit
+      - us_ach
+      - blik
+      - card
+      - bacs_direct_debit
+      - bancontact
+      - eps
+      - giropay
+      - ideal
+      - p24
+      - sepa_debit
+      - sofort
+      - applepay
+      - googlepay
+      - affirm
+      - klarna
+    BatchPaymentLinkRequest:
+      properties:
+        expires_at:
+          type: string
+          format: date-time
+        funding_payment_method:
+          type: string
+          enum:
+          - us_ach
+          default: us_ach
+        payment_intents:
+          items:
+            $ref: '#/components/schemas/BatchSinglePaymentIntent'
+          type: array
+          minItems: 1
+        payout_payment_methods:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+          default:
+          - us_ach
+        return_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
+          example: https://pay.example.com/complete
+      additionalProperties: false
+      type: object
+      required:
+      - payment_intents
+      description: 'Request schema for creating a batch payment link.
+
+        Based on PaymentsBatchPaymentRequest but excluding payer_bank_account_id.'
+    RecipientAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
     BatchPaymentIntentsRecipient:
       properties:
         id:
@@ -334,7 +446,30 @@ components:
         Supports ''us_ach'' and ''wire'' payout methods in the schema, but only ''us_ach'' is currently used.
 
         Validation is done at the scenario level.'
-    BatchPaymentLinkWithPaymentIntents:
+    PaymentsBatchPaymentStatus:
+      type: string
+      enum:
+      - created
+      - processing
+      - partially_successful
+      - succeeded
+      - failed
+      - expired
+    PaymentObjectPayable:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+          - payable
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+    BatchPaymentLinkResponse:
       properties:
         id:
           type: string
@@ -347,10 +482,6 @@ components:
         expires_at:
           type: string
           format: date-time
-        payment_intents:
-          items:
-            $ref: '#/components/schemas/PaymentIntentResponse'
-          type: array
         payment_page_url:
           type: string
           maxLength: 2083
@@ -365,34 +496,16 @@ components:
       - id
       - created_at
       - expires_at
-      - payment_intents
       - payment_page_url
       - status
-      description: 'Response schema for a batch payment link with payment intents.
-
-        Used for GET /batch_payment_links/{link_id} endpoint.'
-    PayerAccountResponse:
+      description: Response schema for a batch payment link.
+    ErrorSchema:
       properties:
-        id:
+        message:
           type: string
-          format: uuid
-          description: ID of a payment account
-        bank_accounts:
-          items:
-            $ref: '#/components/schemas/BankAccount'
-          type: array
-          description: List of bank accounts
-        name:
-          type: string
-          description: Display name of a payment account
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PaymentAccountType'
-          description: Type of a payment account. Can be `entity` or `counterpart`
       type: object
       required:
-      - id
-      - type
+      - message
     BankAccount:
       properties:
         id:
@@ -464,146 +577,6 @@ components:
       type: object
       required:
       - id
-    PaymentObject:
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          $ref: '#/components/schemas/PaymentObjectType'
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-    PaymentAccountType:
-      type: string
-      enum:
-      - entity
-      - counterpart
-    PaymentObjectPayable:
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          type: string
-          enum:
-          - payable
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-    PaymentObjectType:
-      type: string
-      enum:
-      - payable
-      - receivable
-    BatchPaymentLinkResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        error:
-          type: object
-        expires_at:
-          type: string
-          format: date-time
-        payment_page_url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-        status:
-          $ref: '#/components/schemas/PaymentsBatchPaymentStatus'
-        total_amount:
-          type: integer
-      type: object
-      required:
-      - id
-      - created_at
-      - expires_at
-      - payment_page_url
-      - status
-      description: Response schema for a batch payment link.
-    Invoice:
-      properties:
-        due_date:
-          type: string
-          format: date
-        file:
-          $ref: '#/components/schemas/InvoiceFile'
-        issue_date:
-          type: string
-          format: date
-      additionalProperties: false
-      type: object
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    BatchSinglePaymentIntent:
-      properties:
-        object:
-          $ref: '#/components/schemas/PaymentObjectPayable'
-        payment_reference:
-          type: string
-          description: Must be provided if payable's document id is missing.
-        recipient:
-          $ref: '#/components/schemas/BatchPaymentIntentsRecipient'
-      additionalProperties: false
-      type: object
-      required:
-      - object
-      - recipient
-      description: 'Single payment intent schema specific for batch payment links.
-
-        Uses BatchPaymentIntentsRecipient instead of PaymentIntentsRecipient.'
-    PaymentsBatchPaymentStatus:
-      type: string
-      enum:
-      - created
-      - processing
-      - partially_successful
-      - succeeded
-      - failed
-      - expired
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    RecipientAccountResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of a payment account
-        bank_accounts:
-          items:
-            $ref: '#/components/schemas/BankAccount'
-          type: array
-          description: List of bank accounts
-        name:
-          type: string
-          description: Display name of a payment account
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PaymentAccountType'
-          description: Type of a payment account. Can be `entity` or `counterpart`
-      type: object
-      required:
-      - id
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -859,60 +832,65 @@ components:
       - CW
       - MF
       - SX
-    ValidationError:
+    PaymentAccountType:
+      type: string
+      enum:
+      - entity
+      - counterpart
+    BatchSinglePaymentIntent:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        object:
+          $ref: '#/components/schemas/PaymentObjectPayable'
+        payment_reference:
           type: string
-        type:
-          type: string
+          description: Must be provided if payable's document id is missing.
+        recipient:
+          $ref: '#/components/schemas/BatchPaymentIntentsRecipient'
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
-    BatchPaymentLinkRequest:
+      - object
+      - recipient
+      description: 'Single payment intent schema specific for batch payment links.
+
+        Uses BatchPaymentIntentsRecipient instead of PaymentIntentsRecipient.'
+    BatchPaymentLinkWithPaymentIntents:
       properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        error:
+          type: object
         expires_at:
           type: string
           format: date-time
-        funding_payment_method:
-          type: string
-          enum:
-          - us_ach
-          default: us_ach
         payment_intents:
           items:
-            $ref: '#/components/schemas/BatchSinglePaymentIntent'
+            $ref: '#/components/schemas/PaymentIntentResponse'
           type: array
-          minItems: 1
-        payout_payment_methods:
-          items:
-            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
-          type: array
-          minItems: 1
-          uniqueItems: true
-          default:
-          - us_ach
-        return_url:
+        payment_page_url:
           type: string
           maxLength: 2083
           minLength: 1
           format: uri
-          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
-          example: https://pay.example.com/complete
-      additionalProperties: false
+        status:
+          $ref: '#/components/schemas/PaymentsBatchPaymentStatus'
+        total_amount:
+          type: integer
       type: object
       required:
+      - id
+      - created_at
+      - expires_at
       - payment_intents
-      description: 'Request schema for creating a batch payment link.
+      - payment_page_url
+      - status
+      description: 'Response schema for a batch payment link with payment intents.
 
-        Based on PaymentsBatchPaymentRequest but excluding payer_bank_account_id.'
+        Used for GET /batch_payment_links/{link_id} endpoint.'
     ErrorSchemaResponse:
       properties:
         error:
@@ -1068,6 +1046,28 @@ components:
       - YER
       - ZAR
       - ZMW
+    PayerAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1075,4 +1075,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

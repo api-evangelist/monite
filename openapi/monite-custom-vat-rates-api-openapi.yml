@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Custom VAT rates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Custom VAT rates across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -427,38 +427,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CustomVatRateResponseList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CustomVatRateResponse'
-          type: array
-      type: object
-      required:
-      - data
-    VatRateComponent:
-      properties:
-        name:
-          type: string
-          maxLength: 64
-          description: Display name of the Tax.
-        value:
-          type: number
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'Percent multiplied by a 100. Example: 12.125% is 1212.5. Will be rounded to 2 decimal places'
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - value
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     ValidationError:
       properties:
         loc:
@@ -476,46 +444,6 @@ components:
       - loc
       - msg
       - type
-    CustomVatRateRequest:
-      properties:
-        components:
-          items:
-            $ref: '#/components/schemas/VatRateComponent'
-          type: array
-          maxItems: 10
-          minItems: 1
-          description: Sub-taxes included in the Custom VAT.
-        name:
-          type: string
-          maxLength: 64
-          description: Display name of the Custom VAT.
-      additionalProperties: false
-      type: object
-      required:
-      - components
-      - name
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    CustomVatRateUpdateRequest:
-      properties:
-        components:
-          items:
-            $ref: '#/components/schemas/VatRateComponent'
-          type: array
-          maxItems: 10
-          minItems: 1
-          description: Sub-taxes included in the Custom VAT.
-        name:
-          type: string
-          maxLength: 64
-          description: Display name of the Custom VAT.
-      additionalProperties: false
-      type: object
     CustomVatRateResponse:
       properties:
         id:
@@ -555,6 +483,55 @@ components:
       - components
       - name
       - value
+    CustomVatRateRequest:
+      properties:
+        components:
+          items:
+            $ref: '#/components/schemas/VatRateComponent'
+          type: array
+          maxItems: 10
+          minItems: 1
+          description: Sub-taxes included in the Custom VAT.
+        name:
+          type: string
+          maxLength: 64
+          description: Display name of the Custom VAT.
+      additionalProperties: false
+      type: object
+      required:
+      - components
+      - name
+    CustomVatRateResponseList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CustomVatRateResponse'
+          type: array
+      type: object
+      required:
+      - data
+    CustomVatRateUpdateRequest:
+      properties:
+        components:
+          items:
+            $ref: '#/components/schemas/VatRateComponent'
+          type: array
+          maxItems: 10
+          minItems: 1
+          description: Sub-taxes included in the Custom VAT.
+        name:
+          type: string
+          maxLength: 64
+          description: Display name of the Custom VAT.
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     ErrorSchema:
       properties:
         message:
@@ -562,6 +539,29 @@ components:
       type: object
       required:
       - message
+    VatRateComponent:
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          description: Display name of the Tax.
+        value:
+          type: number
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Percent multiplied by a 100. Example: 12.125% is 1212.5. Will be rounded to 2 decimal places'
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - value
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -569,4 +569,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

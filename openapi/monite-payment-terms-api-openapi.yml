@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payment terms across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payment terms across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -415,6 +415,54 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    PaymentTermsUpdatePayload:
+      properties:
+        description:
+          type: string
+          maxLength: 255
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+        term_1:
+          allOf:
+          - $ref: '#/components/schemas/TermDiscountDays'
+          description: The first tier of the payment term. Represents the terms of the first early discount.
+        term_2:
+          allOf:
+          - $ref: '#/components/schemas/TermDiscountDays'
+          description: The second tier of the payment term. Defines the terms of the second early discount.
+        term_final:
+          allOf:
+          - $ref: '#/components/schemas/TermFinalDays'
+          description: The final tier of the payment term. Defines the invoice due date.
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    PaymentTermsListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentTermsResponse'
+          type: array
+      additionalProperties: false
+      type: object
     PaymentTermsResponse:
       properties:
         id:
@@ -452,6 +500,44 @@ components:
       type: object
       required:
       - number_of_days
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    TermDiscountDays:
+      properties:
+        discount:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: The discount percentage in minor units. E.g., 200 means 2%. 1050 means 10.5%.
+        number_of_days:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: The amount of days after the invoice issue date.
+      additionalProperties: false
+      type: object
+      required:
+      - discount
+      - number_of_days
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     PaymentTermsCreatePayload:
       properties:
         description:
@@ -478,92 +564,6 @@ components:
       required:
       - name
       - term_final
-    PaymentTermsListResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PaymentTermsResponse'
-          type: array
-      additionalProperties: false
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    TermDiscountDays:
-      properties:
-        discount:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: The discount percentage in minor units. E.g., 200 means 2%. 1050 means 10.5%.
-        number_of_days:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: The amount of days after the invoice issue date.
-      additionalProperties: false
-      type: object
-      required:
-      - discount
-      - number_of_days
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    PaymentTermsUpdatePayload:
-      properties:
-        description:
-          type: string
-          maxLength: 255
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-        term_1:
-          allOf:
-          - $ref: '#/components/schemas/TermDiscountDays'
-          description: The first tier of the payment term. Represents the terms of the first early discount.
-        term_2:
-          allOf:
-          - $ref: '#/components/schemas/TermDiscountDays'
-          description: The second tier of the payment term. Defines the terms of the second early discount.
-        term_final:
-          allOf:
-          - $ref: '#/components/schemas/TermFinalDays'
-          description: The final tier of the payment term. Defines the invoice due date.
-      additionalProperties: false
-      type: object
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -571,4 +571,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payables across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payables across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -2996,21 +2996,258 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CurrencyExchangeSchema2:
+    CounterpartRawAddressUpdateRequest:
       properties:
-        default_currency_code:
+        city:
           type: string
-        rate:
-          type: number
-          exclusiveMinimum: 0.0
-        total:
-          type: number
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
+      additionalProperties: false
+      type: object
+      description: Address information.
+    PayableOriginEnum:
+      type: string
+      enum:
+      - upload
+      - email
+      - einvoicing
+    PayablePaymentTermsCreatePayload:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+        term_1:
+          $ref: '#/components/schemas/PayablePaymentTermDiscount'
+        term_2:
+          $ref: '#/components/schemas/PayablePaymentTermDiscount'
+        term_final:
+          $ref: '#/components/schemas/PayablePaymentTermFinal'
       additionalProperties: false
       type: object
       required:
-      - default_currency_code
-      - rate
-      - total
+      - name
+      - term_final
+    OcrRecognitionResponse:
+      properties:
+        line_items:
+          items:
+            $ref: '#/components/schemas/LabelNValue'
+          type: array
+          description: Text content of the invoice line items as recognized by OCR.
+        summary:
+          items:
+            $ref: '#/components/schemas/LabelNValue'
+          type: array
+          description: Invoice text content other than the line items. Such as the invoice issue and due dates, vendor name and address, and other general information.
+      type: object
+      description: 'Contains information about all text blocks extracted from an uploaded invoice by OCR.
+
+        The text blocks are grouped into `line_items` (invoice line items) and `summary` (all other information).
+
+        Legacy schema used for AWS textract recognition.'
+    FileSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this file.
+        created_at:
+          type: string
+          format: date-time
+          description: UTC date and time when this file was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        file_type:
+          type: string
+          description: The type of the business object associated with this file.
+          example: payables
+        md5:
+          type: string
+          description: The MD5 hash of the file.
+          example: 31d1a2dd1ad3dfc39be849d70a68dac0
+        mimetype:
+          type: string
+          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types).
+          example: application/pdf
+        name:
+          type: string
+          maxLength: 512
+          description: The original file name (if available).
+          example: invoice.pdf
+        pages:
+          items:
+            $ref: '#/components/schemas/PageSchema2'
+          type: array
+          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
+          default: []
+        previews:
+          items:
+            $ref: '#/components/schemas/PreviewSchema2'
+          type: array
+          description: Preview images generated for this file. There can be multiple images with different sizes.
+          default: []
+        region:
+          type: string
+          description: Geographical region of the data center where the file is stored.
+          example: eu-central-1
+        size:
+          type: integer
+          minimum: 0.0
+          description: The file size in bytes.
+          example: 24381
+        url:
+          type: string
+          description: The URL to download the file.
+          example: https://bucketname.s3.amazonaws.com/12345/67890.pdf
+      type: object
+      required:
+      - id
+      - created_at
+      - file_type
+      - name
+      - region
+      - md5
+      - mimetype
+      - url
+      - size
+      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
+    SuggestedPaymentTerm:
+      properties:
+        date:
+          type: string
+          format: date
+        discount:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+      additionalProperties: false
+      type: object
+      required:
+      - date
+      description: Suggested payment date and corresponding discount
+    PayableCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+      - issued_at
+    PayablesVariableType:
+      type: string
+      enum:
+      - payables_purchase_order
+      - payables_notify_approver
+    PayableAggregatedDataResponse:
+      properties:
+        count:
+          type: integer
+          description: The total count of payables across all statuses.
+        data:
+          items:
+            $ref: '#/components/schemas/PayableAggregatedItem'
+          type: array
+          description: A list of aggregated items, each representing a status with its associated sum of the amount field and count.
+        sum_total_amount:
+          type: integer
+          description: The total sum of the amount field for all payables across all statuses.
+      additionalProperties: false
+      type: object
+      required:
+      - count
+      - data
+      - sum_total_amount
+    PayableHistoryResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of the history record.
+          examples:
+          - cd58435b-1c79-4b17-9f79-f898c93e5f97
+        entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the entity user who made the change or trigger the event, or `null` if it was done by using a partner access token.
+          examples:
+          - d5a577b0-01c0-4566-ac5c-44f41935e8c4
+        event_data:
+          anyOf:
+          - $ref: '#/components/schemas/PayableStatusChangedEventData'
+          - $ref: '#/components/schemas/PayableUpdatedEventData'
+          - $ref: '#/components/schemas/PayableCreatedEventData'
+          - $ref: '#/components/schemas/PayableCreditNoteLinkedEventData'
+          - $ref: '#/components/schemas/PayableCreditNoteUnlinkedEventData'
+          - $ref: '#/components/schemas/FileAttachedEventData'
+          description: 'An object containing additional information about the event or change. The object structure varies based on the `event_type`. '
+        event_type:
+          allOf:
+          - $ref: '#/components/schemas/PayableHistoryEventTypeEnum'
+          description: The type of the event or change.
+        payable_id:
+          type: string
+          format: uuid
+          description: ID of the payable document that was changed or triggered an event.
+          examples:
+          - f669a8a4-0563-4ab9-b54f-e9d700d282c5
+        timestamp:
+          type: string
+          format: date-time
+          description: UTC date and time when the event or change occurred.
+      type: object
+      required:
+      - id
+      - event_data
+      - event_type
+      - payable_id
+      - timestamp
+    CounterpartRawAddress:
+      properties:
+        city:
+          type: string
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
+      type: object
+      description: Address information.
+    PayableHistoryCursorFields:
+      type: string
+      enum:
+      - timestamp
     CounterpartRawBankAccountUpdateRequest:
       properties:
         account_holder_name:
@@ -3035,6 +3272,247 @@ components:
         sort_code:
           type: string
           description: required for GB bank accounts
+      additionalProperties: false
+      type: object
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CounterpartRawBankAccount:
+      properties:
+        account_holder_name:
+          type: string
+          description: Vendor's bank account name.
+        account_number:
+          type: string
+          description: Vendor's bank account number, IBAN, or similar (if specified in the payable document).
+          example: '123456789012'
+        bic:
+          type: string
+          description: SWIFT code (BIC) of the vendor's bank.
+          example: DEUTDE2HXXX
+        iban:
+          type: string
+          description: required for non-GB bank accounts
+        routing_number:
+          type: string
+          description: required for US bank accounts
+        sort_code:
+          type: string
+          description: required for GB bank accounts
+      type: object
+    PayableStatusChangedEventData:
+      properties:
+        new_status:
+          $ref: '#/components/schemas/PayableStateEnum'
+        old_status:
+          $ref: '#/components/schemas/PayableStateEnum'
+      additionalProperties: false
+      type: object
+      required:
+      - new_status
+      - old_status
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    PayableHistoryEventTypeEnum:
+      type: string
+      enum:
+      - status_changed
+      - payable_created
+      - payable_updated
+      - credit_note_linked
+      - credit_note_unlinked
+      - file_attached
+    LabelNValue:
+      properties:
+        label:
+          allOf:
+          - $ref: '#/components/schemas/Item'
+          description: Text label.
+          example:
+            text: total
+            confidence: 99.799
+        value:
+          allOf:
+          - $ref: '#/components/schemas/Item'
+          description: The value (if any).
+      type: object
+      required:
+      - label
+      - value
+      description: 'A label-value pair extracted from an uploaded document by OCR.
+
+        For example, the label could be "Total" and the value could be a currency amount.'
+    OCRResponseInvoiceReceiptData:
+      properties:
+        counterpart_account_id:
+          type: string
+          description: Counterpart bank ID
+          example: DEUTDEFF
+        counterpart_account_number:
+          type: string
+          description: The bank account number
+        counterpart_address:
+          type: string
+          description: Counterpart address
+        counterpart_address_object:
+          allOf:
+          - $ref: '#/components/schemas/OCRAddress'
+          description: Counterpart address as a json object compatible with counterparts service
+        counterpart_branch_number:
+          type: string
+          description: The bank branch number
+        counterpart_email:
+          type: string
+          description: Email address of the counterpart
+        counterpart_name:
+          type: string
+          description: Counterpart name
+          example: Monite GMbH
+        counterpart_routing_number:
+          type: string
+          description: The bank routing number
+        counterpart_vat_id:
+          type: string
+          description: Counterpart VAT ID
+          example: DE88939004
+        currency:
+          type: string
+          description: ISO 4217 currency code
+          example: EUR
+        discount_raw:
+          type: number
+          description: Discount Raw amount
+        document_due_date:
+          type: string
+          description: Document due date in ISO format
+        document_id:
+          type: string
+          description: Invoice/receipt ID
+          example: CST-13341
+        document_issued_at_date:
+          type: string
+          description: Document issuance date in ISO format
+        line_items_raw:
+          items:
+            $ref: '#/components/schemas/OCRResponseInvoiceReceiptLineItemRaw'
+          type: array
+          description: List of line items from document raw, without minor units conversion.
+        payment_terms_raw:
+          items:
+            type: string
+          type: array
+          description: Raw payment terms parsed but not calculated.
+        purchase_order_number:
+          type: string
+          description: Purchase Order Number
+          example: '1234'
+        tax_payer_id:
+          type: string
+          description: Tax payer ID
+          example: '12345678901'
+        total_excl_vat_raw:
+          type: number
+          description: Subtotal, without minor units
+          example: 77
+        total_paid_amount_raw:
+          type: number
+          description: Total paid amount
+          default: 0
+          example: 50
+        total_raw:
+          type: number
+          description: Total, without minor units
+          example: 70
+        total_vat_amount_raw:
+          type: number
+          description: VAT amount, without minor units
+          example: 7
+        total_vat_rate_raw:
+          type: number
+          description: VAT Percent raw, without minor units.
+          example: 12.5
+        type:
+          type: string
+          enum:
+          - invoice
+          default: invoice
+      type: object
+    PayableValidationsResource:
+      properties:
+        required_fields:
+          items:
+            $ref: '#/components/schemas/PayablesFieldsAllowedForValidate'
+          type: array
+      type: object
+      required:
+      - required_fields
+    PayableCreditNoteUnlinkedEventData:
+      properties:
+        credit_note_document_id:
+          type: string
+        credit_note_id:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - credit_note_id
+    PayableAttachFile:
+      properties:
+        file:
+          type: string
+          format: binary
+      type: object
+      required:
+      - file
+    SuggestedResponse:
+      properties:
+        suggested_counterpart:
+          $ref: '#/components/schemas/SuggestedCounterpartPayload'
+      additionalProperties: false
+      type: object
+      required:
+      - suggested_counterpart
+    CounterpartRawDataUpdateRequest:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawAddressUpdateRequest'
+          description: The address of the vendor or supplier.
+        bank_account:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawBankAccountUpdateRequest'
+          description: Object representing counterpart bank account.
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        name:
+          type: string
+          description: Vendor or supplier name.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The tax id of the counterpart.
+          example: DE12345678
+        vat_id:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawVatIDUpdateRequest'
+          description: VAT ID of the vendor or supplier which was used in the invoice.
       additionalProperties: false
       type: object
     PayableUploadWithDataSchema:
@@ -3141,255 +3619,34 @@ components:
       additionalProperties: false
       type: object
       description: This schema is used to create a new payable by providing its data along with the original file.
-    ObjectType:
-      type: string
-      enum:
-      - account
-      - approval
-      - approval_request
-      - approval_policy
-      - approval_policy_process
-      - audit_trail
-      - comment
-      - counterpart
-      - counterpart_address
-      - counterpart_bank_account
-      - counterpart_contact_person
-      - counterpart_partner_metadata
-      - counterpart_tax_id
-      - counterpart_vat_id
-      - delivery_note
-      - einvoicing
-      - entity
-      - entity_bank_account
-      - entity_settings
-      - entity_token
-      - entity_user
-      - entity_user_token
-      - entity_vat_ids
-      - export
-      - mailbox
-      - monitescript_process
-      - ocr_task
-      - onboarding
-      - overdue_reminder
-      - partner
-      - partner_internal_config
-      - partner_settings
-      - partner_token
-      - payable
-      - payable_line_item
-      - payables_credit_note
-      - payables_purchase_order
-      - payment
-      - payment_intent
-      - payment_link
-      - payment_record
-      - payment_reminder
-      - person
-      - product
-      - project
-      - receivable
-      - reconciliation
-      - recurrence
-      - role
-      - tag
-      - todo_task
-      - todo_task_mute
-      - transaction
-      - webhook
-      - workflow
-      - workflow_pipeline
-    PayableAggregatedItem:
+    ValidationError:
       properties:
-        count:
-          type: integer
-          description: The total count of payables with this specific status.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/PayableStateEnum'
-          description: The status of the payable (e.g., paid, draft, etc.).
-        sum_total_amount:
-          type: integer
-          description: The total sum of the amount field for all payables with this specific status.
-      additionalProperties: false
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
       type: object
       required:
-      - count
-      - status
-      - sum_total_amount
-    PayableCreditNoteUnlinkedEventData:
-      properties:
-        credit_note_document_id:
-          type: string
-        credit_note_id:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - credit_note_id
-    TagCategory:
-      type: string
-      enum:
-      - document_type
-      - department
-      - project
-      - cost_center
-      - vendor_type
-      - payment_method
-      - approval_status
-    CounterpartRawDataUpdateRequest:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawAddressUpdateRequest'
-          description: The address of the vendor or supplier.
-        bank_account:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawBankAccountUpdateRequest'
-          description: Object representing counterpart bank account.
-        email:
-          type: string
-          format: email
-          description: The email address of the organization
-          example: acme@example.com
-        name:
-          type: string
-          description: Vendor or supplier name.
-          example: Acme Inc.
-        phone:
-          type: string
-          description: The phone number of the organization
-          example: '5551231234'
-        tax_id:
-          type: string
-          maxLength: 30
-          description: The tax id of the counterpart.
-          example: DE12345678
-        vat_id:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawVatIDUpdateRequest'
-          description: VAT ID of the vendor or supplier which was used in the invoice.
-      additionalProperties: false
-      type: object
-    PayablePaymentTermsCreatePayload:
+      - loc
+      - msg
+      - type
+    PayableTemplatesVariable:
       properties:
         description:
           type: string
         name:
           type: string
-        term_1:
-          $ref: '#/components/schemas/PayablePaymentTermDiscount'
-        term_2:
-          $ref: '#/components/schemas/PayablePaymentTermDiscount'
-        term_final:
-          $ref: '#/components/schemas/PayablePaymentTermFinal'
       additionalProperties: false
       type: object
       required:
+      - description
       - name
-      - term_final
-    PayableCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-      - issued_at
-    OCRResponseInvoiceReceiptData:
-      properties:
-        counterpart_account_id:
-          type: string
-          description: Counterpart bank ID
-          example: DEUTDEFF
-        counterpart_account_number:
-          type: string
-          description: The bank account number
-        counterpart_address:
-          type: string
-          description: Counterpart address
-        counterpart_address_object:
-          allOf:
-          - $ref: '#/components/schemas/OCRAddress'
-          description: Counterpart address as a json object compatible with counterparts service
-        counterpart_branch_number:
-          type: string
-          description: The bank branch number
-        counterpart_email:
-          type: string
-          description: Email address of the counterpart
-        counterpart_name:
-          type: string
-          description: Counterpart name
-          example: Monite GMbH
-        counterpart_routing_number:
-          type: string
-          description: The bank routing number
-        counterpart_vat_id:
-          type: string
-          description: Counterpart VAT ID
-          example: DE88939004
-        currency:
-          type: string
-          description: ISO 4217 currency code
-          example: EUR
-        discount_raw:
-          type: number
-          description: Discount Raw amount
-        document_due_date:
-          type: string
-          description: Document due date in ISO format
-        document_id:
-          type: string
-          description: Invoice/receipt ID
-          example: CST-13341
-        document_issued_at_date:
-          type: string
-          description: Document issuance date in ISO format
-        line_items_raw:
-          items:
-            $ref: '#/components/schemas/OCRResponseInvoiceReceiptLineItemRaw'
-          type: array
-          description: List of line items from document raw, without minor units conversion.
-        payment_terms_raw:
-          items:
-            type: string
-          type: array
-          description: Raw payment terms parsed but not calculated.
-        purchase_order_number:
-          type: string
-          description: Purchase Order Number
-          example: '1234'
-        tax_payer_id:
-          type: string
-          description: Tax payer ID
-          example: '12345678901'
-        total_excl_vat_raw:
-          type: number
-          description: Subtotal, without minor units
-          example: 77
-        total_paid_amount_raw:
-          type: number
-          description: Total paid amount
-          default: 0
-          example: 50
-        total_raw:
-          type: number
-          description: Total, without minor units
-          example: 70
-        total_vat_amount_raw:
-          type: number
-          description: VAT amount, without minor units
-          example: 7
-        total_vat_rate_raw:
-          type: number
-          description: VAT Percent raw, without minor units.
-          example: 12.5
-        type:
-          type: string
-          enum:
-          - invoice
-          default: invoice
-      type: object
     PayableValidationResponse:
       properties:
         id:
@@ -3403,25 +3660,35 @@ components:
       type: object
       required:
       - id
-    PayableValidationsUpdateRequest:
+    PayableCreditNoteData:
       properties:
-        required_fields:
-          items:
-            $ref: '#/components/schemas/PayablesFieldsAllowedForValidate'
-          type: array
-      additionalProperties: false
+        id:
+          type: string
+          format: uuid
+          description: The unique identifier of the credit note.
+          example: 123e4567-e89b-12d3-a456-426614174000
+        document_id:
+          type: string
+          description: The credit note's unique document number.
+          example: CN-123456
+        issued_at:
+          type: string
+          format: date
+          description: The date when the credit note was issued, in the YYYY-MM-DD format
+          example: '2024-01-15'
+        status:
+          type: string
+          maxLength: 30
+          description: The current status of the credit note in its lifecycle
+          example: submitted_for_approval
+        total_amount:
+          type: integer
+          description: Credit note total amount.
+          example: 1000
       type: object
       required:
-      - required_fields
-    PayableHistoryEventTypeEnum:
-      type: string
-      enum:
-      - status_changed
-      - payable_created
-      - payable_updated
-      - credit_note_linked
-      - credit_note_unlinked
-      - file_attached
+      - id
+      - status
     TagReadSchema:
       properties:
         id:
@@ -3466,32 +3733,80 @@ components:
       - updated_at
       - name
       description: Represents a user-defined tag that can be assigned to resources to filter them.
-    PayableTemplatesVariablesObject:
+    Item:
       properties:
-        object_subtype:
-          $ref: '#/components/schemas/PayablesVariableType'
-        object_type:
-          $ref: '#/components/schemas/ObjectType'
-        variables:
-          items:
-            $ref: '#/components/schemas/PayableTemplatesVariable'
-          type: array
-      additionalProperties: false
+        confidence:
+          type: number
+          maximum: 100.0
+          minimum: 0.0
+          description: OCR confidence score - the estimated accuracy percentage of character recognition of the extracted text, from 0 to 100%.
+          example: 96.238
+        processed_text:
+          description: 'If the `text` value is identified as a currency amount or a date, `processed_text` contains this value converted to a common format:
+
+
+            * Currency amounts (such as the total, subtotal, tax/VAT, line item prices) are converted to numbers with the currency character removed. For example, "€1,125.00" becomes 1125.0.* Dates are converted to the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format, `YYYY-MM-DDThh:mm:ss`. For example, "26/3/2021" becomes "2021-03-26T00:00:00".
+
+
+            If `text` is not a currency amount or a date, `processed_text` is `null`.'
+          example: 1125
+        text:
+          type: string
+          description: The text as recognized by OCR.
+          example: €1,125.00
       type: object
       required:
-      - object_subtype
-      - object_type
-      - variables
-    PayableCreditNoteLinkedEventData:
+      - confidence
+      - text
+      description: Contains information about a text block or line extracted from an uploaded document by OCR.
+    OCRResponseInvoiceReceiptLineItemRaw:
       properties:
-        credit_note_document_id:
+        description:
           type: string
-        credit_note_id:
+          description: Human-readable line item description
+          example: 'Impact Players : How to Take the Lead , Play Bigger , and Multiply Your'
+        item_adjusted:
+          type: boolean
+          description: Item Quantity/Unit Price adjusted
+          default: false
+        line_item_ocr_id:
           type: string
-      additionalProperties: false
+          description: OCR Id of line item
+        quantity:
+          type: number
+          description: Quantity
+          example: 1.2
+        total_excl_vat:
+          type: number
+          description: Total excluded VAT as parsed.
+          example: 120
+        total_incl_vat:
+          type: number
+          description: Total included VAT as parsed.
+          example: 135
+        unit:
+          type: string
+          description: Unit
+          example: meters
+        unit_price:
+          type: number
+          description: Price as parsed
+          example: 100
+        vat_amount:
+          type: number
+          description: VAT Amount as parsed.
+          example: 15
+        vat_percentage:
+          type: number
+          description: VAT Percent as parsed.
+          example: 12.5
       type: object
-      required:
-      - credit_note_id
+    SourceOfPayableDataEnum:
+      type: string
+      enum:
+      - ocr
+      - user_specified
+      - einvoicing
     PayableResponseSchema:
       properties:
         id:
@@ -3701,563 +4016,6 @@ components:
       - source_of_payable_data
       - status
       description: Represents an Accounts Payable document received from a vendor or supplier.
-    PayableAggregatedDataResponse:
-      properties:
-        count:
-          type: integer
-          description: The total count of payables across all statuses.
-        data:
-          items:
-            $ref: '#/components/schemas/PayableAggregatedItem'
-          type: array
-          description: A list of aggregated items, each representing a status with its associated sum of the amount field and count.
-        sum_total_amount:
-          type: integer
-          description: The total sum of the amount field for all payables across all statuses.
-      additionalProperties: false
-      type: object
-      required:
-      - count
-      - data
-      - sum_total_amount
-    PayableStatusChangedEventData:
-      properties:
-        new_status:
-          $ref: '#/components/schemas/PayableStateEnum'
-        old_status:
-          $ref: '#/components/schemas/PayableStateEnum'
-      additionalProperties: false
-      type: object
-      required:
-      - new_status
-      - old_status
-    CounterpartRawAddress:
-      properties:
-        city:
-          type: string
-          description: City name.
-          example: Berlin
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        line1:
-          type: string
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
-          type: string
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          description: State, region, province, or county.
-      type: object
-      description: Address information.
-    PageSchema2:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: A unique ID of the image.
-        mimetype:
-          type: string
-          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) of the image.
-          example: image/png
-        number:
-          type: integer
-          minimum: 0.0
-          description: The page number in the PDF document, from 0.
-          example: 0
-        size:
-          type: integer
-          minimum: 0.0
-          description: Image file size, in bytes.
-          example: 21972
-        url:
-          type: string
-          description: The URL to download the image.
-          example: https://bucket.s3.amazonaws.com/123/456.png
-      type: object
-      required:
-      - id
-      - mimetype
-      - size
-      - number
-      - url
-      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
-
-        and saves them as PNG images. This object contains the image and metadata of a single page.'
-    OcrStatusEnum:
-      type: string
-      enum:
-      - processing
-      - error
-      - success
-    PayableUpdateSchema:
-      properties:
-        amount_paid:
-          type: integer
-          minimum: 0.0
-          description: How much was paid on the invoice (in minor units).
-        counterpart_address_id:
-          type: string
-          format: uuid
-          description: The ID of counterpart address object stored in counterparts service
-        counterpart_bank_account_id:
-          type: string
-          format: uuid
-          description: The ID of counterpart bank account object stored in counterparts service
-        counterpart_id:
-          type: string
-          format: uuid
-          description: The ID of the counterpart object that represents the vendor or supplier.
-        counterpart_raw_data:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawDataUpdateRequest'
-          description: Allows to fix some data in counterpart recognised fields to correct them in order to make autolinking happen.
-        counterpart_vat_id_id:
-          type: string
-          format: uuid
-          description: The ID of counterpart VAT ID object stored in counterparts service
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The [currency code](https://docs.monite.com/references/currencies) of the currency used in the payable.
-          example: EUR
-        description:
-          type: string
-          maxLength: 255
-          description: An arbitrary description of this payable.
-        discount:
-          type: integer
-          description: The value of the additional discount that will be applied to the total amount. in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 500
-        document_id:
-          type: string
-          description: A unique invoice number assigned by the invoice issuer for payment tracking purposes.
-          example: DE2287
-        due_date:
-          type: string
-          format: date
-          description: The date by which the payable must be paid, in the YYYY-MM-DD format. If the payable specifies payment terms with early payment discounts, this is the final payment date.
-        enforce_approval_policy_id:
-          type: string
-          format: uuid
-          description: Id of an existing approval policy that should be enforced when submitting the payable for approval.If this field is set, no other policies will be evaluated via their triggers - the specified policy will always be applied instead.
-        issued_at:
-          type: string
-          format: date
-          description: The date when the payable was issued, in the YYYY-MM-DD format.
-        partner_metadata:
-          type: object
-          description: Metadata for partner needs
-        payment_terms:
-          allOf:
-          - $ref: '#/components/schemas/PayablePaymentTermsCreatePayload'
-          description: The number of days to pay with potential discount for options shorter than due_date
-        project_id:
-          type: string
-          format: uuid
-          description: The project ID of the payable.
-        purchase_order_id:
-          type: string
-          format: uuid
-          description: The identifier of the purchase order to which this payable belongs.
-        sender:
-          type: string
-          format: email
-          description: The email address from which the invoice was sent to the entity.
-          example: hello@example.com
-        subtotal:
-          type: integer
-          description: The subtotal amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 1250
-        suggested_payment_term:
-          allOf:
-          - $ref: '#/components/schemas/SuggestedPaymentTerm'
-          description: The suggested date and corresponding discount in which payable could be paid. The date is in the YYYY-MM-DD format. The discount is calculated as X * (10^-4) - for example, 100 is 1%, 25 is 0,25%, 10000 is 100 %. Date varies depending on the payment terms and may even be equal to the due date with discount 0.
-        tag_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          description: A list of IDs of user-defined tags (labels) assigned to this payable. Tags can be used to trigger a specific approval policy for this payable.
-        tax:
-          type: integer
-          description: Registered tax percentage applied for a service price in minor units, e.g. 200 means 2%, 1050 means 10.5%.
-          example: 2000
-        tax_amount:
-          type: integer
-          description: Tax amount in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 250
-        total_amount:
-          type: integer
-          description: The total amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 15000
-      additionalProperties: false
-      type: object
-      description: This schema is used to update the data of an existing payable.
-    PartiallyPaidPayload:
-      properties:
-        amount_paid:
-          type: integer
-          minimum: 0.0
-          description: How much was paid on the invoice (in minor units).
-      additionalProperties: false
-      type: object
-      required:
-      - amount_paid
-    PayableValidationsResource:
-      properties:
-        required_fields:
-          items:
-            $ref: '#/components/schemas/PayablesFieldsAllowedForValidate'
-          type: array
-      type: object
-      required:
-      - required_fields
-    CommentPayload:
-      properties:
-        comment:
-          type: string
-          description: An arbitrary comment that describes how and when this payable was paid.
-      additionalProperties: false
-      type: object
-    FileAttachedEventData:
-      properties:
-        file_name:
-          type: string
-        file_size:
-          type: integer
-        url:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - file_name
-      - file_size
-      - url
-    SuggestedCounterpartPayload:
-      properties:
-        id:
-          type: string
-          format: uuid
-        address_id:
-          type: string
-          format: uuid
-        bank_account_id:
-          type: string
-          format: uuid
-        vat_id_id:
-          type: string
-          format: uuid
-      additionalProperties: false
-      type: object
-      required:
-      - id
-    LabelNValue:
-      properties:
-        label:
-          allOf:
-          - $ref: '#/components/schemas/Item'
-          description: Text label.
-          example:
-            text: total
-            confidence: 99.799
-        value:
-          allOf:
-          - $ref: '#/components/schemas/Item'
-          description: The value (if any).
-      type: object
-      required:
-      - label
-      - value
-      description: 'A label-value pair extracted from an uploaded document by OCR.
-
-        For example, the label could be "Total" and the value could be a currency amount.'
-    ErrorSchemaResponse2:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
-      type: object
-      required:
-      - error
-    PayableTemplatesVariablesObjectList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PayableTemplatesVariablesObject'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    SourceOfPayableDataEnum:
-      type: string
-      enum:
-      - ocr
-      - user_specified
-      - einvoicing
-    Item:
-      properties:
-        confidence:
-          type: number
-          maximum: 100.0
-          minimum: 0.0
-          description: OCR confidence score - the estimated accuracy percentage of character recognition of the extracted text, from 0 to 100%.
-          example: 96.238
-        processed_text:
-          description: 'If the `text` value is identified as a currency amount or a date, `processed_text` contains this value converted to a common format:
-
-
-            * Currency amounts (such as the total, subtotal, tax/VAT, line item prices) are converted to numbers with the currency character removed. For example, "€1,125.00" becomes 1125.0.* Dates are converted to the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format, `YYYY-MM-DDThh:mm:ss`. For example, "26/3/2021" becomes "2021-03-26T00:00:00".
-
-
-            If `text` is not a currency amount or a date, `processed_text` is `null`.'
-          example: 1125
-        text:
-          type: string
-          description: The text as recognized by OCR.
-          example: €1,125.00
-      type: object
-      required:
-      - confidence
-      - text
-      description: Contains information about a text block or line extracted from an uploaded document by OCR.
-    OCRResponseInvoiceReceiptLineItemRaw:
-      properties:
-        description:
-          type: string
-          description: Human-readable line item description
-          example: 'Impact Players : How to Take the Lead , Play Bigger , and Multiply Your'
-        item_adjusted:
-          type: boolean
-          description: Item Quantity/Unit Price adjusted
-          default: false
-        line_item_ocr_id:
-          type: string
-          description: OCR Id of line item
-        quantity:
-          type: number
-          description: Quantity
-          example: 1.2
-        total_excl_vat:
-          type: number
-          description: Total excluded VAT as parsed.
-          example: 120
-        total_incl_vat:
-          type: number
-          description: Total included VAT as parsed.
-          example: 135
-        unit:
-          type: string
-          description: Unit
-          example: meters
-        unit_price:
-          type: number
-          description: Price as parsed
-          example: 100
-        vat_amount:
-          type: number
-          description: VAT Amount as parsed.
-          example: 15
-        vat_percentage:
-          type: number
-          description: VAT Percent as parsed.
-          example: 12.5
-      type: object
-    PayablesVariableType:
-      type: string
-      enum:
-      - payables_purchase_order
-      - payables_notify_approver
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    SuggestedPaymentTerm:
-      properties:
-        date:
-          type: string
-          format: date
-        discount:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-      additionalProperties: false
-      type: object
-      required:
-      - date
-      description: Suggested payment date and corresponding discount
-    PayableTemplatesVariable:
-      properties:
-        description:
-          type: string
-        name:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - description
-      - name
-    PayableCreatedEventData:
-      properties:
-        payable_source:
-          $ref: '#/components/schemas/PayableOriginEnum'
-      additionalProperties: false
-      type: object
-      required:
-      - payable_source
-    CounterpartRawData:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawAddress'
-          description: The address of the vendor or supplier.
-        bank_account:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawBankAccount'
-          description: Object representing counterpart bank account.
-        email:
-          type: string
-          format: email
-          description: The email address of the organization
-          example: acme@example.com
-        name:
-          type: string
-          description: Vendor or supplier name.
-          example: Acme Inc.
-        phone:
-          type: string
-          description: The phone number of the organization
-          example: '5551231234'
-        tax_id:
-          type: string
-          description: The tax id of the counterpart.
-          example: DE12345678
-        vat_id:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawVatID'
-          description: VAT ID of the vendor or supplier which was used in the invoice.
-      type: object
-    PayablePaymentTermFinal:
-      properties:
-        number_of_days:
-          type: integer
-          description: The amount of days after the invoice issue date.
-      additionalProperties: false
-      type: object
-      required:
-      - number_of_days
-    PayablesFieldsAllowedForValidate:
-      type: string
-      enum:
-      - currency
-      - document_id
-      - due_date
-      - issued_at
-      - tax_amount
-      - total_amount
-      - subtotal
-      - description
-      - suggested_payment_term
-      - payment_terms
-      - tax
-      - sender
-      - file_id
-      - counterpart_id
-      - counterpart_bank_account_id
-      - counterpart_address_id
-      - counterpart_vat_id_id
-      - line_items
-      - line_items.quantity
-      - line_items.unit_price
-      - line_items.tax
-      - line_items.ledger_account_id
-      - line_items.accounting_tax_rate_id
-      - line_items.unit
-      - line_items.name
-      - line_items.description
-      - line_items.subtotal
-      - line_items.total
-      - line_items.tax_amount
-    PayablePaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PayableResponseSchema'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
-      description: A paginated list of payables.
-    CounterpartRawVatIDUpdateRequest:
-      properties:
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        type:
-          type: string
-        value:
-          type: string
-          maxLength: 32
-      additionalProperties: false
-      type: object
-    PayableHistoryResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: A unique ID of the history record.
-          examples:
-          - cd58435b-1c79-4b17-9f79-f898c93e5f97
-        entity_user_id:
-          type: string
-          format: uuid
-          description: ID of the entity user who made the change or trigger the event, or `null` if it was done by using a partner access token.
-          examples:
-          - d5a577b0-01c0-4566-ac5c-44f41935e8c4
-        event_data:
-          anyOf:
-          - $ref: '#/components/schemas/PayableStatusChangedEventData'
-          - $ref: '#/components/schemas/PayableUpdatedEventData'
-          - $ref: '#/components/schemas/PayableCreatedEventData'
-          - $ref: '#/components/schemas/PayableCreditNoteLinkedEventData'
-          - $ref: '#/components/schemas/PayableCreditNoteUnlinkedEventData'
-          - $ref: '#/components/schemas/FileAttachedEventData'
-          description: 'An object containing additional information about the event or change. The object structure varies based on the `event_type`. '
-        event_type:
-          allOf:
-          - $ref: '#/components/schemas/PayableHistoryEventTypeEnum'
-          description: The type of the event or change.
-        payable_id:
-          type: string
-          format: uuid
-          description: ID of the payable document that was changed or triggered an event.
-          examples:
-          - f669a8a4-0563-4ab9-b54f-e9d700d282c5
-        timestamp:
-          type: string
-          format: date-time
-          description: UTC date and time when the event or change occurred.
-      type: object
-      required:
-      - id
-      - event_data
-      - event_type
-      - payable_id
-      - timestamp
     OCRAddress:
       properties:
         city:
@@ -4292,183 +4050,82 @@ components:
         * All fields are optional
 
         * There is an additional field original_country_name'
-    CounterpartRawAddressUpdateRequest:
+    PayableCreditNoteLinkedEventData:
       properties:
-        city:
+        credit_note_document_id:
           type: string
-          description: City name.
-          example: Berlin
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        line1:
+        credit_note_id:
           type: string
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
-          type: string
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          description: State, region, province, or county.
       additionalProperties: false
       type: object
-      description: Address information.
-    ErrorSchema2:
-      properties:
-        message:
-          type: string
-      type: object
       required:
-      - message
-    PayableAttachFile:
-      properties:
-        file:
-          type: string
-          format: binary
-      type: object
-      required:
-      - file
-    PayableUpdatedEventData:
-      properties: {}
-      additionalProperties: false
-      type: object
-    PayableHistoryCursorFields:
+      - credit_note_id
+    PayablesFieldsAllowedForValidate:
       type: string
       enum:
-      - timestamp
-    OcrRecognitionResponse:
-      properties:
-        line_items:
-          items:
-            $ref: '#/components/schemas/LabelNValue'
-          type: array
-          description: Text content of the invoice line items as recognized by OCR.
-        summary:
-          items:
-            $ref: '#/components/schemas/LabelNValue'
-          type: array
-          description: Invoice text content other than the line items. Such as the invoice issue and due dates, vendor name and address, and other general information.
-      type: object
-      description: 'Contains information about all text blocks extracted from an uploaded invoice by OCR.
-
-        The text blocks are grouped into `line_items` (invoice line items) and `summary` (all other information).
-
-        Legacy schema used for AWS textract recognition.'
-    CounterpartRawVatID:
-      properties:
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        type:
-          type: string
-        value:
-          type: string
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    FileSchema:
+      - currency
+      - document_id
+      - due_date
+      - issued_at
+      - tax_amount
+      - total_amount
+      - subtotal
+      - description
+      - suggested_payment_term
+      - payment_terms
+      - tax
+      - sender
+      - file_id
+      - counterpart_id
+      - counterpart_bank_account_id
+      - counterpart_address_id
+      - counterpart_vat_id_id
+      - line_items
+      - line_items.quantity
+      - line_items.unit_price
+      - line_items.tax
+      - line_items.ledger_account_id
+      - line_items.accounting_tax_rate_id
+      - line_items.unit
+      - line_items.name
+      - line_items.description
+      - line_items.subtotal
+      - line_items.total
+      - line_items.tax_amount
+    SuggestedCounterpartPayload:
       properties:
         id:
           type: string
           format: uuid
-          description: A unique ID of this file.
-        created_at:
+        address_id:
           type: string
-          format: date-time
-          description: UTC date and time when this file was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        file_type:
+          format: uuid
+        bank_account_id:
           type: string
-          description: The type of the business object associated with this file.
-          example: payables
-        md5:
+          format: uuid
+        vat_id_id:
           type: string
-          description: The MD5 hash of the file.
-          example: 31d1a2dd1ad3dfc39be849d70a68dac0
-        mimetype:
-          type: string
-          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types).
-          example: application/pdf
-        name:
-          type: string
-          maxLength: 512
-          description: The original file name (if available).
-          example: invoice.pdf
-        pages:
-          items:
-            $ref: '#/components/schemas/PageSchema2'
-          type: array
-          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
-          default: []
-        previews:
-          items:
-            $ref: '#/components/schemas/PreviewSchema2'
-          type: array
-          description: Preview images generated for this file. There can be multiple images with different sizes.
-          default: []
-        region:
-          type: string
-          description: Geographical region of the data center where the file is stored.
-          example: eu-central-1
-        size:
-          type: integer
-          minimum: 0.0
-          description: The file size in bytes.
-          example: 24381
-        url:
-          type: string
-          description: The URL to download the file.
-          example: https://bucketname.s3.amazonaws.com/12345/67890.pdf
-      type: object
-      required:
-      - id
-      - created_at
-      - file_type
-      - name
-      - region
-      - md5
-      - mimetype
-      - url
-      - size
-      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
-    PreviewSchema2:
-      properties:
-        height:
-          type: integer
-          description: The image height in pixels.
-          example: 400
-        url:
-          type: string
-          description: The image URL.
-          example: https://bucketname.s3.amazonaws.com/1/2/3.png
-        width:
-          type: integer
-          description: The image width in pixels.
-          example: 200
-      type: object
-      required:
-      - url
-      - width
-      - height
-      description: A preview image generated for a file.
-    SuggestedResponse:
-      properties:
-        suggested_counterpart:
-          $ref: '#/components/schemas/SuggestedCounterpartPayload'
+          format: uuid
       additionalProperties: false
       type: object
       required:
-      - suggested_counterpart
+      - id
+    PayablePaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PayableResponseSchema'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of payables.
     PayableHistoryPaginationResponse:
       properties:
         data:
@@ -4494,52 +4151,183 @@ components:
       type: object
       required:
       - file
-    ValidationError:
+    CurrencyExchangeSchema2:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        default_currency_code:
           type: string
+        rate:
+          type: number
+          exclusiveMinimum: 0.0
+        total:
+          type: number
+      additionalProperties: false
+      type: object
+      required:
+      - default_currency_code
+      - rate
+      - total
+    PayableAggregatedItem:
+      properties:
+        count:
+          type: integer
+          description: The total count of payables with this specific status.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PayableStateEnum'
+          description: The status of the payable (e.g., paid, draft, etc.).
+        sum_total_amount:
+          type: integer
+          description: The total sum of the amount field for all payables with this specific status.
+      additionalProperties: false
+      type: object
+      required:
+      - count
+      - status
+      - sum_total_amount
+    PayableStateEnum:
+      type: string
+      enum:
+      - draft
+      - new
+      - approve_in_progress
+      - waiting_to_be_paid
+      - partially_paid
+      - paid
+      - canceled
+      - rejected
+    CommentPayload:
+      properties:
+        comment:
+          type: string
+          description: An arbitrary comment that describes how and when this payable was paid.
+      additionalProperties: false
+      type: object
+    OcrStatusEnum:
+      type: string
+      enum:
+      - processing
+      - error
+      - success
+    CounterpartRawVatID:
+      properties:
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
         type:
           type: string
+        value:
+          type: string
       type: object
-      required:
-      - loc
-      - msg
-      - type
-    PayableCreditNoteData:
+    PayablePaymentTermDiscount:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: The unique identifier of the credit note.
-          example: 123e4567-e89b-12d3-a456-426614174000
-        document_id:
-          type: string
-          description: The credit note's unique document number.
-          example: CN-123456
-        issued_at:
-          type: string
-          format: date
-          description: The date when the credit note was issued, in the YYYY-MM-DD format
-          example: '2024-01-15'
-        status:
-          type: string
-          maxLength: 30
-          description: The current status of the credit note in its lifecycle
-          example: submitted_for_approval
-        total_amount:
+        discount:
           type: integer
-          description: Credit note total amount.
-          example: 1000
+          description: The discount percentage in minor units. E.g., 200 means 2%, 1050 means 10.5%.
+        number_of_days:
+          type: integer
+          description: The amount of days after the invoice issue date.
+      additionalProperties: false
       type: object
       required:
-      - id
-      - status
+      - discount
+      - number_of_days
+    CounterpartRawVatIDUpdateRequest:
+      properties:
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        type:
+          type: string
+        value:
+          type: string
+          maxLength: 32
+      additionalProperties: false
+      type: object
+    ObjectType:
+      type: string
+      enum:
+      - account
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - audit_trail
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - counterpart_vat_id
+      - delivery_note
+      - einvoicing
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_token
+      - entity_user
+      - entity_user_token
+      - entity_vat_ids
+      - export
+      - mailbox
+      - monitescript_process
+      - ocr_task
+      - onboarding
+      - overdue_reminder
+      - partner
+      - partner_internal_config
+      - partner_settings
+      - partner_token
+      - payable
+      - payable_line_item
+      - payables_credit_note
+      - payables_purchase_order
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_record
+      - payment_reminder
+      - person
+      - product
+      - project
+      - receivable
+      - reconciliation
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - todo_task_mute
+      - transaction
+      - webhook
+      - workflow
+      - workflow_pipeline
+    PayablePaymentTermFinal:
+      properties:
+        number_of_days:
+          type: integer
+          description: The amount of days after the invoice issue date.
+      additionalProperties: false
+      type: object
+      required:
+      - number_of_days
+    PartiallyPaidPayload:
+      properties:
+        amount_paid:
+          type: integer
+          minimum: 0.0
+          description: How much was paid on the invoice (in minor units).
+      additionalProperties: false
+      type: object
+      required:
+      - amount_paid
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    PayableUpdatedEventData:
+      properties: {}
+      additionalProperties: false
+      type: object
     AllowedCountries:
       type: string
       enum:
@@ -4795,59 +4583,251 @@ components:
       - CW
       - MF
       - SX
-    PayablePaymentTermDiscount:
+    PreviewSchema2:
       properties:
-        discount:
+        height:
           type: integer
-          description: The discount percentage in minor units. E.g., 200 means 2%, 1050 means 10.5%.
-        number_of_days:
+          description: The image height in pixels.
+          example: 400
+        url:
+          type: string
+          description: The image URL.
+          example: https://bucketname.s3.amazonaws.com/1/2/3.png
+        width:
           type: integer
-          description: The amount of days after the invoice issue date.
+          description: The image width in pixels.
+          example: 200
+      type: object
+      required:
+      - url
+      - width
+      - height
+      description: A preview image generated for a file.
+    CounterpartRawData:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawAddress'
+          description: The address of the vendor or supplier.
+        bank_account:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawBankAccount'
+          description: Object representing counterpart bank account.
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        name:
+          type: string
+          description: Vendor or supplier name.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+        tax_id:
+          type: string
+          description: The tax id of the counterpart.
+          example: DE12345678
+        vat_id:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawVatID'
+          description: VAT ID of the vendor or supplier which was used in the invoice.
+      type: object
+    FileAttachedEventData:
+      properties:
+        file_name:
+          type: string
+        file_size:
+          type: integer
+        url:
+          type: string
       additionalProperties: false
       type: object
       required:
-      - discount
-      - number_of_days
-    PayableStateEnum:
-      type: string
-      enum:
-      - draft
-      - new
-      - approve_in_progress
-      - waiting_to_be_paid
-      - partially_paid
-      - paid
-      - canceled
-      - rejected
-    CounterpartRawBankAccount:
+      - file_name
+      - file_size
+      - url
+    PayableTemplatesVariablesObject:
       properties:
-        account_holder_name:
-          type: string
-          description: Vendor's bank account name.
-        account_number:
-          type: string
-          description: Vendor's bank account number, IBAN, or similar (if specified in the payable document).
-          example: '123456789012'
-        bic:
-          type: string
-          description: SWIFT code (BIC) of the vendor's bank.
-          example: DEUTDE2HXXX
-        iban:
-          type: string
-          description: required for non-GB bank accounts
-        routing_number:
-          type: string
-          description: required for US bank accounts
-        sort_code:
-          type: string
-          description: required for GB bank accounts
+        object_subtype:
+          $ref: '#/components/schemas/PayablesVariableType'
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        variables:
+          items:
+            $ref: '#/components/schemas/PayableTemplatesVariable'
+          type: array
+      additionalProperties: false
       type: object
-    PayableOriginEnum:
-      type: string
-      enum:
-      - upload
-      - email
-      - einvoicing
+      required:
+      - object_subtype
+      - object_type
+      - variables
+    PayableUpdateSchema:
+      properties:
+        amount_paid:
+          type: integer
+          minimum: 0.0
+          description: How much was paid on the invoice (in minor units).
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service
+        counterpart_bank_account_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart bank account object stored in counterparts service
+        counterpart_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart object that represents the vendor or supplier.
+        counterpart_raw_data:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawDataUpdateRequest'
+          description: Allows to fix some data in counterpart recognised fields to correct them in order to make autolinking happen.
+        counterpart_vat_id_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart VAT ID object stored in counterparts service
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The [currency code](https://docs.monite.com/references/currencies) of the currency used in the payable.
+          example: EUR
+        description:
+          type: string
+          maxLength: 255
+          description: An arbitrary description of this payable.
+        discount:
+          type: integer
+          description: The value of the additional discount that will be applied to the total amount. in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 500
+        document_id:
+          type: string
+          description: A unique invoice number assigned by the invoice issuer for payment tracking purposes.
+          example: DE2287
+        due_date:
+          type: string
+          format: date
+          description: The date by which the payable must be paid, in the YYYY-MM-DD format. If the payable specifies payment terms with early payment discounts, this is the final payment date.
+        enforce_approval_policy_id:
+          type: string
+          format: uuid
+          description: Id of an existing approval policy that should be enforced when submitting the payable for approval.If this field is set, no other policies will be evaluated via their triggers - the specified policy will always be applied instead.
+        issued_at:
+          type: string
+          format: date
+          description: The date when the payable was issued, in the YYYY-MM-DD format.
+        partner_metadata:
+          type: object
+          description: Metadata for partner needs
+        payment_terms:
+          allOf:
+          - $ref: '#/components/schemas/PayablePaymentTermsCreatePayload'
+          description: The number of days to pay with potential discount for options shorter than due_date
+        project_id:
+          type: string
+          format: uuid
+          description: The project ID of the payable.
+        purchase_order_id:
+          type: string
+          format: uuid
+          description: The identifier of the purchase order to which this payable belongs.
+        sender:
+          type: string
+          format: email
+          description: The email address from which the invoice was sent to the entity.
+          example: hello@example.com
+        subtotal:
+          type: integer
+          description: The subtotal amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 1250
+        suggested_payment_term:
+          allOf:
+          - $ref: '#/components/schemas/SuggestedPaymentTerm'
+          description: The suggested date and corresponding discount in which payable could be paid. The date is in the YYYY-MM-DD format. The discount is calculated as X * (10^-4) - for example, 100 is 1%, 25 is 0,25%, 10000 is 100 %. Date varies depending on the payment terms and may even be equal to the due date with discount 0.
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: A list of IDs of user-defined tags (labels) assigned to this payable. Tags can be used to trigger a specific approval policy for this payable.
+        tax:
+          type: integer
+          description: Registered tax percentage applied for a service price in minor units, e.g. 200 means 2%, 1050 means 10.5%.
+          example: 2000
+        tax_amount:
+          type: integer
+          description: Tax amount in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 250
+        total_amount:
+          type: integer
+          description: The total amount to be paid, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 15000
+      additionalProperties: false
+      type: object
+      description: This schema is used to update the data of an existing payable.
+    PageSchema2:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of the image.
+        mimetype:
+          type: string
+          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) of the image.
+          example: image/png
+        number:
+          type: integer
+          minimum: 0.0
+          description: The page number in the PDF document, from 0.
+          example: 0
+        size:
+          type: integer
+          minimum: 0.0
+          description: Image file size, in bytes.
+          example: 21972
+        url:
+          type: string
+          description: The URL to download the image.
+          example: https://bucket.s3.amazonaws.com/123/456.png
+      type: object
+      required:
+      - id
+      - mimetype
+      - size
+      - number
+      - url
+      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
+
+        and saves them as PNG images. This object contains the image and metadata of a single page.'
+    PayableCreatedEventData:
+      properties:
+        payable_source:
+          $ref: '#/components/schemas/PayableOriginEnum'
+      additionalProperties: false
+      type: object
+      required:
+      - payable_source
+    PayableTemplatesVariablesObjectList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PayableTemplatesVariablesObject'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
     CurrencyEnum:
       type: string
       enum:
@@ -4996,14 +4976,27 @@ components:
       - YER
       - ZAR
       - ZMW
-    OcrStatusEnum_2:
+    TagCategory:
       type: string
       enum:
-      - processing
-      - error
-      - success
-      - canceled
-    OcrStatusEnum_3:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
+    PayableValidationsUpdateRequest:
+      properties:
+        required_fields:
+          items:
+            $ref: '#/components/schemas/PayablesFieldsAllowedForValidate'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - required_fields
+    OcrStatusEnum_2:
       type: string
       enum:
       - processing
@@ -5017,4 +5010,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

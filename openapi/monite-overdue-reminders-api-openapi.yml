@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Overdue reminders across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Overdue reminders across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -415,15 +415,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    AllOverdueRemindersResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/OverdueReminderResponse'
-          type: array
-      type: object
-      required:
-      - data
     OverdueReminderUpdateRequest:
       properties:
         name:
@@ -440,6 +431,65 @@ components:
       type: object
       required:
       - term
+    OverdueReminderTerm:
+      properties:
+        body:
+          type: string
+        days_after:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+        subject:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body
+      - days_after
+      - subject
+    OverdueReminderRequest:
+      properties:
+        name:
+          type: string
+          maxLength: 255
+          minLength: 1
+        recipients:
+          $ref: '#/components/schemas/Recipients'
+        term:
+          allOf:
+          - $ref: '#/components/schemas/OverdueReminderTerm'
+          description: Overdue reminder to send for payment term
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - term
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AllOverdueRemindersResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/OverdueReminderResponse'
+          type: array
+      type: object
+      required:
+      - data
     Recipients:
       properties:
         bcc:
@@ -458,30 +508,6 @@ components:
             format: email
           type: array
       additionalProperties: false
-      type: object
-    OverdueReminderRequest:
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-        recipients:
-          $ref: '#/components/schemas/Recipients'
-        term:
-          allOf:
-          - $ref: '#/components/schemas/OverdueReminderTerm'
-          description: Overdue reminder to send for payment term
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - term
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
       type: object
     OverdueReminderResponse:
       properties:
@@ -511,39 +537,6 @@ components:
       - updated_at
       - name
       - term
-    OverdueReminderTerm:
-      properties:
-        body:
-          type: string
-        days_after:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-        subject:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - body
-      - days_after
-      - subject
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     ErrorSchemaResponse:
       properties:
         error:
@@ -558,6 +551,13 @@ components:
       type: object
       required:
       - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     OverdueReminderUpdateRequest_2:
       properties:
         name:
@@ -623,71 +623,6 @@ components:
       - created_at
       - updated_at
       - name
-    OverdueReminderUpdateRequest_3:
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-        recipients:
-          $ref: '#/components/schemas/Recipients'
-        terms:
-          items:
-            $ref: '#/components/schemas/OverdueReminderTerm'
-          type: array
-          maxItems: 3
-          minItems: 1
-          description: Overdue reminder terms to send for payment
-      additionalProperties: false
-      type: object
-    OverdueReminderRequest_3:
-      properties:
-        name:
-          type: string
-          maxLength: 255
-          minLength: 1
-        recipients:
-          $ref: '#/components/schemas/Recipients'
-        terms:
-          items:
-            $ref: '#/components/schemas/OverdueReminderTerm'
-          type: array
-          maxItems: 3
-          minItems: 1
-          description: Overdue reminder terms to send for payment
-      additionalProperties: false
-      type: object
-      required:
-      - name
-    OverdueReminderResponse_3:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-          description: Time at which the OverdueReminder was created. Timestamps follow the ISO 8601 standard.
-        updated_at:
-          type: string
-          format: date-time
-          description: Time at which the OverdueReminder was last updated. Timestamps follow the ISO 8601 standard.
-        name:
-          type: string
-        recipients:
-          $ref: '#/components/schemas/Recipients'
-        terms:
-          items:
-            $ref: '#/components/schemas/OverdueReminderTerm'
-          type: array
-          minItems: 1
-          description: Overdue reminder terms to send for payment
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - name
   securitySchemes:
     HTTPBearer:
       type: http
@@ -695,4 +630,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

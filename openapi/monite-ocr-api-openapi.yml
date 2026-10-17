@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged OCR across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged OCR across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -429,48 +429,25 @@ components:
       required:
       - line_items
       - sender
-    OCRInvoice:
+    OCRTaskStatus:
+      type: string
+      enum:
+      - processing
+      - success
+      - error
+    HTTPValidationError:
       properties:
-        amount_paid:
-          type: number
-        currency:
-          $ref: '#/components/schemas/CurrencyEnum'
-        document_number:
-          type: string
-        due_date:
-          type: string
-          format: date
-        issue_date:
-          type: string
-          format: date
-        line_items:
+        detail:
           items:
-            $ref: '#/components/schemas/OCRLineItem'
+            $ref: '#/components/schemas/ValidationError'
           type: array
-        payment_terms:
-          type: string
-        recipient:
-          $ref: '#/components/schemas/OCRCounterpartDetails'
-        sender:
-          $ref: '#/components/schemas/OCRCounterpartDetails'
-        subtotal:
-          type: number
-        tax_amount:
-          type: number
-        tax_rate:
-          type: number
-        total_amount:
-          type: number
-        type:
-          type: string
-          enum:
-          - invoice
-          default: invoice
-      additionalProperties: false
       type: object
-      required:
-      - sender
-      - recipient
+    OCRDocumentTypeEnum:
+      type: string
+      enum:
+      - invoice
+      - credit_note
+      - receipt
     OCRCounterpartDetails:
       properties:
         address:
@@ -490,24 +467,12 @@ components:
       required:
       - address
       - bank_account
-    CursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-    CreateOCRRequestPayload:
-      properties:
-        document_type:
-          $ref: '#/components/schemas/OCRDocumentTypeEnum'
-        file_url:
-          type: string
-      type: object
-      required:
-      - file_url
-    OCRLineItem:
+    OCRReceiptLineItem:
       properties:
         description:
           type: string
+        discount_amount:
+          type: number
         line_reference:
           type: string
         name:
@@ -528,11 +493,37 @@ components:
           type: number
       additionalProperties: false
       type: object
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
+    OCRAddressDetails:
+      properties:
+        city:
+          type: string
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        postal_code:
+          type: string
+        state:
+          type: string
+        street_and_number:
+          type: string
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     OCRTasksPaginationResponse:
       properties:
         data:
@@ -549,154 +540,46 @@ components:
       required:
       - data
       description: A paginated list of ocr requests.
-    CurrencyEnum:
+    OcrTaskResponseSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        document_type:
+          $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        recognized_data:
+          anyOf:
+          - $ref: '#/components/schemas/OCRInvoice'
+          - $ref: '#/components/schemas/OCRCreditNote'
+          - $ref: '#/components/schemas/OCRReceipt'
+        status:
+          $ref: '#/components/schemas/OCRTaskStatus'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - status
+    CursorFields:
       type: string
       enum:
-      - AED
-      - AFN
-      - ALL
-      - AMD
-      - ANG
-      - AOA
-      - ARS
-      - AUD
-      - AWG
-      - AZN
-      - BAM
-      - BBD
-      - BDT
-      - BGN
-      - BHD
-      - BIF
-      - BMD
-      - BND
-      - BOB
-      - BRL
-      - BSD
-      - BTN
-      - BWP
-      - BYN
-      - BZD
-      - CAD
-      - CDF
-      - CHF
-      - CLP
-      - CNY
-      - COP
-      - CRC
-      - CVE
-      - CZK
-      - DJF
-      - DKK
-      - DOP
-      - DZD
-      - EGP
-      - ETB
-      - EUR
-      - FJD
-      - FKP
-      - GBP
-      - GEL
-      - GHS
-      - GIP
-      - GMD
-      - GNF
-      - GTQ
-      - GYD
-      - HKD
-      - HNL
-      - HTG
-      - HUF
-      - IDR
-      - ILS
-      - INR
-      - IQD
-      - ISK
-      - JMD
-      - JOD
-      - JPY
-      - KES
-      - KGS
-      - KHR
-      - KMF
-      - KRW
-      - KWD
-      - KYD
-      - KZT
-      - LAK
-      - LBP
-      - LKR
-      - LRD
-      - LSL
-      - LYD
-      - MAD
-      - MDL
-      - MGA
-      - MKD
-      - MMK
-      - MNT
-      - MOP
-      - MUR
-      - MVR
-      - MWK
-      - MXN
-      - MYR
-      - MZN
-      - NAD
-      - NGN
-      - NIO
-      - NOK
-      - NPR
-      - NZD
-      - OMR
-      - PAB
-      - PEN
-      - PGK
-      - PHP
-      - PKR
-      - PLN
-      - PYG
-      - QAR
-      - RON
-      - RSD
-      - RUB
-      - RWF
-      - SAR
-      - SBD
-      - SCR
-      - SEK
-      - SGD
-      - SHP
-      - SLE
-      - SOS
-      - SRD
-      - SSP
-      - SVC
-      - SZL
-      - THB
-      - TJS
-      - TMT
-      - TND
-      - TOP
-      - TRY
-      - TTD
-      - TWD
-      - TZS
-      - UAH
-      - UGX
-      - USD
-      - UYU
-      - UZS
-      - VND
-      - VUV
-      - WST
-      - XAF
-      - XCD
-      - XOF
-      - XPF
-      - YER
-      - ZAR
-      - ZMW
+      - id
+      - created_at
+    CreateOCRRequestPayload:
+      properties:
+        document_type:
+          $ref: '#/components/schemas/OCRDocumentTypeEnum'
+        file_url:
+          type: string
+      type: object
+      required:
+      - file_url
     ErrorSchema:
       properties:
         message:
@@ -704,12 +587,10 @@ components:
       type: object
       required:
       - message
-    OCRReceiptLineItem:
+    OCRLineItem:
       properties:
         description:
           type: string
-        discount_amount:
-          type: number
         line_reference:
           type: string
         name:
@@ -768,30 +649,53 @@ components:
       - sender
       - recipient
       - line_items
-    HTTPValidationError:
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    OCRInvoice:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        amount_paid:
+          type: number
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        document_number:
           type: string
+        due_date:
+          type: string
+          format: date
+        issue_date:
+          type: string
+          format: date
+        line_items:
+          items:
+            $ref: '#/components/schemas/OCRLineItem'
+          type: array
+        payment_terms:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        sender:
+          $ref: '#/components/schemas/OCRCounterpartDetails'
+        subtotal:
+          type: number
+        tax_amount:
+          type: number
+        tax_rate:
+          type: number
+        total_amount:
+          type: number
         type:
           type: string
+          enum:
+          - invoice
+          default: invoice
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - sender
+      - recipient
     AllowedCountries:
       type: string
       enum:
@@ -1062,58 +966,154 @@ components:
       type: object
       required:
       - error
-    OCRAddressDetails:
-      properties:
-        city:
-          type: string
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        postal_code:
-          type: string
-        state:
-          type: string
-        street_and_number:
-          type: string
-      additionalProperties: false
-      type: object
-    OCRDocumentTypeEnum:
+    CurrencyEnum:
       type: string
       enum:
-      - invoice
-      - credit_note
-      - receipt
-    OcrTaskResponseSchema:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        document_type:
-          $ref: '#/components/schemas/OCRDocumentTypeEnum'
-        recognized_data:
-          anyOf:
-          - $ref: '#/components/schemas/OCRInvoice'
-          - $ref: '#/components/schemas/OCRCreditNote'
-          - $ref: '#/components/schemas/OCRReceipt'
-        status:
-          $ref: '#/components/schemas/OCRTaskStatus'
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - status
-    OCRTaskStatus:
-      type: string
-      enum:
-      - processing
-      - success
-      - error
+      - AED
+      - AFN
+      - ALL
+      - AMD
+      - ANG
+      - AOA
+      - ARS
+      - AUD
+      - AWG
+      - AZN
+      - BAM
+      - BBD
+      - BDT
+      - BGN
+      - BHD
+      - BIF
+      - BMD
+      - BND
+      - BOB
+      - BRL
+      - BSD
+      - BTN
+      - BWP
+      - BYN
+      - BZD
+      - CAD
+      - CDF
+      - CHF
+      - CLP
+      - CNY
+      - COP
+      - CRC
+      - CVE
+      - CZK
+      - DJF
+      - DKK
+      - DOP
+      - DZD
+      - EGP
+      - ETB
+      - EUR
+      - FJD
+      - FKP
+      - GBP
+      - GEL
+      - GHS
+      - GIP
+      - GMD
+      - GNF
+      - GTQ
+      - GYD
+      - HKD
+      - HNL
+      - HTG
+      - HUF
+      - IDR
+      - ILS
+      - INR
+      - IQD
+      - ISK
+      - JMD
+      - JOD
+      - JPY
+      - KES
+      - KGS
+      - KHR
+      - KMF
+      - KRW
+      - KWD
+      - KYD
+      - KZT
+      - LAK
+      - LBP
+      - LKR
+      - LRD
+      - LSL
+      - LYD
+      - MAD
+      - MDL
+      - MGA
+      - MKD
+      - MMK
+      - MNT
+      - MOP
+      - MUR
+      - MVR
+      - MWK
+      - MXN
+      - MYR
+      - MZN
+      - NAD
+      - NGN
+      - NIO
+      - NOK
+      - NPR
+      - NZD
+      - OMR
+      - PAB
+      - PEN
+      - PGK
+      - PHP
+      - PKR
+      - PLN
+      - PYG
+      - QAR
+      - RON
+      - RSD
+      - RUB
+      - RWF
+      - SAR
+      - SBD
+      - SCR
+      - SEK
+      - SGD
+      - SHP
+      - SLE
+      - SOS
+      - SRD
+      - SSP
+      - SVC
+      - SZL
+      - THB
+      - TJS
+      - TMT
+      - TND
+      - TOP
+      - TRY
+      - TTD
+      - TWD
+      - TZS
+      - UAH
+      - UGX
+      - USD
+      - UYU
+      - UZS
+      - VND
+      - VUV
+      - WST
+      - XAF
+      - XCD
+      - XOF
+      - XPF
+      - YER
+      - ZAR
+      - ZMW
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1121,4 +1121,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

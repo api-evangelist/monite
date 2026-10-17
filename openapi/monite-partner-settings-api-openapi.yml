@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Partner settings across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Partner settings across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -136,14 +136,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CardTheme:
-      properties:
-        background_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-      type: object
     PaymentsSettings-Input:
       properties:
         payment_page_domain:
@@ -161,75 +153,21 @@ components:
           - type: 'null'
           description: The support email address
       type: object
-    PaymentPageTheme-Output:
+    AccountingSettings2:
       properties:
-        background_color:
+        provider:
+          $ref: '#/components/schemas/AccountingProviderEnum'
+          minLength: 1
+        token:
           anyOf:
           - type: string
-            format: color
-          - type: 'null'
-        border_radius:
-          anyOf:
-          - type: string
-          - type: 'null'
-        button:
-          anyOf:
-          - $ref: '#/components/schemas/ButtonTheme'
-          - type: 'null'
-        card:
-          anyOf:
-          - $ref: '#/components/schemas/CardTheme'
-          - type: 'null'
-        font_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        font_family:
-          anyOf:
-          - type: string
-          - type: 'null'
-        font_link_href:
-          anyOf:
-          - type: string
-            maxLength: 2083
             minLength: 1
-            format: uri
           - type: 'null'
-        logo_src:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
+          description: Token for the accounting provider (Codat only)
       type: object
-    CardTheme-Input:
-      properties:
-        background_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-      type: object
-    PaymentsSettings-Output:
-      properties:
-        payment_page_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-        payment_page_theme:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPageTheme-Output'
-          - type: 'null'
-        support_email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: The support email address
-      type: object
-    CurrencySettings-Input:
+      required:
+      - provider
+    CurrencySettings-Output:
       properties:
         default:
           $ref: '#/components/schemas/CurrencyEnum'
@@ -243,6 +181,19 @@ components:
       type: object
       required:
       - default
+    ReceivableSettings:
+      properties:
+        create_without_personal_info:
+          type: boolean
+        deduction_title:
+          anyOf:
+          - type: string
+            maxLength: 32
+            minLength: 1
+          - type: 'null'
+      type: object
+      required:
+      - create_without_personal_info
     ButtonTheme-Input:
       properties:
         primary_color:
@@ -266,22 +217,53 @@ components:
             format: color
           - type: 'null'
       type: object
-    Unit:
+    HTTPValidationError:
       properties:
-        designation:
-          type: string
-          minLength: 1
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ExchangeRate:
+      properties:
+        base:
+          $ref: '#/components/schemas/CurrencyEnum'
           examples:
-          - kg
-        name:
-          type: string
-          minLength: 1
+          - USD
+        rate:
+          type: number
+          exclusiveMinimum: 0.0
           examples:
-          - Kilogram
+          - 0.98
+        to:
+          $ref: '#/components/schemas/CurrencyEnum'
+          examples:
+          - EUR
+      additionalProperties: false
       type: object
       required:
-      - designation
-      - name
+      - base
+      - to
+      - rate
+    MailSettings:
+      properties:
+        attach_documents_as_pdf:
+          type: boolean
+          description: Attach documents as PDF in emails.
+          default: true
+        from_email_username:
+          anyOf:
+          - type: string
+            maxLength: 64
+            minLength: 1
+          - type: 'null'
+        from_name:
+          anyOf:
+          - type: string
+            maxLength: 30
+            minLength: 1
+          - type: 'null'
+      type: object
     PayableSettings:
       properties:
         allow_cancel_duplicates_automatically:
@@ -324,46 +306,109 @@ components:
       type: object
       required:
       - approve_page_url
+    CardTheme-Input:
+      properties:
+        background_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+      type: object
+    PaymentPageTheme-Input:
+      properties:
+        background_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        border_radius:
+          anyOf:
+          - type: string
+          - type: 'null'
+        button:
+          anyOf:
+          - $ref: '#/components/schemas/ButtonTheme-Input'
+          - type: 'null'
+        card:
+          anyOf:
+          - $ref: '#/components/schemas/CardTheme-Input'
+          - type: 'null'
+        font_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        font_family:
+          anyOf:
+          - type: string
+          - type: 'null'
+        font_link_href:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+        logo_src:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+      type: object
+    APIVersion:
+      type: string
+      enum:
+      - '2025-06-23'
+      - '2024-05-25'
+      - '2024-01-31'
+      - '2023-09-01'
+      - '2023-06-04'
+      - '2023-04-12'
+      - '2023-03-14'
+      - '2023-03-01'
+      - '2023-02-07'
+      - '2022-11-16'
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     AccountingProviderEnum:
       type: string
       enum:
       - codat
       - railz
-    ExchangeRate:
+    PaymentsSettings-Output:
       properties:
-        base:
-          $ref: '#/components/schemas/CurrencyEnum'
-          examples:
-          - USD
-        rate:
-          type: number
-          exclusiveMinimum: 0.0
-          examples:
-          - 0.98
-        to:
-          $ref: '#/components/schemas/CurrencyEnum'
-          examples:
-          - EUR
-      additionalProperties: false
+        payment_page_domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+        payment_page_theme:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentPageTheme-Output'
+          - type: 'null'
+        support_email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The support email address
       type: object
-      required:
-      - base
-      - to
-      - rate
-    CurrencySettings-Output:
-      properties:
-        default:
-          $ref: '#/components/schemas/CurrencyEnum'
-        exchange_rates:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ExchangeRate'
-            - type: 'null'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - default
     PartnerProjectSettingsPayload-Input:
       properties:
         accounting:
@@ -427,93 +472,12 @@ components:
           - type: string
           - type: 'null'
       type: object
-    PaymentPageTheme-Input:
+    CardTheme:
       properties:
         background_color:
           anyOf:
           - type: string
             format: color
-          - type: 'null'
-        border_radius:
-          anyOf:
-          - type: string
-          - type: 'null'
-        button:
-          anyOf:
-          - $ref: '#/components/schemas/ButtonTheme-Input'
-          - type: 'null'
-        card:
-          anyOf:
-          - $ref: '#/components/schemas/CardTheme-Input'
-          - type: 'null'
-        font_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        font_family:
-          anyOf:
-          - type: string
-          - type: 'null'
-        font_link_href:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-        logo_src:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-      type: object
-    AccountingSettings2:
-      properties:
-        provider:
-          $ref: '#/components/schemas/AccountingProviderEnum'
-          minLength: 1
-        token:
-          anyOf:
-          - type: string
-            minLength: 1
-          - type: 'null'
-          description: Token for the accounting provider (Codat only)
-      type: object
-      required:
-      - provider
-    ReceivableSettings:
-      properties:
-        create_without_personal_info:
-          type: boolean
-        deduction_title:
-          anyOf:
-          - type: string
-            maxLength: 32
-            minLength: 1
-          - type: 'null'
-      type: object
-      required:
-      - create_without_personal_info
-    MailSettings:
-      properties:
-        attach_documents_as_pdf:
-          type: boolean
-          description: Attach documents as PDF in emails.
-          default: true
-        from_email_username:
-          anyOf:
-          - type: string
-            maxLength: 64
-            minLength: 1
-          - type: 'null'
-        from_name:
-          anyOf:
-          - type: string
-            maxLength: 30
-            minLength: 1
           - type: 'null'
       type: object
     ErrorSchema:
@@ -523,26 +487,6 @@ components:
       type: object
       required:
       - message
-    APIVersion:
-      type: string
-      enum:
-      - '2025-06-23'
-      - '2024-05-25'
-      - '2024-01-31'
-      - '2023-09-01'
-      - '2023-06-04'
-      - '2023-04-12'
-      - '2023-03-14'
-      - '2023-03-01'
-      - '2023-02-07'
-      - '2022-11-16'
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     PartnerProjectSettingsPayload-Output:
       properties:
         accounting:
@@ -606,23 +550,22 @@ components:
           - type: string
           - type: 'null'
       type: object
-    ValidationError:
+    Unit:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        designation:
           type: string
-        type:
+          minLength: 1
+          examples:
+          - kg
+        name:
           type: string
+          minLength: 1
+          examples:
+          - Kilogram
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - designation
+      - name
     ButtonTheme:
       properties:
         primary_color:
@@ -646,6 +589,63 @@ components:
             format: color
           - type: 'null'
       type: object
+    PaymentPageTheme-Output:
+      properties:
+        background_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        border_radius:
+          anyOf:
+          - type: string
+          - type: 'null'
+        button:
+          anyOf:
+          - $ref: '#/components/schemas/ButtonTheme'
+          - type: 'null'
+        card:
+          anyOf:
+          - $ref: '#/components/schemas/CardTheme'
+          - type: 'null'
+        font_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        font_family:
+          anyOf:
+          - type: string
+          - type: 'null'
+        font_link_href:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+        logo_src:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+      type: object
+    CurrencySettings-Input:
+      properties:
+        default:
+          $ref: '#/components/schemas/CurrencyEnum'
+        exchange_rates:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ExchangeRate'
+            - type: 'null'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - default
     ErrorSchemaResponse:
       properties:
         error:
@@ -818,23 +818,6 @@ components:
           - type: 'null'
           description: The support email address
       type: object
-    PaymentsSettings-Output_2:
-      properties:
-        payment_page_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-        payment_page_theme:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPageTheme'
-          - type: 'null'
-        support_email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: The support email address
-      type: object
     PayableSettings_2:
       properties:
         allow_cancel_duplicates_automatically:
@@ -882,6 +865,23 @@ components:
       type: object
       required:
       - approve_page_url
+    PaymentsSettings-Output_2:
+      properties:
+        payment_page_domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+        payment_page_theme:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentPageTheme'
+          - type: 'null'
+        support_email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The support email address
+      type: object
     PartnerProjectSettingsPayload-Input_2:
       properties:
         api_version:
@@ -920,6 +920,63 @@ components:
         payments:
           anyOf:
           - $ref: '#/components/schemas/PaymentsSettings-Input_2'
+          - type: 'null'
+          description: Settings for the payments module.
+        receivable:
+          anyOf:
+          - $ref: '#/components/schemas/ReceivableSettings'
+          - type: 'null'
+          description: Settings for the receivables module.
+        units:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/Unit'
+            type: array
+          - type: 'null'
+          description: Measurement units.
+        website:
+          anyOf:
+          - type: string
+          - type: 'null'
+      type: object
+    PartnerProjectSettingsPayload-Output_2:
+      properties:
+        api_version:
+          anyOf:
+          - $ref: '#/components/schemas/APIVersion'
+          - type: 'null'
+          description: Default API version for partner.
+        commercial_conditions:
+          anyOf:
+          - items:
+              type: string
+            type: array
+          - type: 'null'
+          description: Commercial conditions for receivables.
+        currency:
+          anyOf:
+          - $ref: '#/components/schemas/CurrencySettings-Output'
+          - type: 'null'
+          description: Custom currency exchange rates.
+        default_role:
+          anyOf:
+          - additionalProperties: true
+            type: object
+          - type: 'null'
+          description: A default role to provision upon new entity creation.
+        mail:
+          anyOf:
+          - $ref: '#/components/schemas/MailSettings'
+          - type: 'null'
+          description: Settings for email and mailboxes.
+        payable:
+          anyOf:
+          - $ref: '#/components/schemas/PayableSettings_2'
+          - type: 'null'
+          description: Settings for the payables module.
+        payments:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentsSettings-Output_2'
           - type: 'null'
           description: Settings for the payments module.
         receivable:
@@ -982,258 +1039,6 @@ components:
             format: uri
           - type: 'null'
       type: object
-    PartnerProjectSettingsPayload-Output_2:
-      properties:
-        api_version:
-          anyOf:
-          - $ref: '#/components/schemas/APIVersion'
-          - type: 'null'
-          description: Default API version for partner.
-        commercial_conditions:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          description: Commercial conditions for receivables.
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/CurrencySettings-Output'
-          - type: 'null'
-          description: Custom currency exchange rates.
-        default_role:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          description: A default role to provision upon new entity creation.
-        mail:
-          anyOf:
-          - $ref: '#/components/schemas/MailSettings'
-          - type: 'null'
-          description: Settings for email and mailboxes.
-        payable:
-          anyOf:
-          - $ref: '#/components/schemas/PayableSettings_2'
-          - type: 'null'
-          description: Settings for the payables module.
-        payments:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentsSettings-Output_2'
-          - type: 'null'
-          description: Settings for the payments module.
-        receivable:
-          anyOf:
-          - $ref: '#/components/schemas/ReceivableSettings'
-          - type: 'null'
-          description: Settings for the receivables module.
-        units:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Unit'
-            type: array
-          - type: 'null'
-          description: Measurement units.
-        website:
-          anyOf:
-          - type: string
-          - type: 'null'
-      type: object
-    PaymentsSettings-Input_3:
-      properties:
-        payment_page_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-        payment_page_theme:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPageTheme'
-          - type: 'null'
-        support_email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: The support email address
-      type: object
-    PaymentsSettings-Output_3:
-      properties:
-        payment_page_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-        payment_page_theme:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPageTheme'
-          - type: 'null'
-        support_email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: The support email address
-      type: object
-    PayableSettings_3:
-      properties:
-        allow_cancel_duplicates_automatically:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        allow_counterpart_autocreation:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        allow_counterpart_autolinking:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        allow_credit_note_autolinking:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        approve_page_url:
-          type: string
-          minLength: 1
-          format: uri
-          examples:
-          - https://monite.com
-        default_state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A state each new payable will have upon creation
-          examples:
-          - new
-        enable_line_items:
-          type: boolean
-          description: Partners can set this to True or False to control line item detection in OCR flows.
-          default: true
-        skip_approval_for_paid_invoice:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-      type: object
-      required:
-      - approve_page_url
-    PartnerProjectSettingsPayload-Input_3:
-      properties:
-        api_version:
-          anyOf:
-          - $ref: '#/components/schemas/APIVersion'
-          - type: 'null'
-          description: Default API version for partner.
-        commercial_conditions:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          description: Commercial conditions for receivables.
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/CurrencySettings-Input'
-          - type: 'null'
-          description: Custom currency exchange rates.
-        default_role:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          description: A default role to provision upon new entity creation.
-        mail:
-          anyOf:
-          - $ref: '#/components/schemas/MailSettings'
-          - type: 'null'
-          description: Settings for email and mailboxes.
-        payable:
-          anyOf:
-          - $ref: '#/components/schemas/PayableSettings_3'
-          - type: 'null'
-          description: Settings for the payables module.
-        payments:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentsSettings-Input_3'
-          - type: 'null'
-          description: Settings for the payments module.
-        receivable:
-          anyOf:
-          - $ref: '#/components/schemas/ReceivableSettings'
-          - type: 'null'
-          description: Settings for the receivables module.
-        units:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Unit'
-            type: array
-          - type: 'null'
-          description: Measurement units.
-        website:
-          anyOf:
-          - type: string
-          - type: 'null'
-      type: object
-    PartnerProjectSettingsPayload-Output_3:
-      properties:
-        api_version:
-          anyOf:
-          - $ref: '#/components/schemas/APIVersion'
-          - type: 'null'
-          description: Default API version for partner.
-        commercial_conditions:
-          anyOf:
-          - items:
-              type: string
-            type: array
-          - type: 'null'
-          description: Commercial conditions for receivables.
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/CurrencySettings-Output'
-          - type: 'null'
-          description: Custom currency exchange rates.
-        default_role:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
-          description: A default role to provision upon new entity creation.
-        mail:
-          anyOf:
-          - $ref: '#/components/schemas/MailSettings'
-          - type: 'null'
-          description: Settings for email and mailboxes.
-        payable:
-          anyOf:
-          - $ref: '#/components/schemas/PayableSettings_3'
-          - type: 'null'
-          description: Settings for the payables module.
-        payments:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentsSettings-Output_3'
-          - type: 'null'
-          description: Settings for the payments module.
-        receivable:
-          anyOf:
-          - $ref: '#/components/schemas/ReceivableSettings'
-          - type: 'null'
-          description: Settings for the receivables module.
-        units:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/Unit'
-            type: array
-          - type: 'null'
-          description: Measurement units.
-        website:
-          anyOf:
-          - type: string
-          - type: 'null'
-      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1241,4 +1046,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

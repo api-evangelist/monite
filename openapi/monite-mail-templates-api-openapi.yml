@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Mail templates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Mail templates across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -536,11 +536,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
     CustomTemplatesPaginationResponse:
       properties:
         data:
@@ -558,6 +553,28 @@ components:
       type: object
       required:
       - data
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     SystemTemplates:
       properties:
         data:
@@ -568,23 +585,6 @@ components:
       type: object
       required:
       - data
-    DocumentObjectTypeRequestEnum:
-      type: string
-      enum:
-      - receivables_quote
-      - receivables_invoice
-      - receivables_paid_invoice
-      - receivables_credit_note
-      - receivables_discount_reminder
-      - receivables_final_reminder
-      - payables_purchase_order
-      - payables_notify_approver
-      - payables_notify_payer
-    CustomTemplatesCursorFields:
-      type: string
-      enum:
-      - type
-      - name
     UpdateCustomTemplateSchemaRequest:
       properties:
         body_template:
@@ -605,45 +605,11 @@ components:
           description: Jinja2 compatible string with email subject
       additionalProperties: false
       type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    SystemTemplateDataSchema:
-      properties:
-        available_templates:
-          items:
-            $ref: '#/components/schemas/TemplateDataSchema'
-          type: array
-          description: Array of templates
-        template_name:
-          type: string
-          description: Name of the template
-      additionalProperties: false
-      type: object
-      required:
-      - available_templates
-      - template_name
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
+    CustomTemplatesCursorFields:
+      type: string
+      enum:
       - type
+      - name
     AddCustomTemplateSchema:
       properties:
         body_template:
@@ -679,34 +645,25 @@ components:
       - name
       - subject_template
       - type
-    PreviewTemplateResponse:
+    DocumentObjectTypeRequestEnum:
+      type: string
+      enum:
+      - receivables_quote
+      - receivables_invoice
+      - receivables_paid_invoice
+      - receivables_credit_note
+      - receivables_discount_reminder
+      - receivables_final_reminder
+      - payables_purchase_order
+      - payables_notify_approver
+      - payables_notify_payer
+    ErrorSchemaResponse:
       properties:
-        body_preview:
-          type: string
-        subject_preview:
-          type: string
-      additionalProperties: false
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
       type: object
       required:
-      - body_preview
-      - subject_preview
-    TemplateDataSchema:
-      properties:
-        body_template:
-          type: string
-          description: Jinja2 compatible email body template
-        language:
-          type: string
-          description: Lowercase ISO code of language
-        subject_template:
-          type: string
-          description: Jinja2 compatible email subject template
-      additionalProperties: false
-      type: object
-      required:
-      - body_template
-      - language
-      - subject_template
+      - error
     PreviewTemplateRequest:
       properties:
         body:
@@ -730,60 +687,13 @@ components:
       - document_type
       - language_code
       - subject
-    ErrorSchemaResponse:
+    ErrorSchema:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
+        message:
+          type: string
       type: object
       required:
-      - error
-    CustomTemplateDataSchema:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of email template
-        created_at:
-          type: string
-          format: date-time
-          description: Template created date and time
-        updated_at:
-          type: string
-          format: date-time
-          description: Template updated date and time
-        body_template:
-          type: string
-          description: Jinja2 compatible email body template
-        is_default:
-          type: boolean
-          description: Is default template
-        language:
-          type: string
-          maxLength: 4
-          description: Lowercase ISO code of language
-        name:
-          type: string
-          maxLength: 128
-          description: Name of the template
-        subject_template:
-          type: string
-          maxLength: 2048
-          description: Jinja2 compatible email subject template
-        type:
-          type: string
-          description: Document type of content
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - body_template
-      - is_default
-      - language
-      - name
-      - subject_template
-      - type
+      - message
     LanguageCodeEnum:
       type: string
       enum:
@@ -967,13 +877,103 @@ components:
       - yo
       - za
       - zu
-    ErrorSchema:
+    HTTPValidationError:
       properties:
-        message:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CustomTemplateDataSchema:
+      properties:
+        id:
           type: string
+          format: uuid
+          description: ID of email template
+        created_at:
+          type: string
+          format: date-time
+          description: Template created date and time
+        updated_at:
+          type: string
+          format: date-time
+          description: Template updated date and time
+        body_template:
+          type: string
+          description: Jinja2 compatible email body template
+        is_default:
+          type: boolean
+          description: Is default template
+        language:
+          type: string
+          maxLength: 4
+          description: Lowercase ISO code of language
+        name:
+          type: string
+          maxLength: 128
+          description: Name of the template
+        subject_template:
+          type: string
+          maxLength: 2048
+          description: Jinja2 compatible email subject template
+        type:
+          type: string
+          description: Document type of content
+      additionalProperties: false
       type: object
       required:
-      - message
+      - id
+      - created_at
+      - updated_at
+      - body_template
+      - is_default
+      - language
+      - name
+      - subject_template
+      - type
+    SystemTemplateDataSchema:
+      properties:
+        available_templates:
+          items:
+            $ref: '#/components/schemas/TemplateDataSchema'
+          type: array
+          description: Array of templates
+        template_name:
+          type: string
+          description: Name of the template
+      additionalProperties: false
+      type: object
+      required:
+      - available_templates
+      - template_name
+    TemplateDataSchema:
+      properties:
+        body_template:
+          type: string
+          description: Jinja2 compatible email body template
+        language:
+          type: string
+          description: Lowercase ISO code of language
+        subject_template:
+          type: string
+          description: Jinja2 compatible email subject template
+      additionalProperties: false
+      type: object
+      required:
+      - body_template
+      - language
+      - subject_template
+    PreviewTemplateResponse:
+      properties:
+        body_preview:
+          type: string
+        subject_preview:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body_preview
+      - subject_preview
   securitySchemes:
     HTTPBearer:
       type: http
@@ -981,4 +981,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

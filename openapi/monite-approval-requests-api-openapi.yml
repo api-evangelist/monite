@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Approval requests across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Approval requests across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -719,16 +719,28 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ApprovalRequestCreateRequest:
-      anyOf:
-      - $ref: '#/components/schemas/ApprovalRequestCreateByRoleRequest'
-      - $ref: '#/components/schemas/ApprovalRequestCreateByUserRequest'
-      additionalProperties: false
     OrderEnum:
       type: string
       enum:
       - asc
       - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     ObjectType:
       type: string
       enum:
@@ -788,6 +800,11 @@ components:
       - webhook
       - workflow
       - workflow_pipeline
+    ApprovalRequestCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
     ApprovalRequestCreateByRoleRequest:
       properties:
         object_id:
@@ -810,13 +827,20 @@ components:
       - object_type
       - required_approval_count
       - role_ids
-    ApprovalRequestStatus:
-      type: string
-      enum:
-      - waiting
-      - approved
-      - rejected
-      - canceled
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     HTTPValidationError:
       properties:
         detail:
@@ -824,6 +848,56 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
+    ApprovalRequestStatus:
+      type: string
+      enum:
+      - waiting
+      - approved
+      - rejected
+      - canceled
+    ApprovalRequestCreateRequest:
+      anyOf:
+      - $ref: '#/components/schemas/ApprovalRequestCreateByRoleRequest'
+      - $ref: '#/components/schemas/ApprovalRequestCreateByUserRequest'
+      additionalProperties: false
+    ApprovalRequestCreateByUserRequest:
+      properties:
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          $ref: '#/components/schemas/ObjectType'
+        required_approval_count:
+          type: integer
+          minimum: 1.0
+        user_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - object_id
+      - object_type
+      - required_approval_count
+      - user_ids
+    ApprovalRequestResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
     ApprovalRequestResourceWithMetadata:
       properties:
         id:
@@ -881,80 +955,6 @@ components:
       - role_ids
       - status
       - user_ids
-    ApprovalRequestResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ApprovalRequestResourceWithMetadata'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    ApprovalRequestCreateByUserRequest:
-      properties:
-        object_id:
-          type: string
-          format: uuid
-        object_type:
-          $ref: '#/components/schemas/ObjectType'
-        required_approval_count:
-          type: integer
-          minimum: 1.0
-        user_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - object_id
-      - object_type
-      - required_approval_count
-      - user_ids
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ApprovalRequestCursorFields:
-      type: string
-      enum:
-      - created_at
-      - updated_at
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -962,4 +962,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

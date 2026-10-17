@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Analytics across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Analytics across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -1226,29 +1226,22 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CreditNoteMetricEnum:
+    PayableOriginEnum:
       type: string
       enum:
-      - id
-      - total_amount
-    AnalyticsDataPoint:
+      - upload
+      - email
+      - einvoicing
+    ReceivablesAnalyticsDataPoint:
       properties:
         dimension_value:
           type: string
         metric_value:
-          type: number
+          type: integer
       additionalProperties: false
       type: object
       required:
       - metric_value
-    DateDimensionBreakdownEnum:
-      type: string
-      enum:
-      - daily
-      - weekly
-      - monthly
-      - quarterly
-      - yearly
     PayableDimensionEnum:
       type: string
       enum:
@@ -1259,72 +1252,51 @@ components:
       - issued_at
       - due_date
       - project_id
-    OcrStatusEnum:
+    DateDimensionBreakdownEnum:
       type: string
       enum:
-      - processing
-      - error
-      - success
-    PayableAnalyticsResponse:
+      - daily
+      - weekly
+      - monthly
+      - quarterly
+      - yearly
+    HTTPValidationError:
       properties:
-        data:
+        detail:
           items:
-            $ref: '#/components/schemas/AnalyticsDataPoint'
+            $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-      required:
-      - data
-    CreditNoteDimensionEnum:
-      type: string
-      enum:
-      - created_at
-      - status
-      - counterpart_id
-      - currency
-      - issued_at
-      - project_id
     PayableMetricEnum:
       type: string
       enum:
       - id
       - total_amount
       - amount_due
-    ErrorSchemaResponse2:
+    ErrorSchema2:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
+        message:
+          type: string
       type: object
       required:
-      - error
-    SourceOfPayableDataEnum:
-      type: string
-      enum:
-      - ocr
-      - user_specified
-      - einvoicing
-    AggregationFunctionEnum:
-      type: string
-      enum:
-      - count
-      - average
-      - summary
-      - min
-      - max
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    PayableCreditNoteStateEnum:
-      type: string
-      enum:
-      - new
-      - draft
-      - applied
-      - approved
-      - rejected
-      - canceled
-      - submitted_for_approval
+      - message
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     ReceivableCursorFields:
       type: string
       enum:
@@ -1357,26 +1329,6 @@ components:
       - due_date
       - project_id
       - product_id
-    ReceivableType:
-      type: string
-      enum:
-      - quote
-      - invoice
-      - credit_note
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    ErrorSchema2:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
     ReceivablesAnalyticsResponse:
       properties:
         data:
@@ -1386,40 +1338,98 @@ components:
       type: object
       required:
       - data
-    HTTPValidationError:
+    PayableAnalyticsResponse:
       properties:
-        detail:
+        data:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/AnalyticsDataPoint'
           type: array
       type: object
-    ReceivablesAnalyticsDataPoint:
+      required:
+      - data
+    PayableCreditNoteStateEnum:
+      type: string
+      enum:
+      - new
+      - draft
+      - applied
+      - approved
+      - rejected
+      - canceled
+      - submitted_for_approval
+    SourceOfPayableDataEnum:
+      type: string
+      enum:
+      - ocr
+      - user_specified
+      - einvoicing
+    AnalyticsDataPoint:
       properties:
         dimension_value:
           type: string
         metric_value:
-          type: integer
+          type: number
       additionalProperties: false
       type: object
       required:
       - metric_value
-    ValidationError:
+    PayableStateEnum:
+      type: string
+      enum:
+      - draft
+      - new
+      - approve_in_progress
+      - waiting_to_be_paid
+      - partially_paid
+      - paid
+      - canceled
+      - rejected
+    OcrStatusEnum:
+      type: string
+      enum:
+      - processing
+      - error
+      - success
+    CreditNoteDimensionEnum:
+      type: string
+      enum:
+      - created_at
+      - status
+      - counterpart_id
+      - currency
+      - issued_at
+      - project_id
+    ErrorSchema:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
+        message:
           type: string
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - message
+    AggregationFunctionEnum:
+      type: string
+      enum:
+      - count
+      - average
+      - summary
+      - min
+      - max
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    CreditNoteMetricEnum:
+      type: string
+      enum:
+      - id
+      - total_amount
+    ReceivableType:
+      type: string
+      enum:
+      - quote
+      - invoice
+      - credit_note
     OriginEnum:
       type: string
       enum:
@@ -1432,23 +1442,13 @@ components:
       type: object
       required:
       - error
-    PayableStateEnum:
-      type: string
-      enum:
-      - draft
-      - new
-      - approve_in_progress
-      - waiting_to_be_paid
-      - partially_paid
-      - paid
-      - canceled
-      - rejected
-    PayableOriginEnum:
-      type: string
-      enum:
-      - upload
-      - email
-      - einvoicing
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
     CurrencyEnum:
       type: string
       enum:
@@ -1604,13 +1604,6 @@ components:
       - error
       - success
       - canceled
-    OcrStatusEnum_3:
-      type: string
-      enum:
-      - processing
-      - error
-      - success
-      - canceled
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1618,4 +1611,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

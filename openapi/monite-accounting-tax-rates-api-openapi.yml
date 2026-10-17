@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Accounting tax rates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Accounting tax rates across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -488,6 +488,65 @@ components:
       enum:
       - asc
       - desc
+    AccountingTaxRateCreateRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 500
+          description: Code for the tax rate from the accounting platform
+        description:
+          type: string
+          maxLength: 2048
+          description: Description of the tax rate
+        effective_tax_rate:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Effective tax rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+        name:
+          type: string
+          maxLength: 500
+          description: Name of the tax rate
+      type: object
+      description: Schema for creating a new tax rate.
+    AccountingTaxRateUpdateRequest:
+      properties:
+        code:
+          type: string
+          maxLength: 500
+          description: Code for the tax rate from the accounting platform
+        description:
+          type: string
+          maxLength: 2048
+          description: Description of the tax rate
+        effective_tax_rate:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Effective tax rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+        name:
+          type: string
+          maxLength: 500
+          description: Name of the tax rate
+      type: object
+      description: Schema for updating an existing tax rate.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     AccountingTaxRateListResponse:
       properties:
         data:
@@ -501,10 +560,6 @@ components:
       type: object
       required:
       - data
-    TaxRateAccountCursorFields2:
-      type: string
-      enum:
-      - name
     AccountingTaxRateResponse:
       properties:
         id:
@@ -547,6 +602,20 @@ components:
       - id
       - created_at
       - updated_at
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     TaxComponentResponse:
       properties:
         is_compound:
@@ -565,79 +634,10 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    AccountingTaxRateUpdateRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 500
-          description: Code for the tax rate from the accounting platform
-        description:
-          type: string
-          maxLength: 2048
-          description: Description of the tax rate
-        effective_tax_rate:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'Effective tax rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-        name:
-          type: string
-          maxLength: 500
-          description: Name of the tax rate
-      type: object
-      description: Schema for updating an existing tax rate.
-    AccountingTaxRateCreateRequest:
-      properties:
-        code:
-          type: string
-          maxLength: 500
-          description: Code for the tax rate from the accounting platform
-        description:
-          type: string
-          maxLength: 2048
-          description: Description of the tax rate
-        effective_tax_rate:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'Effective tax rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-        name:
-          type: string
-          maxLength: 500
-          description: Name of the tax rate
-      type: object
-      description: Schema for creating a new tax rate.
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
+    TaxRateAccountCursorFields2:
+      type: string
+      enum:
+      - name
   securitySchemes:
     HTTPBearer:
       type: http
@@ -645,4 +645,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

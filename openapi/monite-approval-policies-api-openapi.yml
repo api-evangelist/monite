@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Approval policies across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Approval policies across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -910,115 +910,11 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ApprovalProcessStepResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ApprovalProcessStepResource'
-          type: array
-      type: object
-      required:
-      - data
-    ApprovalProcessStepResource:
-      properties:
-        approval_request_id:
-          type: string
-          format: uuid
-        approved_by:
-          items:
-            type: string
-            format: uuid
-          type: array
-        object_id:
-          type: string
-          format: uuid
-        rejected_by:
-          type: string
-          format: uuid
-        required_approval_count:
-          type: integer
-          minimum: 1.0
-        role_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-        status:
-          $ref: '#/components/schemas/ApprovalProcessStepStatus'
-        user_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-      type: object
-      required:
-      - approved_by
-      - object_id
-      - required_approval_count
-      - role_ids
-      - status
-      - user_ids
     OrderEnum:
       type: string
       enum:
       - asc
       - desc
-    ApprovalPolicyCreate:
-      properties:
-        description:
-          type: string
-          maxLength: 255
-          description: A brief description of the approval policy.
-        ends_at:
-          type: string
-          format: date-time
-          description: The date and time (in the ISO 8601 format) when the approval policy stops being active and stops triggering approval workflows.If `ends_at` is provided in the request, then `starts_at` must also be provided and `ends_at` must be later than `starts_at`. The value will be converted to UTC.
-        name:
-          type: string
-          maxLength: 255
-          description: The name of the approval policy.
-        priority:
-          type: integer
-          maximum: 32767.0
-          minimum: -32768.0
-          description: The priority controls which approval policy takes precedence when a payable matches multiple approval policies. A higher value mean higher priority.
-          default: 0
-        script:
-          items:
-            anyOf:
-            - type: boolean
-            - type: number
-              minimum: 1.0
-            - type: string
-            - items: {}
-              type: array
-            - type: object
-          type: array
-          description: A list of JSON objects that represents the approval policy script. The script contains the logic that determines whether an action should be sent to approval. This field is required, and it should contain at least one script object.
-        starts_at:
-          type: string
-          format: date-time
-          description: The date and time (in the ISO 8601 format) when the approval policy becomes active. Only payables submitted for approval during the policy's active period will trigger this policy. If omitted or `null`, the policy is effective immediately. The value will be converted to UTC.
-        trigger:
-          anyOf:
-          - type: boolean
-          - type: number
-          - type: string
-          - items: {}
-            type: array
-          - type: object
-          description: A JSON object that represents the trigger for the approval policy. The trigger specifies the event that will trigger the policy to be evaluated.
-          example: '{amount >= 1000}'
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - script
-    ApprovalPolicyCursorFields:
-      type: string
-      enum:
-      - created_at
-      - updated_at
     ApprovalProcessStepStatus:
       type: string
       enum:
@@ -1029,19 +925,6 @@ components:
       - failed
       - not_started
       - skipped
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ApprovalPolicyStatus:
-      type: string
-      enum:
-      - active
-      - deleted
-      - pending
     ValidationError:
       properties:
         loc:
@@ -1136,52 +1019,12 @@ components:
       - name
       - script
       - status
-    ProcessResource:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        created_by:
-          type: string
-          format: uuid
-        error:
-          type: object
-          description: The error for the process.
-        input:
-          type: object
-          description: The input for the script.
-        metadata:
-          type: object
-          description: The metadata for the process.
-        script_snapshot:
-          anyOf:
-          - type: boolean
-          - type: number
-          - type: string
-          - items: {}
-            type: array
-          - type: object
-          description: The script snapshot taken when script started.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/ProcessStatusEnum'
-          description: Tthe current status of the approval policy process.
-        updated_by:
-          type: string
-          format: uuid
-      type: object
-      required:
-      - id
-      - created_at
-      - input
-      - metadata
-      - status
+    ApprovalPolicyStatus:
+      type: string
+      enum:
+      - active
+      - deleted
+      - pending
     ApprovalPolicyUpdate:
       properties:
         description:
@@ -1231,22 +1074,52 @@ components:
           example: '{amount >= 1000}'
       additionalProperties: false
       type: object
-    ApprovalPolicyResourceList:
+    ProcessResource:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ApprovalPolicyResource'
-          type: array
-        next_pagination_token:
+        id:
           type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
+          format: uuid
+        created_at:
           type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      additionalProperties: false
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+          format: uuid
+        error:
+          type: object
+          description: The error for the process.
+        input:
+          type: object
+          description: The input for the script.
+        metadata:
+          type: object
+          description: The metadata for the process.
+        script_snapshot:
+          anyOf:
+          - type: boolean
+          - type: number
+          - type: string
+          - items: {}
+            type: array
+          - type: object
+          description: The script snapshot taken when script started.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/ProcessStatusEnum'
+          description: Tthe current status of the approval policy process.
+        updated_by:
+          type: string
+          format: uuid
       type: object
       required:
-      - data
+      - id
+      - created_at
+      - input
+      - metadata
+      - status
     ErrorSchemaResponse:
       properties:
         error:
@@ -1263,6 +1136,80 @@ components:
       type: object
       required:
       - data
+    ApprovalPolicyCreate:
+      properties:
+        description:
+          type: string
+          maxLength: 255
+          description: A brief description of the approval policy.
+        ends_at:
+          type: string
+          format: date-time
+          description: The date and time (in the ISO 8601 format) when the approval policy stops being active and stops triggering approval workflows.If `ends_at` is provided in the request, then `starts_at` must also be provided and `ends_at` must be later than `starts_at`. The value will be converted to UTC.
+        name:
+          type: string
+          maxLength: 255
+          description: The name of the approval policy.
+        priority:
+          type: integer
+          maximum: 32767.0
+          minimum: -32768.0
+          description: The priority controls which approval policy takes precedence when a payable matches multiple approval policies. A higher value mean higher priority.
+          default: 0
+        script:
+          items:
+            anyOf:
+            - type: boolean
+            - type: number
+              minimum: 1.0
+            - type: string
+            - items: {}
+              type: array
+            - type: object
+          type: array
+          description: A list of JSON objects that represents the approval policy script. The script contains the logic that determines whether an action should be sent to approval. This field is required, and it should contain at least one script object.
+        starts_at:
+          type: string
+          format: date-time
+          description: The date and time (in the ISO 8601 format) when the approval policy becomes active. Only payables submitted for approval during the policy's active period will trigger this policy. If omitted or `null`, the policy is effective immediately. The value will be converted to UTC.
+        trigger:
+          anyOf:
+          - type: boolean
+          - type: number
+          - type: string
+          - items: {}
+            type: array
+          - type: object
+          description: A JSON object that represents the trigger for the approval policy. The trigger specifies the event that will trigger the policy to be evaluated.
+          example: '{amount >= 1000}'
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - script
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ApprovalPolicyResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ApprovalPolicyResource'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
     ProcessStatusEnum:
       type: string
       enum:
@@ -1272,13 +1219,66 @@ components:
       - running
       - canceled
       - timed_out
-    ErrorSchema:
+    HTTPValidationError:
       properties:
-        message:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ApprovalPolicyCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    ApprovalProcessStepResource:
+      properties:
+        approval_request_id:
           type: string
+          format: uuid
+        approved_by:
+          items:
+            type: string
+            format: uuid
+          type: array
+        object_id:
+          type: string
+          format: uuid
+        rejected_by:
+          type: string
+          format: uuid
+        required_approval_count:
+          type: integer
+          minimum: 1.0
+        role_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+        status:
+          $ref: '#/components/schemas/ApprovalProcessStepStatus'
+        user_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
       type: object
       required:
-      - message
+      - approved_by
+      - object_id
+      - required_approval_count
+      - role_ids
+      - status
+      - user_ids
+    ApprovalProcessStepResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ApprovalProcessStepResource'
+          type: array
+      type: object
+      required:
+      - data
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1286,4 +1286,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

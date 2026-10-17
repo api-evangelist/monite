@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Purchase orders across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Purchase orders across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -803,306 +803,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    VariablesObject:
-      properties:
-        object_subtype:
-          $ref: '#/components/schemas/DocumentTypeEnum'
-        object_type:
-          type: string
-        variables:
-          items:
-            $ref: '#/components/schemas/Variable'
-          type: array
-      type: object
-      required:
-      - object_subtype
-      - object_type
-      - variables
-    PurchaseOrderCounterpartOrganizationResponse:
-      properties:
-        email:
-          type: string
-          format: email
-          description: The email address of the organization
-          example: acme@example.com
-        is_customer:
-          type: boolean
-          description: Indicates if the counterpart is a customer.
-        is_vendor:
-          type: boolean
-          description: Indicates if the counterpart is a vendor.
-        legal_name:
-          type: string
-          description: The legal name of the organization.
-          example: Acme Inc.
-        phone:
-          type: string
-          description: The phone number of the organization
-          example: '5551231234'
-      type: object
-      required:
-      - is_customer
-      - is_vendor
-      - legal_name
-      description: Represents counterparts that are organizations (juridical persons).
-    PayableEntityIndividualResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID entity ID
-        created_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        updated_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        address:
-          $ref: '#/components/schemas/PayableEntityAddressSchema'
-        email:
-          type: string
-          description: An official email address of the entity
-        individual:
-          allOf:
-          - $ref: '#/components/schemas/PayableIndividualSchema'
-          description: A set of metadata describing an individual
-        logo:
-          allOf:
-          - $ref: '#/components/schemas/FileSchema3'
-          description: A logo image of the entity
-        phone:
-          type: string
-          maxLength: 100
-          description: A phone number of the entity
-        status:
-          allOf:
-          - $ref: '#/components/schemas/StatusEnum'
-          description: record status, 'active' by default
-        tax_id:
-          type: string
-          maxLength: 30
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        website:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          description: A website of the entity
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - address
-      - individual
-      - status
-      description: A base for an entity response schema
-    PayableIndividualSchema:
-      properties:
-        date_of_birth:
-          type: string
-          format: date
-        first_name:
-          type: string
-          maxLength: 100
-          description: A first name of an individual
-        id_number:
-          type: string
-        last_name:
-          type: string
-          maxLength: 100
-          description: A last name of an individual
-        ssn_last_4:
-          type: string
-          description: The last four digits of the individual's Social Security number
-        title:
-          type: string
-          maxLength: 10
-          description: A title of an individual
-      type: object
-      required:
-      - first_name
-      - last_name
-      description: A schema contains metadata for an individual
-    PurchaseOrderVatId:
-      properties:
-        id:
-          type: string
-          format: uuid
-        country:
-          type: string
-        entity_id:
-          type: string
-          format: uuid
-        type:
-          type: string
-        value:
-          type: string
-      type: object
-      required:
-      - id
-      - country
-      - entity_id
-      - type
-      - value
-    UpdatePurchaseOrderPayloadSchema:
-      properties:
-        counterpart_address_id:
-          type: string
-          format: uuid
-          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
-        counterpart_id:
-          type: string
-          format: uuid
-          description: Counterpart unique ID.
-        entity_vat_id_id:
-          type: string
-          format: uuid
-          description: Entity VAT ID identifier that applied to purchase order
-        items:
-          items:
-            $ref: '#/components/schemas/PurchaseOrderItem'
-          type: array
-          description: List of item to purchase
-        message:
-          type: string
-          description: Msg which will be send to counterpart for who the purchase order is issued.
-        project_id:
-          type: string
-          format: uuid
-          description: Project id of a purchase order
-        valid_for_days:
-          type: integer
-          minimum: 1.0
-          description: Number of days for which purchase order is valid
-      type: object
-      description: Represents an Accounts Purchase Order document created by entity.
-    PurchaseOrderCursorFields:
-      type: string
-      enum:
-      - created_at
-      - updated_at
-    PurchaseOrderEmailSentResponse:
-      properties:
-        mail_id:
-          type: string
-          format: uuid
-      type: object
-      required:
-      - mail_id
-      description: A schema for returning a response an email with a link to purchase order document has been sent
-    PreviewSchema3:
-      properties:
-        height:
-          type: integer
-          description: The image height in pixels.
-          example: 400
-        url:
-          type: string
-          description: The image URL.
-          example: https://bucketname.s3.amazonaws.com/1/2/3.png
-        width:
-          type: integer
-          description: The image width in pixels.
-          example: 200
-      type: object
-      required:
-      - height
-      - url
-      - width
-      description: A preview image generated for a file.
-    Variable:
-      properties:
-        description:
-          type: string
-        name:
-          type: string
-      type: object
-      required:
-      - description
-      - name
-    PurchaseOrderPayloadSchema:
-      properties:
-        counterpart_address_id:
-          type: string
-          format: uuid
-          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
-        counterpart_id:
-          type: string
-          format: uuid
-          description: Counterpart unique ID.
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The currency in which the price of the product is set. (all items need to have the same currency)
-        entity_vat_id_id:
-          type: string
-          format: uuid
-          description: Entity VAT ID identifier that applied to purchase order
-        items:
-          items:
-            $ref: '#/components/schemas/PurchaseOrderItem'
-          type: array
-          description: List of item to purchase
-        message:
-          type: string
-          description: Msg which will be send to counterpart for who the purchase order is issued.
-        project_id:
-          type: string
-          format: uuid
-          description: Project id of a purchase order
-        valid_for_days:
-          type: integer
-          minimum: 1.0
-          description: Number of days for which purchase order is valid
-      type: object
-      required:
-      - counterpart_id
-      - currency
-      - items
-      - message
-      - valid_for_days
-      description: Represents an Accounts Purchase Order document created by entity.
-    PurchaseOrderCounterpartIndividualResponse:
-      properties:
-        email:
-          type: string
-          format: email
-          description: The person's email address.
-          example: asingh@example.net
-        first_name:
-          type: string
-          minLength: 1
-          description: The person's first name.
-          example: Adnan
-        is_customer:
-          type: boolean
-          description: Indicates if the counterpart is a customer.
-        is_vendor:
-          type: boolean
-          description: Indicates if the counterpart is a vendor.
-        last_name:
-          type: string
-          minLength: 1
-          description: The person's last name.
-          example: Singh
-        phone:
-          type: string
-          description: The person's phone number.
-          example: '5553211234'
-        title:
-          type: string
-          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
-          example: Mr.
-      type: object
-      required:
-      - first_name
-      - is_customer
-      - is_vendor
-      - last_name
-      description: Represents counterparts that are individuals (natural persons).
     PurchaseOrderCounterpartIndividualRootResponse:
       properties:
         id:
@@ -1157,47 +857,96 @@ components:
       - individual
       - type
       description: Represents counterparts that are individuals (natural persons).
-    PageSchema3:
+    PurchaseOrderVatId:
       properties:
         id:
           type: string
           format: uuid
-          description: A unique ID of the image.
-        mimetype:
+        country:
           type: string
-          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) of the image.
-          example: image/png
-        number:
-          type: integer
-          minimum: 0.0
-          description: The page number in the PDF document, from 0.
-          example: 0
-        size:
-          type: integer
-          minimum: 0.0
-          description: Image file size, in bytes.
-          example: 21972
-        url:
+        entity_id:
           type: string
-          description: The URL to download the image.
-          example: https://bucket.s3.amazonaws.com/123/456.png
+          format: uuid
+        type:
+          type: string
+        value:
+          type: string
       type: object
       required:
       - id
-      - mimetype
-      - number
-      - size
-      - url
-      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
-
-        and saves them as PNG images. This object contains the image and metadata of a single page.'
-    ErrorSchemaResponse2:
+      - country
+      - entity_id
+      - type
+      - value
+    SendPurchaseOrderViaEmailRequest:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
+        body_text:
+          type: string
+        subject_text:
+          type: string
+      additionalProperties: false
       type: object
       required:
-      - error
+      - body_text
+      - subject_text
+      description: A schema for request for sending purchase order via email
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PurchaseOrderCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    EntityBusinessStructure:
+      type: string
+      enum:
+      - incorporated_partnership
+      - unincorporated_partnership
+      - public_corporation
+      - private_corporation
+      - sole_proprietorship
+      - single_member_llc
+      - multi_member_llc
+      - private_partnership
+      - unincorporated_association
+      - public_partnership
+    PayableEntityAddressSchema:
+      properties:
+        city:
+          type: string
+          maxLength: 255
+          description: A city (a full name) where the entity is registered
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: 'A country name (as ISO code) where the entity is registered '
+          default: DE
+          example: DE
+        line1:
+          type: string
+          maxLength: 255
+          description: A street where the entity is registered
+        line2:
+          type: string
+          maxLength: 100
+          description: An alternative street used by the entity
+        postal_code:
+          type: string
+          maxLength: 10
+          description: A postal code of the address where the entity is registered
+        state:
+          type: string
+          maxLength: 255
+          description: A state in a country where the entity is registered
+      type: object
+      required:
+      - city
+      - line1
+      - postal_code
+      description: A schema represents address info of the entity
     LanguageCodeEnum:
       type: string
       enum:
@@ -1381,159 +1130,46 @@ components:
       - yo
       - za
       - zu
-    DocumentTypeEnum:
-      type: string
-      enum:
-      - quote
-      - invoice
-      - credit_note
-      - discount_reminder
-      - final_reminder
-      - payables_purchase_order
-      - overdue_reminder
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    PayableOrganizationSchema:
+    HTTPValidationError:
       properties:
-        business_structure:
-          allOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          description: Business structure of the company
-        directors_provided:
-          type: boolean
-        executives_provided:
-          type: boolean
-        legal_entity_id:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ErrorSchema2:
+      properties:
+        message:
           type: string
-          maxLength: 20
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: A legal name of an organization
-        owners_provided:
-          type: boolean
-        representative_provided:
-          type: boolean
       type: object
       required:
-      - legal_name
-      description: A schema contains metadata for an organization
-    EntityBusinessStructure:
-      type: string
-      enum:
-      - incorporated_partnership
-      - unincorporated_partnership
-      - public_corporation
-      - private_corporation
-      - sole_proprietorship
-      - single_member_llc
-      - multi_member_llc
-      - private_partnership
-      - unincorporated_association
-      - public_partnership
-    PayableEntityAddressSchema:
+      - message
+    VariablesObjectList:
       properties:
-        city:
-          type: string
-          maxLength: 255
-          description: A city (a full name) where the entity is registered
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: 'A country name (as ISO code) where the entity is registered '
-          default: DE
-          example: DE
-        line1:
-          type: string
-          maxLength: 255
-          description: A street where the entity is registered
-        line2:
-          type: string
-          maxLength: 100
-          description: An alternative street used by the entity
-        postal_code:
-          type: string
-          maxLength: 10
-          description: A postal code of the address where the entity is registered
-        state:
-          type: string
-          maxLength: 255
-          description: A state in a country where the entity is registered
+        data:
+          items:
+            $ref: '#/components/schemas/VariablesObject'
+          type: array
       type: object
       required:
-      - city
-      - line1
-      - postal_code
-      description: A schema represents address info of the entity
-    PurchaseOrderStatusEnum:
-      type: string
-      enum:
-      - draft
-      - issued
-    StatusEnum:
-      type: string
-      enum:
-      - active
-      - deleted
-    PurchaseOrderCounterpartOrganizationRootResponse:
+      - data
+    ValidationError:
       properties:
-        id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
           type: string
-          format: uuid
-          description: Unique ID of the counterpart.
-        created_at:
-          type: string
-          format: date-time
-          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
-        updated_at:
-          type: string
-          format: date-time
-          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
-        created_automatically:
-          type: boolean
-          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
-          default: false
-        created_by_entity_user_id:
-          type: string
-          format: uuid
-          description: Entity user ID of counterpart creator.
-        default_billing_address_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
-        default_shipping_address_id:
-          type: string
-          format: uuid
-          description: ID of the shipping address.
-        language:
-          allOf:
-          - $ref: '#/components/schemas/LanguageCodeEnum'
-          description: The language used to generate pdf documents for this counterpart.
-        organization:
-          $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationResponse'
-        reminders_enabled:
-          type: boolean
-        tax_id:
-          type: string
-          maxLength: 30
-          description: The counterpart's taxpayer identification number or tax ID. This field is required for counterparts that are non-VAT registered.
         type:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartType'
-          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
+          type: string
       type: object
       required:
-      - id
-      - created_at
-      - updated_at
-      - organization
+      - loc
+      - msg
       - type
-      description: Represents counterparts that are organizations (juridical persons).
     PayableEntityOrganizationResponse:
       properties:
         id:
@@ -1588,38 +1224,158 @@ components:
       - organization
       - status
       description: A base for an entity response schema
-    PurchaseOrderCounterpartSchema:
-      anyOf:
-      - $ref: '#/components/schemas/PurchaseOrderCounterpartIndividualRootResponse'
-      - $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationRootResponse'
-      description: 'A Counterpart object contains information about an organization (juridical person) or
-
-        individual (natural person) that provides goods and services to or buys them from an
-
-        [SME](https://docs.monite.com/docs/glossary#sme).'
-    PurchaseOrderPaginationResponse:
+    PurchaseOrderPayloadSchema:
       properties:
-        data:
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
+        counterpart_id:
+          type: string
+          format: uuid
+          description: Counterpart unique ID.
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency in which the price of the product is set. (all items need to have the same currency)
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier that applied to purchase order
+        items:
           items:
-            $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+            $ref: '#/components/schemas/PurchaseOrderItem'
           type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
-      description: A paginated list of purchase orders.
-    ErrorSchema2:
-      properties:
+          description: List of item to purchase
         message:
           type: string
+          description: Msg which will be send to counterpart for who the purchase order is issued.
+        project_id:
+          type: string
+          format: uuid
+          description: Project id of a purchase order
+        valid_for_days:
+          type: integer
+          minimum: 1.0
+          description: Number of days for which purchase order is valid
       type: object
       required:
+      - counterpart_id
+      - currency
+      - items
       - message
+      - valid_for_days
+      description: Represents an Accounts Purchase Order document created by entity.
+    PayableOrganizationSchema:
+      properties:
+        business_structure:
+          allOf:
+          - $ref: '#/components/schemas/EntityBusinessStructure'
+          description: Business structure of the company
+        directors_provided:
+          type: boolean
+        executives_provided:
+          type: boolean
+        legal_entity_id:
+          type: string
+          maxLength: 20
+          description: A code which identifies uniquely a party of a transaction worldwide
+        legal_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A legal name of an organization
+        owners_provided:
+          type: boolean
+        representative_provided:
+          type: boolean
+      type: object
+      required:
+      - legal_name
+      description: A schema contains metadata for an organization
+    CounterpartType:
+      type: string
+      enum:
+      - individual
+      - organization
+    UpdatePurchaseOrderPayloadSchema:
+      properties:
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of counterpart address object stored in counterparts service. If not provided, counterpart's default address is used.
+        counterpart_id:
+          type: string
+          format: uuid
+          description: Counterpart unique ID.
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier that applied to purchase order
+        items:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderItem'
+          type: array
+          description: List of item to purchase
+        message:
+          type: string
+          description: Msg which will be send to counterpart for who the purchase order is issued.
+        project_id:
+          type: string
+          format: uuid
+          description: Project id of a purchase order
+        valid_for_days:
+          type: integer
+          minimum: 1.0
+          description: Number of days for which purchase order is valid
+      type: object
+      description: Represents an Accounts Purchase Order document created by entity.
+    PageSchema3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of the image.
+        mimetype:
+          type: string
+          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) of the image.
+          example: image/png
+        number:
+          type: integer
+          minimum: 0.0
+          description: The page number in the PDF document, from 0.
+          example: 0
+        size:
+          type: integer
+          minimum: 0.0
+          description: Image file size, in bytes.
+          example: 21972
+        url:
+          type: string
+          description: The URL to download the image.
+          example: https://bucket.s3.amazonaws.com/123/456.png
+      type: object
+      required:
+      - id
+      - mimetype
+      - number
+      - size
+      - url
+      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
+
+        and saves them as PNG images. This object contains the image and metadata of a single page.'
+    PurchaseOrderEmailPreviewRequest:
+      properties:
+        body_text:
+          type: string
+        subject_text:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - body_text
+      - subject_text
+      description: A schema for request for preview of purchase order email
     PurchaseOrderResponseSchema:
       properties:
         id:
@@ -1715,45 +1471,69 @@ components:
       - status
       - valid_for_days
       description: Represents response for an Accounts Purchase Order document created by entity.
-    PurchaseOrderCounterpartAddressSchema:
+    PurchaseOrderCounterpartSchema:
+      anyOf:
+      - $ref: '#/components/schemas/PurchaseOrderCounterpartIndividualRootResponse'
+      - $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationRootResponse'
+      description: 'A Counterpart object contains information about an organization (juridical person) or
+
+        individual (natural person) that provides goods and services to or buys them from an
+
+        [SME](https://docs.monite.com/docs/glossary#sme).'
+    PurchaseOrderCounterpartOrganizationRootResponse:
       properties:
-        city:
+        id:
           type: string
-          description: City name.
-          example: Berlin
-        country:
+          format: uuid
+          description: Unique ID of the counterpart.
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the counterpart was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+        created_automatically:
+          type: boolean
+          description: '`true` if the counterpart was created automatically by Monite when processing incoming invoices with OCR. `false` if the counterpart was created by the API client.'
+          default: false
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: Entity user ID of counterpart creator.
+        default_billing_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart's billing address. If the counterpart is US-based and needs to accept ACH payments, this address must have all fields filled in. If `default_billing_address_id` is not defined, the default address is instead used as the billing address for ACH payments.
+        default_shipping_address_id:
+          type: string
+          format: uuid
+          description: ID of the shipping address.
+        language:
           allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        line1:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate pdf documents for this counterpart.
+        organization:
+          $ref: '#/components/schemas/PurchaseOrderCounterpartOrganizationResponse'
+        reminders_enabled:
+          type: boolean
+        tax_id:
           type: string
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
-          type: string
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          description: State, region, province, or county.
+          maxLength: 30
+          description: The counterpart's taxpayer identification number or tax ID. This field is required for counterparts that are non-VAT registered.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartType'
+          description: 'The counterpart type: `organization` (juridical person) or `individual` (natural person).'
       type: object
       required:
-      - city
-      - country
-      - line1
-      - postal_code
-      description: Address information.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
+      - id
+      - created_at
+      - updated_at
+      - organization
+      - type
+      description: Represents counterparts that are organizations (juridical persons).
     PurchaseOrderItem:
       properties:
         currency:
@@ -1786,23 +1566,201 @@ components:
       - quantity
       - unit
       - vat_rate
-    ValidationError:
+    PurchaseOrderCounterpartIndividualResponse:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        email:
           type: string
-        type:
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
+          type: string
+          minLength: 1
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          description: The person's phone number.
+          example: '5553211234'
+        title:
+          type: string
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      type: object
+      required:
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    PurchaseOrderEmailPreviewResponse:
+      properties:
+        body_preview:
+          type: string
+        subject_preview:
           type: string
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - body_preview
+      - subject_preview
+      description: A schema for returning a response for email preview
+    FileSchema3:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this file.
+        created_at:
+          type: string
+          format: date-time
+          description: UTC date and time when this workflow was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        file_type:
+          type: string
+          description: The type of the business object associated with this file.
+          example: payables
+        md5:
+          type: string
+          description: The MD5 hash of the file.
+          example: 31d1a2dd1ad3dfc39be849d70a68dac0
+        mimetype:
+          type: string
+          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types).
+          example: application/pdf
+        name:
+          type: string
+          maxLength: 512
+          description: The original file name (if available).
+          example: invoice.pdf
+        pages:
+          items:
+            $ref: '#/components/schemas/PageSchema3'
+          type: array
+          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
+          default: []
+        previews:
+          items:
+            $ref: '#/components/schemas/PreviewSchema3'
+          type: array
+          description: Preview images generated for this file. There can be multiple images with different sizes.
+          default: []
+        region:
+          type: string
+          description: Geographical region of the data center where the file is stored.
+          example: eu-central-1
+        size:
+          type: integer
+          minimum: 0.0
+          description: The file size in bytes.
+          example: 24381
+        url:
+          type: string
+          description: The URL to download the file.
+          example: https://bucketname.s3.amazonaws.com/12345/67890.pdf
+      type: object
+      required:
+      - id
+      - created_at
+      - file_type
+      - md5
+      - mimetype
+      - name
+      - region
+      - size
+      - url
+      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
+    PurchaseOrderPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PurchaseOrderResponseSchema'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of purchase orders.
+    PurchaseOrderStatusEnum:
+      type: string
+      enum:
+      - draft
+      - issued
+    PurchaseOrderCounterpartOrganizationResponse:
+      properties:
+        email:
+          type: string
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        legal_name:
+          type: string
+          description: The legal name of the organization.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+      type: object
+      required:
+      - is_customer
+      - is_vendor
+      - legal_name
+      description: Represents counterparts that are organizations (juridical persons).
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    PreviewSchema3:
+      properties:
+        height:
+          type: integer
+          description: The image height in pixels.
+          example: 400
+        url:
+          type: string
+          description: The image URL.
+          example: https://bucketname.s3.amazonaws.com/1/2/3.png
+        width:
+          type: integer
+          description: The image width in pixels.
+          example: 200
+      type: object
+      required:
+      - height
+      - url
+      - width
+      description: A preview image generated for a file.
+    PurchaseOrderEmailSentResponse:
+      properties:
+        mail_id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - mail_id
+      description: A schema for returning a response an email with a link to purchase order document has been sent
     AllowedCountries:
       type: string
       enum:
@@ -2058,119 +2016,107 @@ components:
       - CW
       - MF
       - SX
-    PurchaseOrderEmailPreviewRequest:
+    PurchaseOrderCounterpartAddressSchema:
       properties:
-        body_text:
+        city:
           type: string
-        subject_text:
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
           type: string
-      additionalProperties: false
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
       type: object
       required:
-      - body_text
-      - subject_text
-      description: A schema for request for preview of purchase order email
-    PurchaseOrderEmailPreviewResponse:
+      - city
+      - country
+      - line1
+      - postal_code
+      description: Address information.
+    VariablesObject:
       properties:
-        body_preview:
+        object_subtype:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        object_type:
           type: string
-        subject_preview:
-          type: string
-      type: object
-      required:
-      - body_preview
-      - subject_preview
-      description: A schema for returning a response for email preview
-    SendPurchaseOrderViaEmailRequest:
-      properties:
-        body_text:
-          type: string
-        subject_text:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - body_text
-      - subject_text
-      description: A schema for request for sending purchase order via email
-    VariablesObjectList:
-      properties:
-        data:
+        variables:
           items:
-            $ref: '#/components/schemas/VariablesObject'
+            $ref: '#/components/schemas/Variable'
           type: array
       type: object
       required:
-      - data
-    FileSchema3:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: A unique ID of this file.
-        created_at:
-          type: string
-          format: date-time
-          description: UTC date and time when this workflow was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        file_type:
-          type: string
-          description: The type of the business object associated with this file.
-          example: payables
-        md5:
-          type: string
-          description: The MD5 hash of the file.
-          example: 31d1a2dd1ad3dfc39be849d70a68dac0
-        mimetype:
-          type: string
-          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types).
-          example: application/pdf
-        name:
-          type: string
-          maxLength: 512
-          description: The original file name (if available).
-          example: invoice.pdf
-        pages:
-          items:
-            $ref: '#/components/schemas/PageSchema3'
-          type: array
-          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
-          default: []
-        previews:
-          items:
-            $ref: '#/components/schemas/PreviewSchema3'
-          type: array
-          description: Preview images generated for this file. There can be multiple images with different sizes.
-          default: []
-        region:
-          type: string
-          description: Geographical region of the data center where the file is stored.
-          example: eu-central-1
-        size:
-          type: integer
-          minimum: 0.0
-          description: The file size in bytes.
-          example: 24381
-        url:
-          type: string
-          description: The URL to download the file.
-          example: https://bucketname.s3.amazonaws.com/12345/67890.pdf
-      type: object
-      required:
-      - id
-      - created_at
-      - file_type
-      - md5
-      - mimetype
-      - name
-      - region
-      - size
-      - url
-      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
-    CounterpartType:
+      - object_subtype
+      - object_type
+      - variables
+    DocumentTypeEnum:
       type: string
       enum:
-      - individual
-      - organization
+      - quote
+      - invoice
+      - credit_note
+      - discount_reminder
+      - final_reminder
+      - payables_purchase_order
+      - overdue_reminder
+    Variable:
+      properties:
+        description:
+          type: string
+        name:
+          type: string
+      type: object
+      required:
+      - description
+      - name
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    PayableIndividualSchema:
+      properties:
+        date_of_birth:
+          type: string
+          format: date
+        first_name:
+          type: string
+          maxLength: 100
+          description: A first name of an individual
+        id_number:
+          type: string
+        last_name:
+          type: string
+          maxLength: 100
+          description: A last name of an individual
+        ssn_last_4:
+          type: string
+          description: The last four digits of the individual's Social Security number
+        title:
+          type: string
+          maxLength: 10
+          description: A title of an individual
+      type: object
+      required:
+      - first_name
+      - last_name
+      description: A schema contains metadata for an individual
     CurrencyEnum:
       type: string
       enum:
@@ -2319,6 +2265,60 @@ components:
       - YER
       - ZAR
       - ZMW
+    PayableEntityIndividualResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID entity ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        address:
+          $ref: '#/components/schemas/PayableEntityAddressSchema'
+        email:
+          type: string
+          description: An official email address of the entity
+        individual:
+          allOf:
+          - $ref: '#/components/schemas/PayableIndividualSchema'
+          description: A set of metadata describing an individual
+        logo:
+          allOf:
+          - $ref: '#/components/schemas/FileSchema3'
+          description: A logo image of the entity
+        phone:
+          type: string
+          maxLength: 100
+          description: A phone number of the entity
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+        tax_id:
+          type: string
+          maxLength: 30
+          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
+        website:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: A website of the entity
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - address
+      - individual
+      - status
+      description: A base for an entity response schema
   securitySchemes:
     HTTPBearer:
       type: http
@@ -2326,4 +2326,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

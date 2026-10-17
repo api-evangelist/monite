@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payment intents across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payment intents across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -329,44 +329,57 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    InvoiceFile:
+    PaymentObject:
       properties:
-        mimetype:
+        id:
           type: string
-          minLength: 1
-        name:
-          type: string
-          minLength: 1
-        url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
+          format: uuid
+        type:
+          $ref: '#/components/schemas/PaymentObjectType'
       additionalProperties: false
       type: object
       required:
-      - mimetype
-      - name
-      - url
-    MoniteAllPaymentMethodsTypes:
-      type: string
-      enum:
-      - sepa_credit
-      - us_ach
-      - blik
-      - card
-      - bacs_direct_debit
-      - bancontact
-      - eps
-      - giropay
-      - ideal
-      - p24
-      - sepa_debit
-      - sofort
-      - applepay
-      - googlepay
-      - affirm
-      - klarna
+      - id
+      - type
+    PaymentIntentHistoryResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentIntentHistory'
+          type: array
+          description: Payment intent history
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    PaymentIntentsListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentIntentResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    Invoice:
+      properties:
+        due_date:
+          type: string
+          format: date
+        file:
+          $ref: '#/components/schemas/InvoiceFile'
+        issue_date:
+          type: string
+          format: date
+      additionalProperties: false
+      type: object
     PaymentIntentResponse:
       properties:
         id:
@@ -416,7 +429,74 @@ components:
       - payment_methods
       - recipient
       - status
-    PayerAccountResponse:
+    PaymentObjectType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    InvoiceFile:
+      properties:
+        mimetype:
+          type: string
+          minLength: 1
+        name:
+          type: string
+          minLength: 1
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
+      type: object
+      required:
+      - mimetype
+      - name
+      - url
+    MoniteAllPaymentMethodsTypes:
+      type: string
+      enum:
+      - sepa_credit
+      - us_ach
+      - blik
+      - card
+      - bacs_direct_debit
+      - bancontact
+      - eps
+      - giropay
+      - ideal
+      - p24
+      - sepa_debit
+      - sofort
+      - applepay
+      - googlepay
+      - affirm
+      - klarna
+    RecipientAccountResponse:
       properties:
         id:
           type: string
@@ -438,6 +518,50 @@ components:
       required:
       - id
       - type
+    PaymentIntentCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    PaymentIntentHistory:
+      properties:
+        id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        payment_intent_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - payment_intent_id
+      - status
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    UpdatePaymentIntentPayload:
+      properties:
+        amount:
+          type: integer
+      additionalProperties: false
+      type: object
+      required:
+      - amount
     BankAccount:
       properties:
         id:
@@ -509,145 +633,11 @@ components:
       type: object
       required:
       - id
-    PaymentIntentCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-    PaymentObject:
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          $ref: '#/components/schemas/PaymentObjectType'
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-    PaymentIntentHistory:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-        payment_intent_id:
-          type: string
-          format: uuid
-        status:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - payment_intent_id
-      - status
-    PaymentAccountType:
-      type: string
-      enum:
-      - entity
-      - counterpart
-    PaymentObjectType:
-      type: string
-      enum:
-      - payable
-      - receivable
     OrderEnum:
       type: string
       enum:
       - asc
       - desc
-    PaymentIntentsListResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PaymentIntentResponse'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    UpdatePaymentIntentPayload:
-      properties:
-        amount:
-          type: integer
-      additionalProperties: false
-      type: object
-      required:
-      - amount
-    Invoice:
-      properties:
-        due_date:
-          type: string
-          format: date
-        file:
-          $ref: '#/components/schemas/InvoiceFile'
-        issue_date:
-          type: string
-          format: date
-      additionalProperties: false
-      type: object
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    PaymentIntentHistoryResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PaymentIntentHistory'
-          type: array
-          description: Payment intent history
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    RecipientAccountResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of a payment account
-        bank_accounts:
-          items:
-            $ref: '#/components/schemas/BankAccount'
-          type: array
-          description: List of bank accounts
-        name:
-          type: string
-          description: Display name of a payment account
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PaymentAccountType'
-          description: Type of a payment account. Can be `entity` or `counterpart`
-      type: object
-      required:
-      - id
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -903,23 +893,11 @@ components:
       - CW
       - MF
       - SX
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
+    PaymentAccountType:
+      type: string
+      enum:
+      - entity
+      - counterpart
     ErrorSchemaResponse:
       properties:
         error:
@@ -1075,6 +1053,28 @@ components:
       - YER
       - ZAR
       - ZMW
+    PayerAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1082,4 +1082,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

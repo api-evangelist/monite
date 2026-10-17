@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Mailboxes across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Mailboxes across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -298,30 +298,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    MailboxDomainRequest:
-      properties:
-        mailbox_domain_id:
-          type: string
-          format: uuid
-        mailbox_name:
-          type: string
-        related_object_type:
-          allOf:
-          - $ref: '#/components/schemas/MailboxObjectTypeEnum'
-          description: 'Related object type: payable and so on'
-      additionalProperties: false
-      type: object
-      required:
-      - mailbox_domain_id
-      - mailbox_name
-      - related_object_type
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     ValidationError:
       properties:
         loc:
@@ -339,17 +315,6 @@ components:
       - loc
       - msg
       - type
-    MailboxMultipleEntitiesRequest:
-      properties:
-        entity_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - entity_ids
     MailboxObjectTypeEnum:
       type: string
       enum:
@@ -362,13 +327,24 @@ components:
       type: object
       required:
       - error
-    MailboxDataResponse:
+    ErrorSchema:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/MailboxResponse'
-          type: array
+        message:
+          type: string
       type: object
+      required:
+      - message
+    MailboxMultipleEntitiesRequest:
+      properties:
+        entity_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - entity_ids
     MailboxResponse:
       properties:
         id:
@@ -393,13 +369,37 @@ components:
       - mailbox_name
       - related_object_type
       - status
-    ErrorSchema:
+    MailboxDomainRequest:
       properties:
-        message:
+        mailbox_domain_id:
           type: string
+          format: uuid
+        mailbox_name:
+          type: string
+        related_object_type:
+          allOf:
+          - $ref: '#/components/schemas/MailboxObjectTypeEnum'
+          description: 'Related object type: payable and so on'
+      additionalProperties: false
       type: object
       required:
-      - message
+      - mailbox_domain_id
+      - mailbox_name
+      - related_object_type
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    MailboxDataResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/MailboxResponse'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -407,4 +407,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

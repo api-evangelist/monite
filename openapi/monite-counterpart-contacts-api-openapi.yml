@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Counterpart contacts across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Counterpart contacts across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -566,78 +566,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CounterpartContactsResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CounterpartContactResponse'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    CreateCounterpartContactPayload:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartAddress'
-          description: The address of a contact person.
-        email:
-          type: string
-          format: email
-          description: The email address of a contact person.
-          example: contact@example.org
-        first_name:
-          type: string
-          maxLength: 100
-          description: The first name of a contact person.
-          example: Mary
-        last_name:
-          type: string
-          maxLength: 100
-          description: The last name of a contact person.
-          example: O'Brien
-        phone:
-          type: string
-          maxLength: 100
-          description: The phone number of a contact person
-          example: '5551235476'
-        title:
-          type: string
-          maxLength: 100
-          description: 'The title or honorific of a contact person. Examples: Mr., Ms., Dr., Prof.'
-          example: Ms.
-      additionalProperties: false
-      type: object
-      required:
-      - address
-      - first_name
-      - last_name
-      description: The contact person for an organization.
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -893,6 +821,61 @@ components:
       - CW
       - MF
       - SX
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    CreateCounterpartContactPayload:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartAddress'
+          description: The address of a contact person.
+        email:
+          type: string
+          format: email
+          description: The email address of a contact person.
+          example: contact@example.org
+        first_name:
+          type: string
+          maxLength: 100
+          description: The first name of a contact person.
+          example: Mary
+        last_name:
+          type: string
+          maxLength: 100
+          description: The last name of a contact person.
+          example: O'Brien
+        phone:
+          type: string
+          maxLength: 100
+          description: The phone number of a contact person
+          example: '5551235476'
+        title:
+          type: string
+          maxLength: 100
+          description: 'The title or honorific of a contact person. Examples: Mr., Ms., Dr., Prof.'
+          example: Ms.
+      additionalProperties: false
+      type: object
+      required:
+      - address
+      - first_name
+      - last_name
+      description: The contact person for an organization.
     CounterpartAddress:
       properties:
         city:
@@ -931,6 +914,20 @@ components:
       - line1
       - postal_code
       description: Address information.
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     UpdateCounterpartContactPayload:
       properties:
         address:
@@ -965,6 +962,23 @@ components:
       additionalProperties: false
       type: object
       description: The contact person for an organization.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CounterpartContactsResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CounterpartContactResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
     CounterpartContactResponse:
       properties:
         id:
@@ -1013,20 +1027,6 @@ components:
       - is_default
       - last_name
       description: The contact person for an organization.
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1034,4 +1034,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

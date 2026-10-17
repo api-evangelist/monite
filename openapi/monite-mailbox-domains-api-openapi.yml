@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Mailbox domains across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Mailbox domains across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -292,12 +292,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    DNSRecordType:
-      type: string
-      enum:
-      - TXT
-      - MX
-      - CNAME
     DomainRequest:
       properties:
         domain:
@@ -308,20 +302,6 @@ components:
       type: object
       required:
       - domain
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
     ValidationError:
       properties:
         loc:
@@ -339,53 +319,11 @@ components:
       - loc
       - msg
       - type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    VerifyResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Entry UUID
-        domain:
-          type: string
-          format: hostname
-          description: The domain name.
-        status:
-          type: string
-      type: object
-      required:
-      - id
-      - domain
-      - status
-    DNSRecord:
-      properties:
-        is_active:
-          type: boolean
-        name:
-          type: string
-        record_purpose:
-          allOf:
-          - $ref: '#/components/schemas/DNSRecordPurpose'
-          description: Purpose of specific entry to distinguish between various TXT entries.
-        record_type:
-          $ref: '#/components/schemas/DNSRecordType'
-        valid:
-          type: string
-          description: Field reflecting validation status by Mailgun.
-        value:
-          type: string
-      type: object
-      required:
-      - is_active
-      - record_type
-      - valid
-      - value
+    DNSRecordPurpose:
+      type: string
+      enum:
+      - DKIM
+      - SPF
     DomainResponse:
       properties:
         id:
@@ -415,11 +353,43 @@ components:
       - dns_records
       - domain
       - status
-    DNSRecordPurpose:
-      type: string
-      enum:
-      - DKIM
-      - SPF
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    DNSRecord:
+      properties:
+        is_active:
+          type: boolean
+        name:
+          type: string
+        record_purpose:
+          allOf:
+          - $ref: '#/components/schemas/DNSRecordPurpose'
+          description: Purpose of specific entry to distinguish between various TXT entries.
+        record_type:
+          $ref: '#/components/schemas/DNSRecordType'
+        valid:
+          type: string
+          description: Field reflecting validation status by Mailgun.
+        value:
+          type: string
+      type: object
+      required:
+      - is_active
+      - record_type
+      - valid
+      - value
     DomainListResponse:
       properties:
         data:
@@ -429,6 +399,13 @@ components:
       type: object
       required:
       - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     DNSRecords:
       properties:
         receiving_dns_records:
@@ -445,6 +422,29 @@ components:
       required:
       - receiving_dns_records
       - sending_dns_records
+    DNSRecordType:
+      type: string
+      enum:
+      - TXT
+      - MX
+      - CNAME
+    VerifyResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Entry UUID
+        domain:
+          type: string
+          format: hostname
+          description: The domain name.
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - domain
+      - status
   securitySchemes:
     HTTPBearer:
       type: http
@@ -452,4 +452,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

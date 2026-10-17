@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Roles across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Roles across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -475,112 +475,22 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    RoleResponse:
+    UpdateRoleRequest:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID role ID
-        created_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        updated_at:
-          type: string
-          format: date-time
-          description: UTC datetime
         name:
-          type: string
-          minLength: 1
+          anyOf:
+          - type: string
+            maxLength: 255
+            minLength: 1
+          - type: 'null'
           description: Role name
         permissions:
-          $ref: '#/components/schemas/BizObjectsSchema-Output'
+          anyOf:
+          - $ref: '#/components/schemas/BizObjectsSchema-Input'
+          - type: 'null'
           description: Access permissions
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-          description: record status, 'active' by default
-      type: object
-      required:
-      - id
-      - name
-      - permissions
-      - status
-      - created_at
-      - updated_at
-    BizObjectsSchema-Input:
-      properties:
-        objects:
-          items:
-            $ref: '#/components/schemas/RootSchema-Input'
-          type: array
-          description: List of objects
       additionalProperties: false
       type: object
-    PayableActionSchema:
-      properties:
-        action_name:
-          $ref: '#/components/schemas/PayableActionEnum'
-          description: Action name
-          default: read
-        permission:
-          $ref: '#/components/schemas/PermissionEnum'
-          description: Permission type
-          default: allowed
-      additionalProperties: false
-      type: object
-    RolePaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/RoleResponse'
-          type: array
-          description: array of records
-        next_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    PayableSchema-Input:
-      properties:
-        actions:
-          items:
-            $ref: '#/components/schemas/PayableActionSchema'
-          type: array
-          description: List of actions
-        object_type:
-          type: string
-          const: payable
-          description: Object type
-          default: payable
-      additionalProperties: false
-      type: object
-    ActionEnum:
-      type: string
-      enum:
-      - create
-      - read
-      - update
-      - delete
-    PermissionEnum:
-      type: string
-      enum:
-      - allowed
-      - allowed_for_own
-      - not_allowed
-    RoleCursorFields:
-      type: string
-      enum:
-      - updated_at
-      - created_at
     CreateRoleRequest:
       properties:
         name:
@@ -596,47 +506,31 @@ components:
       required:
       - name
       - permissions
-    RootSchema-Input:
-      oneOf:
-      - $ref: '#/components/schemas/CommonSchema-Input'
-      - $ref: '#/components/schemas/PayableSchema-Input'
-      discriminator:
-        propertyName: object_type
-        mapping:
-          accounting_tax_rate: '#/components/schemas/CommonSchema-Input'
-          approval_policy: '#/components/schemas/CommonSchema-Input'
-          approval_request: '#/components/schemas/CommonSchema-Input'
-          comment: '#/components/schemas/CommonSchema-Input'
-          cost_center: '#/components/schemas/CommonSchema-Input'
-          counterpart: '#/components/schemas/CommonSchema-Input'
-          counterpart_vat_id: '#/components/schemas/CommonSchema-Input'
-          delivery_note: '#/components/schemas/CommonSchema-Input'
-          entity: '#/components/schemas/CommonSchema-Input'
-          entity_bank_account: '#/components/schemas/CommonSchema-Input'
-          entity_user: '#/components/schemas/CommonSchema-Input'
-          entity_vat_ids: '#/components/schemas/CommonSchema-Input'
-          export: '#/components/schemas/CommonSchema-Input'
-          ledger_account: '#/components/schemas/CommonSchema-Input'
-          mailbox: '#/components/schemas/CommonSchema-Input'
-          ocr_task: '#/components/schemas/CommonSchema-Input'
-          onboarding: '#/components/schemas/CommonSchema-Input'
-          overdue_reminder: '#/components/schemas/CommonSchema-Input'
-          payable: '#/components/schemas/PayableSchema-Input'
-          payables_purchase_order: '#/components/schemas/CommonSchema-Input'
-          payment_record: '#/components/schemas/CommonSchema-Input'
-          payment_reminder: '#/components/schemas/CommonSchema-Input'
-          person: '#/components/schemas/CommonSchema-Input'
-          product: '#/components/schemas/CommonSchema-Input'
-          project: '#/components/schemas/CommonSchema-Input'
-          receipt: '#/components/schemas/CommonSchema-Input'
-          receivable: '#/components/schemas/CommonSchema-Input'
-          reconciliation: '#/components/schemas/CommonSchema-Input'
-          role: '#/components/schemas/CommonSchema-Input'
-          tag: '#/components/schemas/CommonSchema-Input'
-          todo_task: '#/components/schemas/CommonSchema-Input'
-          todo_task_mute: '#/components/schemas/CommonSchema-Input'
-          transaction: '#/components/schemas/CommonSchema-Input'
-          workflow: '#/components/schemas/CommonSchema-Input'
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    PayableActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
+      - pay
+      - approve
+      - cancel
+      - submit
+      - create_from_mail
+      - reopen
+    ActionEnum:
+      type: string
+      enum:
+      - create
+      - read
+      - update
+      - delete
     CommonSchema-Output:
       properties:
         actions:
@@ -684,25 +578,179 @@ components:
           default: comment
       additionalProperties: false
       type: object
-    OrderEnum:
+    PermissionEnum:
       type: string
       enum:
-      - asc
-      - desc
-    UpdateRoleRequest:
+      - allowed
+      - allowed_for_own
+      - not_allowed
+    HTTPValidationError:
       properties:
-        name:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    RootSchema-Output:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Output'
+      - $ref: '#/components/schemas/PayableSchema-Output'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
+          approval_policy: '#/components/schemas/CommonSchema-Output'
+          approval_request: '#/components/schemas/CommonSchema-Output'
+          comment: '#/components/schemas/CommonSchema-Output'
+          cost_center: '#/components/schemas/CommonSchema-Output'
+          counterpart: '#/components/schemas/CommonSchema-Output'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
+          delivery_note: '#/components/schemas/CommonSchema-Output'
+          entity: '#/components/schemas/CommonSchema-Output'
+          entity_bank_account: '#/components/schemas/CommonSchema-Output'
+          entity_user: '#/components/schemas/CommonSchema-Output'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
+          export: '#/components/schemas/CommonSchema-Output'
+          ledger_account: '#/components/schemas/CommonSchema-Output'
+          mailbox: '#/components/schemas/CommonSchema-Output'
+          ocr_task: '#/components/schemas/CommonSchema-Output'
+          onboarding: '#/components/schemas/CommonSchema-Output'
+          overdue_reminder: '#/components/schemas/CommonSchema-Output'
+          payable: '#/components/schemas/PayableSchema-Output'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
+          payment_record: '#/components/schemas/CommonSchema-Output'
+          payment_reminder: '#/components/schemas/CommonSchema-Output'
+          person: '#/components/schemas/CommonSchema-Output'
+          product: '#/components/schemas/CommonSchema-Output'
+          project: '#/components/schemas/CommonSchema-Output'
+          receipt: '#/components/schemas/CommonSchema-Output'
+          receivable: '#/components/schemas/CommonSchema-Output'
+          reconciliation: '#/components/schemas/CommonSchema-Output'
+          role: '#/components/schemas/CommonSchema-Output'
+          tag: '#/components/schemas/CommonSchema-Output'
+          todo_task: '#/components/schemas/CommonSchema-Output'
+          todo_task_mute: '#/components/schemas/CommonSchema-Output'
+          transaction: '#/components/schemas/CommonSchema-Output'
+          workflow: '#/components/schemas/CommonSchema-Output'
+    RolePaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/RoleResponse'
+          type: array
+          description: array of records
+        next_pagination_token:
           anyOf:
           - type: string
-            maxLength: 255
-            minLength: 1
           - type: 'null'
-          description: Role name
-        permissions:
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
           anyOf:
-          - $ref: '#/components/schemas/BizObjectsSchema-Input'
+          - type: string
           - type: 'null'
-          description: Access permissions
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    BizObjectsSchema-Input:
+      properties:
+        objects:
+          items:
+            $ref: '#/components/schemas/RootSchema-Input'
+          type: array
+          description: List of objects
+      additionalProperties: false
+      type: object
+    RootSchema-Input:
+      oneOf:
+      - $ref: '#/components/schemas/CommonSchema-Input'
+      - $ref: '#/components/schemas/PayableSchema-Input'
+      discriminator:
+        propertyName: object_type
+        mapping:
+          accounting_tax_rate: '#/components/schemas/CommonSchema-Input'
+          approval_policy: '#/components/schemas/CommonSchema-Input'
+          approval_request: '#/components/schemas/CommonSchema-Input'
+          comment: '#/components/schemas/CommonSchema-Input'
+          cost_center: '#/components/schemas/CommonSchema-Input'
+          counterpart: '#/components/schemas/CommonSchema-Input'
+          counterpart_vat_id: '#/components/schemas/CommonSchema-Input'
+          delivery_note: '#/components/schemas/CommonSchema-Input'
+          entity: '#/components/schemas/CommonSchema-Input'
+          entity_bank_account: '#/components/schemas/CommonSchema-Input'
+          entity_user: '#/components/schemas/CommonSchema-Input'
+          entity_vat_ids: '#/components/schemas/CommonSchema-Input'
+          export: '#/components/schemas/CommonSchema-Input'
+          ledger_account: '#/components/schemas/CommonSchema-Input'
+          mailbox: '#/components/schemas/CommonSchema-Input'
+          ocr_task: '#/components/schemas/CommonSchema-Input'
+          onboarding: '#/components/schemas/CommonSchema-Input'
+          overdue_reminder: '#/components/schemas/CommonSchema-Input'
+          payable: '#/components/schemas/PayableSchema-Input'
+          payables_purchase_order: '#/components/schemas/CommonSchema-Input'
+          payment_record: '#/components/schemas/CommonSchema-Input'
+          payment_reminder: '#/components/schemas/CommonSchema-Input'
+          person: '#/components/schemas/CommonSchema-Input'
+          product: '#/components/schemas/CommonSchema-Input'
+          project: '#/components/schemas/CommonSchema-Input'
+          receipt: '#/components/schemas/CommonSchema-Input'
+          receivable: '#/components/schemas/CommonSchema-Input'
+          reconciliation: '#/components/schemas/CommonSchema-Input'
+          role: '#/components/schemas/CommonSchema-Input'
+          tag: '#/components/schemas/CommonSchema-Input'
+          todo_task: '#/components/schemas/CommonSchema-Input'
+          todo_task_mute: '#/components/schemas/CommonSchema-Input'
+          transaction: '#/components/schemas/CommonSchema-Input'
+          workflow: '#/components/schemas/CommonSchema-Input'
+    RoleCursorFields:
+      type: string
+      enum:
+      - updated_at
+      - created_at
+    PayableSchema-Input:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/PayableActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          const: payable
+          description: Object type
+          default: payable
+      additionalProperties: false
+      type: object
+    PayableSchema-Output:
+      properties:
+        actions:
+          items:
+            $ref: '#/components/schemas/PayableActionSchema'
+          type: array
+          description: List of actions
+        object_type:
+          type: string
+          const: payable
+          description: Object type
+          default: payable
       additionalProperties: false
       type: object
     CommonSchema-Input:
@@ -752,29 +800,6 @@ components:
           default: comment
       additionalProperties: false
       type: object
-    BizObjectsSchema-Output:
-      properties:
-        objects:
-          items:
-            $ref: '#/components/schemas/RootSchema-Output'
-          type: array
-          description: List of objects
-      additionalProperties: false
-      type: object
-    PayableSchema-Output:
-      properties:
-        actions:
-          items:
-            $ref: '#/components/schemas/PayableActionSchema'
-          type: array
-          description: List of actions
-        object_type:
-          type: string
-          const: payable
-          description: Object type
-          default: payable
-      additionalProperties: false
-      type: object
     ActionSchema:
       properties:
         action_name:
@@ -786,24 +811,18 @@ components:
           description: Permission type
           default: allowed
       type: object
-    StatusEnum:
-      type: string
-      enum:
-      - active
-      - deleted
-    PayableActionEnum:
-      type: string
-      enum:
-      - create
-      - read
-      - update
-      - delete
-      - pay
-      - approve
-      - cancel
-      - submit
-      - create_from_mail
-      - reopen
+    PayableActionSchema:
+      properties:
+        action_name:
+          $ref: '#/components/schemas/PayableActionEnum'
+          description: Action name
+          default: read
+        permission:
+          $ref: '#/components/schemas/PermissionEnum'
+          description: Permission type
+          default: allowed
+      additionalProperties: false
+      type: object
     ErrorSchema:
       properties:
         message:
@@ -811,71 +830,20 @@ components:
       type: object
       required:
       - message
-    RootSchema-Output:
-      oneOf:
-      - $ref: '#/components/schemas/CommonSchema-Output'
-      - $ref: '#/components/schemas/PayableSchema-Output'
-      discriminator:
-        propertyName: object_type
-        mapping:
-          accounting_tax_rate: '#/components/schemas/CommonSchema-Output'
-          approval_policy: '#/components/schemas/CommonSchema-Output'
-          approval_request: '#/components/schemas/CommonSchema-Output'
-          comment: '#/components/schemas/CommonSchema-Output'
-          cost_center: '#/components/schemas/CommonSchema-Output'
-          counterpart: '#/components/schemas/CommonSchema-Output'
-          counterpart_vat_id: '#/components/schemas/CommonSchema-Output'
-          delivery_note: '#/components/schemas/CommonSchema-Output'
-          entity: '#/components/schemas/CommonSchema-Output'
-          entity_bank_account: '#/components/schemas/CommonSchema-Output'
-          entity_user: '#/components/schemas/CommonSchema-Output'
-          entity_vat_ids: '#/components/schemas/CommonSchema-Output'
-          export: '#/components/schemas/CommonSchema-Output'
-          ledger_account: '#/components/schemas/CommonSchema-Output'
-          mailbox: '#/components/schemas/CommonSchema-Output'
-          ocr_task: '#/components/schemas/CommonSchema-Output'
-          onboarding: '#/components/schemas/CommonSchema-Output'
-          overdue_reminder: '#/components/schemas/CommonSchema-Output'
-          payable: '#/components/schemas/PayableSchema-Output'
-          payables_purchase_order: '#/components/schemas/CommonSchema-Output'
-          payment_record: '#/components/schemas/CommonSchema-Output'
-          payment_reminder: '#/components/schemas/CommonSchema-Output'
-          person: '#/components/schemas/CommonSchema-Output'
-          product: '#/components/schemas/CommonSchema-Output'
-          project: '#/components/schemas/CommonSchema-Output'
-          receipt: '#/components/schemas/CommonSchema-Output'
-          receivable: '#/components/schemas/CommonSchema-Output'
-          reconciliation: '#/components/schemas/CommonSchema-Output'
-          role: '#/components/schemas/CommonSchema-Output'
-          tag: '#/components/schemas/CommonSchema-Output'
-          todo_task: '#/components/schemas/CommonSchema-Output'
-          todo_task_mute: '#/components/schemas/CommonSchema-Output'
-          transaction: '#/components/schemas/CommonSchema-Output'
-          workflow: '#/components/schemas/CommonSchema-Output'
-    HTTPValidationError:
+    BizObjectsSchema-Output:
       properties:
-        detail:
+        objects:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/RootSchema-Output'
           type: array
+          description: List of objects
+      additionalProperties: false
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
     ErrorSchemaResponse:
       properties:
         error:
@@ -883,6 +851,38 @@ components:
       type: object
       required:
       - error
+    RoleResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID role ID
+        created_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        updated_at:
+          type: string
+          format: date-time
+          description: UTC datetime
+        name:
+          type: string
+          minLength: 1
+          description: Role name
+        permissions:
+          $ref: '#/components/schemas/BizObjectsSchema-Output'
+          description: Access permissions
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+          description: record status, 'active' by default
+      type: object
+      required:
+      - id
+      - name
+      - permissions
+      - status
+      - created_at
+      - updated_at
   securitySchemes:
     HTTPBearer:
       type: http
@@ -890,4 +890,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

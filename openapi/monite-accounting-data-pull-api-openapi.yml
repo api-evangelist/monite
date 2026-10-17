@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Accounting data pull across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Accounting data pull across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -330,15 +330,12 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    AccountingPayableList:
+    AccountingRefObject:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/AccountingPayable'
-          type: array
+        id:
+          type: string
+          description: An internal ID of the tax rate in the accounting system.
       type: object
-      required:
-      - data
     AccountingCustomerRefObject:
       properties:
         id:
@@ -352,19 +349,110 @@ components:
       type: object
       required:
       - id
-    AccountingVendorRefObject:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    AccountingReceivableList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AccountingReceivable'
+          type: array
+      type: object
+      required:
+      - data
+    AccountingReceivable:
       properties:
         id:
           type: string
-          description: A unique identifier of the vendor in the accounting system.
-          example: '120'
+          description: An internal identifier of the invoice in the accounting system.
+        currency:
+          type: string
+          description: ISO-4217 currency code of the invoice.
+          example: EUR
+        currency_rate:
+          type: number
+          description: Rate to convert the total amount of the transaction into the entity's base currency at the time of the transaction.
+        customer_ref:
+          allOf:
+          - $ref: '#/components/schemas/AccountingCustomerRefObject'
+          description: Information about the customer that the invoice was sent to.
+        due_date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: string
+            format: date
+          description: Invoice due date.
+        invoice_number:
+          type: string
+          description: Invoice document number.
+        lines:
+          items:
+            $ref: '#/components/schemas/AccountingLineItem'
+          type: array
+        memo:
+          type: string
+          description: Any additional information or business notes about the invoice.
+        pass_through:
+          type: object
+          description: An object containing additional invoice data returned by the accounting system. This sometimes includes custom invoice fields.
+        posted_date:
+          type: string
+          format: date
+          description: Date when the invoice was added to the accounting service. This may differ from the invoice creation date.
+      type: object
+      description: Invoice details retrieved from an accounting system.
+    AccountingPayableList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/AccountingPayable'
+          type: array
+      type: object
+      required:
+      - data
+    AccountingPurchaseOrderRef:
+      properties:
+        id:
+          type: string
+          description: An internal ID of the purchase order in the accounting system.
+          example: '10'
         name:
           type: string
-          description: Vendor name in the accounting system.
-          example: Acme Inc.
+          description: Reference number of the purchase order.
+          example: PO-1234
       type: object
       required:
       - id
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     AccountingLineItem:
       properties:
         description:
@@ -392,34 +480,6 @@ components:
           description: The cost per unit of the product or service.
       type: object
       description: Contains the details of an invoice line item retrieved from an accounting system.
-    AccountingPurchaseOrderRef:
-      properties:
-        id:
-          type: string
-          description: An internal ID of the purchase order in the accounting system.
-          example: '10'
-        name:
-          type: string
-          description: Reference number of the purchase order.
-          example: PO-1234
-      type: object
-      required:
-      - id
-    AccountingReceivableList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/AccountingReceivable'
-          type: array
-      type: object
-      required:
-      - data
-    AccountingRefObject:
-      properties:
-        id:
-          type: string
-          description: An internal ID of the tax rate in the accounting system.
-      type: object
     HTTPValidationError:
       properties:
         detail:
@@ -427,23 +487,19 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    ValidationError:
+    AccountingVendorRefObject:
       properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        id:
           type: string
-        type:
+          description: A unique identifier of the vendor in the accounting system.
+          example: '120'
+        name:
           type: string
+          description: Vendor name in the accounting system.
+          example: Acme Inc.
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - id
     AccountingPayable:
       properties:
         id:
@@ -508,62 +564,6 @@ components:
       - status
       - total_amount
       description: Details of an accounts payable invoice (bill) retrieved from an accounting system.
-    AccountingReceivable:
-      properties:
-        id:
-          type: string
-          description: An internal identifier of the invoice in the accounting system.
-        currency:
-          type: string
-          description: ISO-4217 currency code of the invoice.
-          example: EUR
-        currency_rate:
-          type: number
-          description: Rate to convert the total amount of the transaction into the entity's base currency at the time of the transaction.
-        customer_ref:
-          allOf:
-          - $ref: '#/components/schemas/AccountingCustomerRefObject'
-          description: Information about the customer that the invoice was sent to.
-        due_date:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: string
-            format: date
-          description: Invoice due date.
-        invoice_number:
-          type: string
-          description: Invoice document number.
-        lines:
-          items:
-            $ref: '#/components/schemas/AccountingLineItem'
-          type: array
-        memo:
-          type: string
-          description: Any additional information or business notes about the invoice.
-        pass_through:
-          type: object
-          description: An object containing additional invoice data returned by the accounting system. This sometimes includes custom invoice fields.
-        posted_date:
-          type: string
-          format: date
-          description: Date when the invoice was added to the accounting service. This may differ from the invoice creation date.
-      type: object
-      description: Invoice details retrieved from an accounting system.
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -571,4 +571,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

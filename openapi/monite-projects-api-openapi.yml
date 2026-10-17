@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Projects across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Projects across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -592,16 +592,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ProjectCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
     ErrorSchema2:
       properties:
         message:
@@ -609,16 +599,6 @@ components:
       type: object
       required:
       - message
-    TagCategory:
-      type: string
-      enum:
-      - document_type
-      - department
-      - project
-      - cost_center
-      - vendor_type
-      - payment_method
-      - approval_status
     HTTPValidationError:
       properties:
         detail:
@@ -626,6 +606,11 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
     ProjectUpdateRequest:
       properties:
         code:
@@ -759,22 +744,6 @@ components:
       - updated_at
       - entity_id
       - name
-    ProjectPaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ProjectResource'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
-      description: A paginated list of projects.
     ErrorSchemaResponse2:
       properties:
         error:
@@ -830,6 +799,11 @@ components:
       type: object
       required:
       - name
+    ProjectCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
     TagReadSchema:
       properties:
         id:
@@ -874,6 +848,32 @@ components:
       - updated_at
       - name
       description: Represents a user-defined tag that can be assigned to resources to filter them.
+    ProjectPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ProjectResource'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of projects.
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
   securitySchemes:
     HTTPBearer:
       type: http
@@ -881,4 +881,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

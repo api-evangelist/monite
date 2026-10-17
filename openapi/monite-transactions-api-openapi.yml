@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Transactions across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Transactions across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -684,6 +684,24 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    TransactionStatusEnum:
+      type: string
+      enum:
+      - created
+      - processing
+      - succeeded
+      - declined
+      - refunded
+      - failed
+    TransactionTypeEnum:
+      type: string
+      enum:
+      - capture
+      - refund
+      - cash_withdrawal
+      - fee
+      - adjustment
+      - reversal
     CardPaymentMethodDetails:
       properties:
         brand:
@@ -718,6 +736,13 @@ components:
       - expiry_month
       - expiry_year
       - last4
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     TransactionResponse:
       properties:
         id:
@@ -804,18 +829,6 @@ components:
       - payment_method
       - started_at
       - type
-    CardPaymentMethod:
-      properties:
-        details:
-          $ref: '#/components/schemas/CardPaymentMethodDetails'
-        type:
-          type: string
-          enum:
-          - card
-      type: object
-      required:
-      - details
-      - type
     TransactionRequest:
       properties:
         amount:
@@ -888,13 +901,83 @@ components:
       - merchant_name
       - payment_method
       - type
-    TransactionBulkObject:
+    ValidationError:
       properties:
-        id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
           type: string
-          format: uuid
-          description: A unique Monite-generated ID assigned to the created transaction.
+        type:
+          type: string
       type: object
+      required:
+      - loc
+      - msg
+      - type
+    BankAccountPaymentMethod:
+      properties:
+        details:
+          $ref: '#/components/schemas/BankAccountPaymentMethodDetails'
+        type:
+          type: string
+          enum:
+          - bank_account
+      type: object
+      required:
+      - details
+      - type
+    BankAccountPaymentMethodDetails:
+      properties:
+        account_holder_name:
+          type: string
+          description: The name of the person or business that owns this bank account.
+          examples:
+          - Bob Jones
+        account_number:
+          type: string
+          description: The bank account number. US account numbers contain 9 to 12 digits. UK account numbers typically contain 8 digits.
+          examples:
+          - '12345678'
+        bic:
+          type: string
+          maxLength: 11
+          description: The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long.
+          examples:
+          - DEUTDEFFXXX
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: ISO currency code of the bank account.
+        iban:
+          type: string
+          maxLength: 34
+          description: The IBAN of the bank account, up to 34 characters.
+          examples:
+          - DE74500700100100000900
+        name:
+          type: string
+          maxLength: 200
+          description: The name of the bank account, if available. For example, "Primary account" or "Savings account".
+        routing_number:
+          type: string
+          description: The bank's routing transit number (RTN). US routing numbers consist of 9 digits.
+        sort_code:
+          type: string
+          description: The bank's sort code.
+          examples:
+          - '123456'
+      type: object
+    CardTypeEnum:
+      type: string
+      enum:
+      - credit
+      - debit
+      - prepaid
+      - unknown
     TransactionCursorFields:
       type: string
       enum:
@@ -907,35 +990,16 @@ components:
       - status
       - type
       - external_id
-    TransactionStatusEnum:
-      type: string
-      enum:
-      - created
-      - processing
-      - succeeded
-      - declined
-      - refunded
-      - failed
-    TransactionTypeEnum:
-      type: string
-      enum:
-      - capture
-      - refund
-      - cash_withdrawal
-      - fee
-      - adjustment
-      - reversal
-    TransactionBulkStatusEnum:
-      type: string
-      enum:
-      - success
-      - partial_success
-      - error
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
+    TransactionBulkRequest:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TransactionRequest'
+          type: array
+          description: A list of transactions to create.
+      type: object
+      required:
+      - data
     TransactionPaymentMethod:
       oneOf:
       - $ref: '#/components/schemas/CardPaymentMethod'
@@ -945,13 +1009,82 @@ components:
         mapping:
           card: '#/components/schemas/CardPaymentMethod'
           bank_account: '#/components/schemas/BankAccountPaymentMethod'
-    CardTypeEnum:
+    TransactionBulkObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique Monite-generated ID assigned to the created transaction.
+      type: object
+    CardPaymentMethod:
+      properties:
+        details:
+          $ref: '#/components/schemas/CardPaymentMethodDetails'
+        type:
+          type: string
+          enum:
+          - card
+      type: object
+      required:
+      - details
+      - type
+    TransactionBulkStatusEnum:
       type: string
       enum:
-      - credit
-      - debit
-      - prepaid
-      - unknown
+      - success
+      - partial_success
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    TransactionBulkResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TransactionBulkObject'
+          type: array
+          maxItems: 5000
+          minItems: 1
+        status:
+          allOf:
+          - $ref: '#/components/schemas/TransactionBulkStatusEnum'
+          description: The overall status of the bulk creation operation.
+      type: object
+      required:
+      - data
+      - status
+    TransactionResponseList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TransactionResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+      description: A paginated list of transactions.
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     TransactionUpdateRequest:
       properties:
         amount:
@@ -1015,144 +1148,6 @@ components:
           - $ref: '#/components/schemas/TransactionTypeEnum'
           description: The nature of the transaction.
       type: object
-    TransactionBulkResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/TransactionBulkObject'
-          type: array
-          maxItems: 5000
-          minItems: 1
-        status:
-          allOf:
-          - $ref: '#/components/schemas/TransactionBulkStatusEnum'
-          description: The overall status of the bulk creation operation.
-      type: object
-      required:
-      - data
-      - status
-    TransactionResponseList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/TransactionResponse'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
-      description: A paginated list of transactions.
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    BankAccountPaymentMethodDetails:
-      properties:
-        account_holder_name:
-          type: string
-          description: The name of the person or business that owns this bank account.
-          examples:
-          - Bob Jones
-        account_number:
-          type: string
-          description: The bank account number. US account numbers contain 9 to 12 digits. UK account numbers typically contain 8 digits.
-          examples:
-          - '12345678'
-        bic:
-          type: string
-          maxLength: 11
-          description: The SWIFT/BIC code of the bank. Can be either 8 or 11 characters long.
-          examples:
-          - DEUTDEFFXXX
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: ISO currency code of the bank account.
-        iban:
-          type: string
-          maxLength: 34
-          description: The IBAN of the bank account, up to 34 characters.
-          examples:
-          - DE74500700100100000900
-        name:
-          type: string
-          maxLength: 200
-          description: The name of the bank account, if available. For example, "Primary account" or "Savings account".
-        routing_number:
-          type: string
-          description: The bank's routing transit number (RTN). US routing numbers consist of 9 digits.
-        sort_code:
-          type: string
-          description: The bank's sort code.
-          examples:
-          - '123456'
-      type: object
-    TransactionBulkRequest:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/TransactionRequest'
-          type: array
-          description: A list of transactions to create.
-      type: object
-      required:
-      - data
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    TransactionPaymentMethodTypeEnum:
-      type: string
-      enum:
-      - card
-      - bank_account
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    BankAccountPaymentMethod:
-      properties:
-        details:
-          $ref: '#/components/schemas/BankAccountPaymentMethodDetails'
-        type:
-          type: string
-          enum:
-          - bank_account
-      type: object
-      required:
-      - details
-      - type
     CurrencyEnum:
       type: string
       enum:
@@ -1301,6 +1296,11 @@ components:
       - YER
       - ZAR
       - ZMW
+    TransactionPaymentMethodTypeEnum:
+      type: string
+      enum:
+      - card
+      - bank_account
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1308,4 +1308,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Text templates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Text templates across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -408,49 +408,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CreateTextTemplatePayload:
-      properties:
-        document_type:
-          $ref: '#/components/schemas/TextTemplateDocumentTypeEnum'
-        name:
-          type: string
-        template:
-          type: string
-        type:
-          $ref: '#/components/schemas/TextTemplateType'
-      additionalProperties: false
-      type: object
-      required:
-      - document_type
-      - name
-      - template
-      - type
-    TextTemplateResponseList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/TextTemplateResponse'
-          type: array
-        next_pagination_token:
-          type: string
-        prev_pagination_token:
-          type: string
-      type: object
-      required:
-      - data
-    TextTemplateType:
-      type: string
-      enum:
-      - email_header
-      - email_body
-      - memo
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     TextTemplateResponse:
       properties:
         id:
@@ -482,6 +439,33 @@ components:
       - name
       - template
       - type
+    TextTemplateDocumentTypeEnum:
+      type: string
+      enum:
+      - quote
+      - invoice
+      - credit_note
+      - discount_reminder
+      - final_reminder
+      - payables_purchase_order
+      - overdue_reminder
+    CreateTextTemplatePayload:
+      properties:
+        document_type:
+          $ref: '#/components/schemas/TextTemplateDocumentTypeEnum'
+        name:
+          type: string
+        template:
+          type: string
+        type:
+          $ref: '#/components/schemas/TextTemplateType'
+      additionalProperties: false
+      type: object
+      required:
+      - document_type
+      - name
+      - template
+      - type
     ValidationError:
       properties:
         loc:
@@ -499,6 +483,19 @@ components:
       - loc
       - msg
       - type
+    TextTemplateResponseList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/TextTemplateResponse'
+          type: array
+        next_pagination_token:
+          type: string
+        prev_pagination_token:
+          type: string
+      type: object
+      required:
+      - data
     UpdateTextTemplatePayload:
       properties:
         name:
@@ -507,6 +504,12 @@ components:
           type: string
       additionalProperties: false
       type: object
+    TextTemplateType:
+      type: string
+      enum:
+      - email_header
+      - email_body
+      - memo
     ErrorSchemaResponse:
       properties:
         error:
@@ -514,16 +517,6 @@ components:
       type: object
       required:
       - error
-    TextTemplateDocumentTypeEnum:
-      type: string
-      enum:
-      - quote
-      - invoice
-      - credit_note
-      - discount_reminder
-      - final_reminder
-      - payables_purchase_order
-      - overdue_reminder
     ErrorSchema:
       properties:
         message:
@@ -531,6 +524,13 @@ components:
       type: object
       required:
       - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -538,4 +538,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

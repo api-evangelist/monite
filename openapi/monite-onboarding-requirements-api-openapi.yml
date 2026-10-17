@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Onboarding requirements across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Onboarding requirements across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -146,6 +146,59 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    OnboardingVerificationStatusEnum:
+      type: string
+      enum:
+      - enabled
+      - disabled
+      - pending
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    OnboardingRequirementsResponse:
+      properties:
+        disabled_reason:
+          $ref: '#/components/schemas/AccountDisabledReason'
+        requirements:
+          $ref: '#/components/schemas/PaymentRequirements'
+        requirements_errors:
+          items:
+            $ref: '#/components/schemas/RequirementsError'
+          type: array
+        verification_errors:
+          items:
+            $ref: '#/components/schemas/VerificationError'
+          type: array
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+      additionalProperties: false
+      type: object
+      required:
+      - requirements
+      - requirements_errors
+      - verification_errors
+      - verification_status
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     RequirementsError:
       properties:
         code:
@@ -160,17 +213,6 @@ components:
       - code
       - reason
       - requirement
-    VerificationError:
-      properties:
-        code:
-          type: string
-        details:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - code
-      - details
     PaymentMethodRequirements:
       properties:
         current_deadline:
@@ -199,17 +241,19 @@ components:
       - eventually_due
       - past_due
       - pending_verification
-    OnboardingVerificationError:
+    VerificationStatusEnum:
+      type: string
+      enum:
+      - enabled
+      - disabled
+      - pending
+    ErrorSchemaResponse:
       properties:
-        code:
-          type: string
-        details:
-          type: string
-      additionalProperties: false
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
       type: object
       required:
-      - code
-      - details
+      - error
     SingleOnboardingRequirementsResponse:
       properties:
         disabled_reason:
@@ -236,26 +280,51 @@ components:
       - requirements_errors
       - verification_errors
       - verification_status
-    OnboardingRequirementsError:
+    AccountDisabledReason:
+      type: string
+      enum:
+      - requirements.past_due
+      - requirements.pending_verification
+      - listed
+      - platform_paused
+      - rejected.fraud
+      - rejected.listed
+      - rejected.terms_of_service
+      - rejected.other
+      - under_review
+      - other
+    GetOnboardingRequirementsResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SingleOnboardingRequirementsResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    VerificationError:
       properties:
         code:
           type: string
-        reason:
-          type: string
-        requirement:
+        details:
           type: string
       additionalProperties: false
       type: object
       required:
       - code
-      - reason
-      - requirement
-    VerificationStatusEnum:
-      type: string
-      enum:
-      - enabled
-      - disabled
-      - pending
+      - details
+    OnboardingVerificationError:
+      properties:
+        code:
+          type: string
+        details:
+          type: string
+      additionalProperties: false
+      type: object
+      required:
+      - code
+      - details
     PaymentRequirements:
       properties:
         current_deadline:
@@ -279,49 +348,6 @@ components:
       - currently_due
       - eventually_due
       - pending_verification
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    OnboardingVerificationStatusEnum:
-      type: string
-      enum:
-      - enabled
-      - disabled
-      - pending
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    AccountDisabledReason:
-      type: string
-      enum:
-      - requirements.past_due
-      - requirements.pending_verification
-      - listed
-      - platform_paused
-      - rejected.fraud
-      - rejected.listed
-      - rejected.terms_of_service
-      - rejected.other
-      - under_review
-      - other
     ErrorSchema:
       properties:
         message:
@@ -329,46 +355,20 @@ components:
       type: object
       required:
       - message
-    GetOnboardingRequirementsResponse:
+    OnboardingRequirementsError:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/SingleOnboardingRequirementsResponse'
-          type: array
+        code:
+          type: string
+        reason:
+          type: string
+        requirement:
+          type: string
       additionalProperties: false
       type: object
       required:
-      - data
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    OnboardingRequirementsResponse:
-      properties:
-        disabled_reason:
-          $ref: '#/components/schemas/AccountDisabledReason'
-        requirements:
-          $ref: '#/components/schemas/PaymentRequirements'
-        requirements_errors:
-          items:
-            $ref: '#/components/schemas/RequirementsError'
-          type: array
-        verification_errors:
-          items:
-            $ref: '#/components/schemas/VerificationError'
-          type: array
-        verification_status:
-          $ref: '#/components/schemas/VerificationStatusEnum'
-      additionalProperties: false
-      type: object
-      required:
-      - requirements
-      - requirements_errors
-      - verification_errors
-      - verification_status
+      - code
+      - reason
+      - requirement
   securitySchemes:
     HTTPBearer:
       type: http
@@ -376,4 +376,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Data export - extra data across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Data export - extra data across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -510,24 +510,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ExtraDataResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ExtraDataResource'
-          type: array
-        next_pagination_token:
-          type: string
-        prev_pagination_token:
-          type: string
-      type: object
-      required:
-      - data
-    ExportSettingCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
     OrderEnum:
       type: string
       enum:
@@ -538,28 +520,6 @@ components:
       enum:
       - default_account_code
       - default_tax_rate_code
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ExtraDataUpdateRequest:
-      properties:
-        field_name:
-          $ref: '#/components/schemas/SupportedFieldNames'
-        field_value:
-          type: string
-        object_id:
-          type: string
-          format: uuid
-        object_type:
-          type: string
-          enum:
-          - counterpart
-      additionalProperties: false
-      type: object
     ValidationError:
       properties:
         loc:
@@ -577,6 +537,21 @@ components:
       - loc
       - msg
       - type
+    ExtraDataUpdateRequest:
+      properties:
+        field_name:
+          $ref: '#/components/schemas/SupportedFieldNames'
+        field_value:
+          type: string
+        object_id:
+          type: string
+          format: uuid
+        object_type:
+          type: string
+          enum:
+          - counterpart
+      additionalProperties: false
+      type: object
     ExtraDataResource:
       properties:
         id:
@@ -611,13 +586,6 @@ components:
       - field_value
       - object_id
       - object_type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
     ExtraDataCreateRequest:
       properties:
         field_name:
@@ -638,6 +606,31 @@ components:
       - field_value
       - object_id
       - object_type
+    ExtraDataResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/ExtraDataResource'
+          type: array
+        next_pagination_token:
+          type: string
+        prev_pagination_token:
+          type: string
+      type: object
+      required:
+      - data
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ExportSettingCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
     ErrorSchema:
       properties:
         message:
@@ -645,6 +638,13 @@ components:
       type: object
       required:
       - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -652,4 +652,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

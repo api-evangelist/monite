@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Recurrences across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Recurrences across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -654,6 +654,69 @@ components:
       enum:
       - first_day
       - last_day
+    AutomationLevel:
+      type: string
+      enum:
+      - draft
+      - issue
+      - issue_and_send
+      description: Automation level for recurrence
+    RecurrenceIteration:
+      properties:
+        issue_at:
+          type: string
+          format: date
+        issued_invoice_id:
+          type: string
+          format: uuid
+        iteration:
+          type: integer
+          default: 1
+        status:
+          $ref: '#/components/schemas/IterationStatus'
+      additionalProperties: false
+      type: object
+      required:
+      - issue_at
+      - status
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    RecurrenceStatus:
+      type: string
+      enum:
+      - active
+      - paused
+      - canceled
+      - completed
+      description: 'Represents the status of a recurrence
+
+
+        Allowed transitions:
+
+        - active -> paused
+
+        - active -> canceled
+
+        - active -> completed
+
+        - paused -> active
+
+        - paused -> canceled'
     RecurrenceResponse:
       properties:
         id:
@@ -790,15 +853,6 @@ components:
       - month
       - quarter
       - year
-    IterationStatus:
-      type: string
-      enum:
-      - pending
-      - completed
-      - canceled
-      - skipped
-      - issue_failed
-      - send_failed
     Recipients:
       properties:
         bcc:
@@ -817,13 +871,6 @@ components:
             format: email
           type: array
       additionalProperties: false
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
       type: object
     CreateRecurrencePayload:
       properties:
@@ -903,41 +950,6 @@ components:
       type: object
       required:
       - invoice_id
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    RecurrenceIteration:
-      properties:
-        issue_at:
-          type: string
-          format: date
-        issued_invoice_id:
-          type: string
-          format: uuid
-        iteration:
-          type: integer
-          default: 1
-        status:
-          $ref: '#/components/schemas/IterationStatus'
-      additionalProperties: false
-      type: object
-      required:
-      - issue_at
-      - status
     ErrorSchemaResponse:
       properties:
         error:
@@ -945,27 +957,6 @@ components:
       type: object
       required:
       - error
-    RecurrenceStatus:
-      type: string
-      enum:
-      - active
-      - paused
-      - canceled
-      - completed
-      description: 'Represents the status of a recurrence
-
-
-        Allowed transitions:
-
-        - active -> paused
-
-        - active -> canceled
-
-        - active -> completed
-
-        - paused -> active
-
-        - paused -> canceled'
     UpdateRecurrencePayload:
       properties:
         automation_level:
@@ -1026,6 +1017,13 @@ components:
           description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
       additionalProperties: false
       type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     RecurrenceResponseList:
       properties:
         data:
@@ -1036,20 +1034,22 @@ components:
       type: object
       required:
       - data
-    AutomationLevel:
+    IterationStatus:
       type: string
       enum:
-      - draft
-      - issue
-      - issue_and_send
-      description: Automation level for recurrence
-    ErrorSchema:
+      - pending
+      - completed
+      - canceled
+      - skipped
+      - issue_failed
+      - send_failed
+    HTTPValidationError:
       properties:
-        message:
-          type: string
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
       type: object
-      required:
-      - message
     CreateRecurrencePayload_2:
       properties:
         automation_level:
@@ -1212,168 +1212,6 @@ components:
           description: The subject for the email that will be sent with the recurring invoice.
       additionalProperties: false
       type: object
-    CreateRecurrencePayload_3:
-      properties:
-        automation_level:
-          allOf:
-          - $ref: '#/components/schemas/AutomationLevel'
-          description: 'Controls how invoices are processed when generated:
-
-            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
-
-            - "issue": Automatically issues invoices but requires manual sending
-
-            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
-
-
-            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
-
-
-            Note: When using "issue_and_send", both subject_text and body_text must be provided.
-
-            '
-        body_text:
-          type: string
-          minLength: 1
-          description: The body text for the email that will be sent with the recurring invoice.
-        day_of_month:
-          allOf:
-          - $ref: '#/components/schemas/DayOfMonth'
-          description: Deprecated, use `start_date` instead
-          deprecated: true
-        end_date:
-          type: string
-          format: date
-          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
-        end_month:
-          type: integer
-          maximum: 12.0
-          minimum: 1.0
-          description: Deprecated, use `end_date` instead
-          deprecated: true
-        end_year:
-          type: integer
-          maximum: 2077.0
-          description: Deprecated, use `end_date` instead
-          deprecated: true
-        frequency:
-          allOf:
-          - $ref: '#/components/schemas/RecurrenceFrequency'
-          description: How often the invoice will be created.
-          default: month
-        interval:
-          type: integer
-          maximum: 100.0
-          minimum: 1.0
-          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
-          default: 1
-        invoice_id:
-          type: string
-          format: uuid
-          description: ID of the base invoice that will be used as a template for creating recurring invoices.
-        max_occurrences:
-          type: integer
-          maximum: 1000.0
-          minimum: 1.0
-          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
-        recipients:
-          allOf:
-          - $ref: '#/components/schemas/Recipients'
-          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
-        start_date:
-          type: string
-          format: date
-          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
-        start_month:
-          type: integer
-          maximum: 12.0
-          minimum: 1.0
-          description: Deprecated, use `start_date` instead
-          deprecated: true
-        start_year:
-          type: integer
-          maximum: 2077.0
-          description: Deprecated, use `start_date` instead
-          deprecated: true
-        subject_text:
-          type: string
-          minLength: 1
-          description: The subject for the email that will be sent with the recurring invoice.
-      type: object
-      required:
-      - invoice_id
-    UpdateRecurrencePayload_3:
-      properties:
-        automation_level:
-          allOf:
-          - $ref: '#/components/schemas/AutomationLevel'
-          description: 'Controls how invoices are processed when generated:
-
-            - "draft": Creates invoices in draft status, requiring manual review, issuing, and sending
-
-            - "issue": Automatically issues invoices but requires manual sending
-
-            - "issue_and_send": Fully automates the process (creates, issues, and sends invoices)
-
-
-            Default: "issue" (or "issue_and_send" if subject_text and body_text are provided)
-
-
-            Note: When using "issue_and_send", both subject_text and body_text must be provided.
-
-            '
-        body_text:
-          type: string
-          minLength: 1
-          description: The body text for the email that will be sent with the recurring invoice.
-        day_of_month:
-          allOf:
-          - $ref: '#/components/schemas/DayOfMonth'
-          description: Deprecated, use `start_date` instead
-          deprecated: true
-        end_date:
-          type: string
-          format: date
-          description: The end date of the recurring invoice, in the `yyyy-mm-dd` format. The end date is inclusive, that is, the last invoice will be created on this date if the last occurrence falls on this date. `end_date` is mutually exclusive with `max_occurrences`. Either `end_date` or `max_occurrences` must be specified.
-        end_month:
-          type: integer
-          maximum: 12.0
-          minimum: 1.0
-          description: Deprecated, use `end_date` instead
-          deprecated: true
-        end_year:
-          type: integer
-          maximum: 2077.0
-          description: Deprecated, use `end_date` instead
-          deprecated: true
-        frequency:
-          allOf:
-          - $ref: '#/components/schemas/RecurrenceFrequency'
-          description: How often the invoice will be created.
-        interval:
-          type: integer
-          maximum: 100.0
-          minimum: 1.0
-          description: The interval between each occurrence of the invoice. For example, when using monthly frequency, an interval of 1 means invoices will be created every month, an interval of 2 means invoices will be created every 2 months.
-        max_occurrences:
-          type: integer
-          maximum: 1000.0
-          minimum: 1.0
-          description: How many times the recurring invoice will be created. The recurrence will stop after this number is reached. `max_occurrences` is mutually exclusive with `end_date`. Either `max_occurrences` or `end_date` must be specified.
-        recipients:
-          allOf:
-          - $ref: '#/components/schemas/Recipients'
-          description: An object containing the recipients (To, CC, BCC) of the recurring invoices. Can be omitted if the base invoice has the counterpart contact email specified in the `counterpart_contact.email` field.
-        start_date:
-          type: string
-          format: date
-          description: The date when the first invoice will be created, in the `yyyy-mm-dd` format. Cannot be a past date. Subsequent invoice dates will be calculated based on `start_date`, `frequency`, and `interval`.
-        subject_text:
-          type: string
-          minLength: 1
-          description: The subject for the email that will be sent with the recurring invoice.
-      additionalProperties: false
-      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1381,4 +1219,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

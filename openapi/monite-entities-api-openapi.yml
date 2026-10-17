@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entities across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entities across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -1241,419 +1241,12 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    IndividualResponseSchema:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          type: string
-          maxLength: 100
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_name:
-          type: string
-          maxLength: 100
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-          - type: 'null'
-          description: A title of an individual
-      type: object
-      required:
-      - first_name
-      - last_name
-      description: Contains data specific to entities of the `individual` type.
-    DocumentTypePrefix:
-      properties:
-        credit_note:
-          type: string
-          maxLength: 25
-          minLength: 1
-          default: CN
-        delivery_note:
-          type: string
-          maxLength: 25
-          minLength: 1
-          default: DN
-        invoice:
-          type: string
-          maxLength: 25
-          minLength: 1
-          default: INV
-        purchase_order:
-          type: string
-          maxLength: 25
-          minLength: 1
-          default: PO
-        quote:
-          type: string
-          maxLength: 25
-          minLength: 1
-          default: Q
-      additionalProperties: false
-      type: object
-    PreviewSchema:
-      properties:
-        height:
-          type: integer
-          description: The image height in pixels.
-          examples:
-          - 400
-        url:
-          type: string
-          description: The image URL.
-          examples:
-          - https://bucketname.s3.amazonaws.com/1/2/3.png
-        width:
-          type: integer
-          description: The image width in pixels.
-          examples:
-          - 200
-      type: object
-      required:
-      - height
-      - url
-      - width
-      description: A preview image generated for a file.
-    EntityCursorFields:
+    PaymentPriorityEnum:
       type: string
       enum:
-      - created_at
-      - updated_at
-    LineItemsRenderingSettings:
-      properties:
-        discount:
-          $ref: '#/components/schemas/LineItemColumnSettings'
-          description: Settings for the discount column in the line items table.
-        measure_unit:
-          $ref: '#/components/schemas/LineItemColumnSettings'
-          description: Settings for the measure unit column in the line items table.
-        name:
-          $ref: '#/components/schemas/LineItemColumnSettings'
-          description: Settings for the name column in the line items table.
-        price:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the price column in the line items table.
-        price_after_vat:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the price after VAT column in the line items table.
-        quantity:
-          $ref: '#/components/schemas/LineItemColumnSettings'
-          description: Settings for the quantity column in the line items table.
-        total_price:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the total price column in the line items table.
-        total_price_after_vat:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the total price after VAT column in the line items table.
-        vat_amount:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the VAT amount column in the line items table.
-        vat_rate:
-          $ref: '#/components/schemas/LineItemNumericColumnSettings'
-          description: Settings for the VAT rate column in the line items table.
-      additionalProperties: false
-      type: object
-    DocumentIDsSettingsNextNumber:
-      properties:
-        credit_note:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-        delivery_note:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-        invoice:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-        purchase_order:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-        quote:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-      additionalProperties: false
-      type: object
-    UpdateEntityAddressSchema:
-      properties:
-        city:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: A city (a full name) where the entity is registered
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          - type: 'null'
-          description: 'A country name (as ISO code) where the entity is registered '
-          examples:
-          - DE
-        line1:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: A street where the entity is registered
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: An alternative street used by the entity
-        postal_code:
-          anyOf:
-          - type: string
-            maxLength: 10
-          - type: 'null'
-          description: A postal code of the address where the entity is registered
-        state:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: A state in a country where the entity is registered
-      additionalProperties: false
-      type: object
-    CreateEntityRequest:
-      properties:
-        address:
-          $ref: '#/components/schemas/EntityAddressSchema'
-          description: An address description of the entity
-        email:
-          type: string
-          format: email
-          description: An official email address of the entity
-        individual:
-          anyOf:
-          - $ref: '#/components/schemas/IndividualSchema'
-          - type: 'null'
-          description: A set of meta data describing the individual
-        organization:
-          anyOf:
-          - $ref: '#/components/schemas/OrganizationSchema'
-          - type: 'null'
-          description: A set of meta data describing the organization
-        phone:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: The contact phone number of the entity. Required for US organizations to use payments.
-        registration_authority:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        type:
-          $ref: '#/components/schemas/EntityTypeEnum'
-          description: A type for an entity
-        website:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: A website of the entity
-      additionalProperties: false
-      type: object
-      required:
-      - address
-      - email
-      - type
-      description: A schema for a request to create an entity of different types
-    CurrencySettings-Input:
-      properties:
-        default:
-          $ref: '#/components/schemas/CurrencyEnum'
-        exchange_rates:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ExchangeRate'
-            - type: 'null'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - default
-    VatModeEnum:
-      type: string
-      enum:
-      - exclusive
-      - inclusive
-    PartnerMetadata:
-      properties:
-        metadata:
-          type: object
-          description: Metadata for partner needs
-      type: object
-      required:
-      - metadata
-    OptionalOrganizationSchema:
-      properties:
-        business_structure:
-          anyOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          - type: 'null'
-          description: Business structure of the company
-        directors_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        executives_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        legal_entity_id:
-          anyOf:
-          - type: string
-            maxLength: 20
-          - type: 'null'
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-          - type: 'null'
-          description: A legal name of an organization
-        owners_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        representative_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      description: A schema contains metadata for updating an organization
-    DefaultAccountingTaxIDs:
-      properties:
-        deductions:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          description: ID of the accounting tax ID with which all deductions will be pushed.
-      additionalProperties: false
-      type: object
-    Body_put_entities_id_logo:
-      properties:
-        file:
-          type: string
-          format: binary
-      type: object
-      required:
-      - file
-    CardTheme2:
-      properties:
-        background_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-      type: object
-      required:
-      - background_color
-    LineItemColumnSettings:
-      properties:
-        display:
-          type: boolean
-          default: true
-        label:
-          anyOf:
-          - type: string
-            maxLength: 32
-            minLength: 1
-          - type: 'null'
-          description: Line item table column header to override Monite's default. If not set, the Monite's default will be used.
-      additionalProperties: false
-      type: object
-    PageSchema:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: A unique ID of the image.
-        mimetype:
-          type: string
-          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) of the image.
-          examples:
-          - image/png
-        number:
-          type: integer
-          minimum: 0.0
-          description: The page number in the PDF document, from 0.
-          examples:
-          - 0
-        size:
-          type: integer
-          minimum: 0.0
-          description: Image file size, in bytes.
-          examples:
-          - 21972
-        url:
-          type: string
-          description: The URL to download the image.
-          examples:
-          - https://bucket.s3.amazonaws.com/123/456.png
-      type: object
-      required:
-      - id
-      - mimetype
-      - number
-      - size
-      - url
-      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
-
-        and saves them as PNG images. This object contains the image and metadata of a single page.'
+      - working_capital
+      - balanced
+      - bottom_line
     MergedSettingsResponse:
       properties:
         accounting:
@@ -1782,207 +1375,86 @@ components:
           - type: string
           - type: 'null'
       type: object
-    Unit:
+    OrganizationSchema:
       properties:
-        designation:
-          type: string
-          minLength: 1
-          examples:
-          - kg
-        name:
-          type: string
-          minLength: 1
-          examples:
-          - Kilogram
-      type: object
-      required:
-      - designation
-      - name
-    LineItemNumericColumnSettings:
-      properties:
-        display:
-          type: boolean
-          default: true
-        label:
+        business_structure:
+          anyOf:
+          - $ref: '#/components/schemas/EntityBusinessStructure'
+          - type: 'null'
+          description: Business structure of the company
+        directors_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        executives_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        legal_entity_id:
           anyOf:
           - type: string
-            maxLength: 32
+            maxLength: 20
+          - type: 'null'
+          description: A code which identifies uniquely a party of a transaction worldwide
+        legal_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The legal name of the organization. If this organization will use Monite payment rails, this name must be up to 100 characters long, otherwise it can be up to 255 characters long.
+        owners_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        representative_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+      type: object
+      required:
+      - legal_name
+      description: A schema contains metadata for an organization
+    DocumentRenderingSettings-Input:
+      properties:
+        credit_note:
+          $ref: '#/components/schemas/CreditNoteRenderingSettings'
+          description: Credit note-specific rendering settings for PDF documents.
+        custom_title:
+          anyOf:
+          - type: string
+            maxLength: 100
             minLength: 1
           - type: 'null'
-          description: Line item table column header to override Monite's default. If not set, the Monite's default will be used.
-        precision:
-          anyOf:
-          - type: integer
-            maximum: 4.0
-            minimum: 2.0
-          - type: 'null'
-          description: Number of decimal places to display for numeric values in this column.
-      additionalProperties: false
-      type: object
-      description: Extended settings for numeric columns in line items.
-    PayableSettings:
-      properties:
-        allow_cancel_duplicates_automatically:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        allow_counterpart_autocreation:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        allow_counterpart_autolinking:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-        approve_page_url:
-          type: string
-          minLength: 1
-          format: uri
-          examples:
-          - https://monite.com
-        default_state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A state each new payable will have upon creation
-          examples:
-          - new
-        enable_line_items:
+          description: Custom title to be displayed on the PDF documents. If not set, the default title will be used.
+        display_entity_bank_account:
           type: boolean
-          description: Partners can set this to True or False to control line item detection in OCR flows.
+          description: If set to `true`, the entity's bank account details will be displayed on the PDF documents. Defaults to `true`.
           default: true
-        skip_approval_for_paid_invoice:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          default: false
-      type: object
-      required:
-      - approve_page_url
-    ExchangeRate:
-      properties:
-        base:
-          $ref: '#/components/schemas/CurrencyEnum'
-          examples:
-          - USD
-        rate:
-          type: number
-          exclusiveMinimum: 0.0
-          examples:
-          - 0.98
-        to:
-          $ref: '#/components/schemas/CurrencyEnum'
-          examples:
-          - EUR
+        display_line_items:
+          type: boolean
+          description: If set to `true`, the line items table will be displayed on the quote PDF. Defaults to `true`.
+          default: true
+        invoice:
+          $ref: '#/components/schemas/InvoiceRenderingSettings'
+          description: Invoice-specific rendering settings for PDF documents.
+        line_items:
+          $ref: '#/components/schemas/LineItemsRenderingSettings'
+          description: 'Settings for rendering line items in PDF documents. '
+        quote:
+          $ref: '#/components/schemas/QuoteRenderingSettings'
+          description: Quote-specific rendering settings for PDF documents.
       additionalProperties: false
       type: object
-      required:
-      - base
-      - to
-      - rate
-    CurrencySettings-Output:
-      properties:
-        default:
-          $ref: '#/components/schemas/CurrencyEnum'
-        exchange_rates:
-          items:
-            anyOf:
-            - $ref: '#/components/schemas/ExchangeRate'
-            - type: 'null'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - default
-    OptionalIndividualSchema:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-          - type: 'null'
-          description: A title of an individual
-      additionalProperties: false
-      type: object
-      description: A schema for metadata for updating an individual
-    PartnerMetadataResponse:
-      properties:
-        metadata:
-          type: object
-          description: Metadata for partner needs
-      type: object
-    IndividualSchema:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          type: string
-          maxLength: 100
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_name:
-          type: string
-          maxLength: 100
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-          - type: 'null'
-          description: A title of an individual
-      additionalProperties: false
-      type: object
-      required:
-      - first_name
-      - last_name
-      description: A schema contains metadata for an individual
-    EntityStatusEnum:
+      description: 'Rendering settings that control how different parts of the PDF documents are displayed.
+
+        Includes common settings for all document types such as quotes, invoices, and credit notes and document
+
+        type-specific settings that are defined in their respective objects.'
+    StatusEnum:
       type: string
       enum:
       - active
-      - inactive
       - deleted
-    EntityOrganizationResponse:
+    EntityIndividualResponse:
       properties:
         id:
           type: string
@@ -2004,14 +1476,14 @@ components:
           - type: string
           - type: 'null'
           description: An official email address of the entity
+        individual:
+          $ref: '#/components/schemas/IndividualResponseSchema'
+          description: A set of metadata describing an individual
         logo:
           anyOf:
           - $ref: '#/components/schemas/FileSchema2'
           - type: 'null'
           description: A logo image of the entity
-        organization:
-          $ref: '#/components/schemas/OrganizationResponseSchema'
-          description: A set of metadata describing an organization
         phone:
           anyOf:
           - type: string
@@ -2047,8 +1519,8 @@ components:
           description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
         type:
           type: string
-          const: organization
-          description: A type for an organization
+          const: individual
+          description: A type for an individual
         website:
           anyOf:
           - type: string
@@ -2063,9 +1535,129 @@ components:
       - created_at
       - updated_at
       - address
-      - organization
+      - individual
       - status
       - type
+    EntityBusinessStructure:
+      type: string
+      enum:
+      - incorporated_partnership
+      - unincorporated_partnership
+      - public_corporation
+      - private_corporation
+      - sole_proprietorship
+      - single_member_llc
+      - multi_member_llc
+      - private_partnership
+      - unincorporated_association
+      - public_partnership
+    DocumentRenderingSettings-Output:
+      properties:
+        credit_note:
+          $ref: '#/components/schemas/CreditNoteRenderingSettings'
+          description: Credit note-specific rendering settings for PDF documents.
+        custom_title:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: Custom title to be displayed on the PDF documents. If not set, the default title will be used.
+        display_entity_bank_account:
+          type: boolean
+          description: If set to `true`, the entity's bank account details will be displayed on the PDF documents. Defaults to `true`.
+          default: true
+        display_line_items:
+          type: boolean
+          description: If set to `true`, the line items table will be displayed on the quote PDF. Defaults to `true`.
+          default: true
+        invoice:
+          $ref: '#/components/schemas/InvoiceRenderingSettings'
+          description: Invoice-specific rendering settings for PDF documents.
+        line_items:
+          $ref: '#/components/schemas/LineItemsRenderingSettings'
+          description: 'Settings for rendering line items in PDF documents. '
+        quote:
+          $ref: '#/components/schemas/QuoteRenderingSettings'
+          description: Quote-specific rendering settings for PDF documents.
+      additionalProperties: false
+      type: object
+      description: 'Rendering settings that control how different parts of the PDF documents are displayed.
+
+        Includes common settings for all document types such as quotes, invoices, and credit notes and document
+
+        type-specific settings that are defined in their respective objects.'
+    IndividualResponseSchema:
+      properties:
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+        first_name:
+          type: string
+          maxLength: 100
+          description: A first name of an individual
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_name:
+          type: string
+          maxLength: 100
+          description: A last name of an individual
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the individual's Social Security number
+        title:
+          anyOf:
+          - type: string
+            maxLength: 10
+          - type: 'null'
+          description: A title of an individual
+      type: object
+      required:
+      - first_name
+      - last_name
+      description: Contains data specific to entities of the `individual` type.
+    LineItemNumericColumnSettings:
+      properties:
+        display:
+          type: boolean
+          default: true
+        label:
+          anyOf:
+          - type: string
+            maxLength: 32
+            minLength: 1
+          - type: 'null'
+          description: Line item table column header to override Monite's default. If not set, the Monite's default will be used.
+        precision:
+          anyOf:
+          - type: integer
+            maximum: 4.0
+            minimum: 2.0
+          - type: 'null'
+          description: Number of decimal places to display for numeric values in this column.
+      additionalProperties: false
+      type: object
+      description: Extended settings for numeric columns in line items.
+    CurrencySettings-Output:
+      properties:
+        default:
+          $ref: '#/components/schemas/CurrencyEnum'
+        exchange_rates:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ExchangeRate'
+            - type: 'null'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - default
     DocumentIDsSettings:
       properties:
         document_type_prefix:
@@ -2099,12 +1691,47 @@ components:
           description: Which character should separate each part of the document_id.
           default: '-'
       type: object
-    PaymentPriorityEnum:
-      type: string
-      enum:
-      - working_capital
-      - balanced
-      - bottom_line
+    ReceivableSettings:
+      properties:
+        create_without_personal_info:
+          type: boolean
+        deduction_title:
+          anyOf:
+          - type: string
+            maxLength: 32
+            minLength: 1
+          - type: 'null'
+      type: object
+      required:
+      - create_without_personal_info
+    ButtonTheme2:
+      properties:
+        primary_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        primary_hover_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        secondary_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+        secondary_hover_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+      type: object
+      required:
+      - primary_color
+      - primary_hover_color
+      - secondary_color
+      - secondary_hover_color
     LanguageCodeEnum:
       type: string
       enum:
@@ -2288,423 +1915,55 @@ components:
       - yo
       - za
       - zu
-    UpdateEntityRequest:
+    DefaultLedgerAccountIDs:
       properties:
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateEntityAddressSchema'
-          - type: 'null'
-          description: An address description of the entity
-        email:
+        payments:
           anyOf:
           - type: string
-            format: email
+            format: uuid
           - type: 'null'
-          description: An official email address of the entity
-        individual:
-          anyOf:
-          - $ref: '#/components/schemas/OptionalIndividualSchema'
-          - type: 'null'
-          description: A set of meta data describing the individual
-        organization:
-          anyOf:
-          - $ref: '#/components/schemas/OptionalOrganizationSchema'
-          - type: 'null'
-          description: A set of meta data describing the organization
-        phone:
+          description: ID of the ledger account to which all payment records will be pushed. Changing this value affects only future data pushes and does not affect payment records that already exist in the accounting system.
+        products:
           anyOf:
           - type: string
-            maxLength: 100
+            format: uuid
           - type: 'null'
-          description: The contact phone number of the entity. Required for US organizations to use payments.
-        registration_authority:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        website:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: A website of the entity
+          description: ID of the ledger account to which products without a `ledger_account_id` specified will be pushed. Changing this value affects only future data pushes and does not affect products that already exist in the accounting system.
       additionalProperties: false
       type: object
-      description: A schema for a request to update an entity
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    PaymentPageTheme:
+    HTTPValidationError:
       properties:
-        background_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        border_radius:
-          anyOf:
-          - type: string
-          - type: 'null'
-        button:
-          anyOf:
-          - $ref: '#/components/schemas/ButtonTheme2'
-          - type: 'null'
-        card:
-          anyOf:
-          - $ref: '#/components/schemas/CardTheme2'
-          - type: 'null'
-        font_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        font_family:
-          anyOf:
-          - type: string
-          - type: 'null'
-        font_link_href:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-        logo_src:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
       type: object
-    AccountingSettings:
+    ExchangeRate:
       properties:
-        ledger_account_ids:
-          anyOf:
-          - $ref: '#/components/schemas/DefaultLedgerAccountIDs'
-          - type: 'null'
-          description: Default ledger accounts that will be used for various objects pushed into an accounting system. Use `GET /ledger_accounts` to get the IDs of these ledger accounts.
-        tax_ids:
-          anyOf:
-          - $ref: '#/components/schemas/DefaultAccountingTaxIDs'
-          - type: 'null'
-          description: Default accounting tax IDs that will be used for various objects pushed into an accounting system. Use `GET /accounting_tax_rates` to get the IDs of these taxes.
+        base:
+          $ref: '#/components/schemas/CurrencyEnum'
+          examples:
+          - USD
+        rate:
+          type: number
+          exclusiveMinimum: 0.0
+          examples:
+          - 0.98
+        to:
+          $ref: '#/components/schemas/CurrencyEnum'
+          examples:
+          - EUR
       additionalProperties: false
-      type: object
-    OrganizationSchema:
-      properties:
-        business_structure:
-          anyOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          - type: 'null'
-          description: Business structure of the company
-        directors_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        executives_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        legal_entity_id:
-          anyOf:
-          - type: string
-            maxLength: 20
-          - type: 'null'
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: The legal name of the organization. If this organization will use Monite payment rails, this name must be up to 100 characters long, otherwise it can be up to 255 characters long.
-        owners_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        representative_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
       type: object
       required:
-      - legal_name
-      description: A schema contains metadata for an organization
-    FileSchema2:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: A unique ID of this file.
-        created_at:
-          type: string
-          format: date-time
-          description: UTC date and time when this file was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
-        file_type:
-          type: string
-          description: The type of the business object associated with this file.
-          examples:
-          - payables
-        md5:
-          type: string
-          description: The MD5 hash of the file.
-          examples:
-          - 31d1a2dd1ad3dfc39be849d70a68dac0
-        mimetype:
-          type: string
-          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types).
-          examples:
-          - application/pdf
-        name:
-          type: string
-          maxLength: 512
-          description: The original file name (if available).
-          examples:
-          - invoice.pdf
-        pages:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PageSchema'
-            type: array
-          - type: 'null'
-          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
-          default: []
-        previews:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/PreviewSchema'
-            type: array
-          - type: 'null'
-          description: Preview images generated for this file. There can be multiple images with different sizes.
-          default: []
-        region:
-          type: string
-          description: Geographical region of the data center where the file is stored.
-          examples:
-          - eu-central-1
-        size:
-          type: integer
-          minimum: 0.0
-          description: The file size in bytes.
-          examples:
-          - 24381
-        url:
-          type: string
-          description: The URL to download the file.
-          examples:
-          - https://bucketname.s3.amazonaws.com/12345/67890.pdf
-      type: object
-      required:
-      - id
-      - created_at
-      - file_type
-      - md5
-      - mimetype
-      - name
-      - region
-      - size
-      - url
-      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
-    ReceivableEditFlow:
+      - base
+      - to
+      - rate
+    VatModeEnum:
       type: string
       enum:
-      - compliant
-      - partially_compliant
-      - non_compliant
-    DocumentIDSeparators:
-      type: string
-      enum:
-      - /
-      - '-'
-      - '|'
-      - .
-      - ''
-    EntityMailSettings:
-      properties:
-        reply_to:
-          anyOf:
-          - items:
-              type: string
-              format: email
-            type: array
-          - type: 'null'
-          description: Reply-to email addresses for outgoing entity emails. When set, recipients can reply directly to these addresses instead of the sender's email address. Used for invoices, reminders, and other automated emails.
-          examples:
-          - - support@example.com
-          - - billing@example.com
-            - support@example.com
-      additionalProperties: false
-      type: object
-      description: Email settings for entity
-    EntityResponse:
-      oneOf:
-      - $ref: '#/components/schemas/EntityOrganizationResponse'
-      - $ref: '#/components/schemas/EntityIndividualResponse'
-      description: A schema for a response after creation of an entity of different types
-      discriminator:
-        propertyName: type
-        mapping:
-          individual: '#/components/schemas/EntityIndividualResponse'
-          organization: '#/components/schemas/EntityOrganizationResponse'
-    EntityBusinessStructure:
-      type: string
-      enum:
-      - incorporated_partnership
-      - unincorporated_partnership
-      - public_corporation
-      - private_corporation
-      - sole_proprietorship
-      - single_member_llc
-      - multi_member_llc
-      - private_partnership
-      - unincorporated_association
-      - public_partnership
-    InvoiceRenderingSettings:
-      properties:
-        display_entity_bank_account:
-          type: boolean
-          description: If set to `true`, the entity's bank account details will be displayed on the invoice PDF.
-          default: true
-      additionalProperties: false
-      type: object
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    DocumentRenderingSettings-Input:
-      properties:
-        credit_note:
-          $ref: '#/components/schemas/CreditNoteRenderingSettings'
-          description: Credit note-specific rendering settings for PDF documents.
-        custom_title:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: Custom title to be displayed on the PDF documents. If not set, the default title will be used.
-        display_entity_bank_account:
-          type: boolean
-          description: If set to `true`, the entity's bank account details will be displayed on the PDF documents. Defaults to `true`.
-          default: true
-        display_line_items:
-          type: boolean
-          description: If set to `true`, the line items table will be displayed on the quote PDF. Defaults to `true`.
-          default: true
-        invoice:
-          $ref: '#/components/schemas/InvoiceRenderingSettings'
-          description: Invoice-specific rendering settings for PDF documents.
-        line_items:
-          $ref: '#/components/schemas/LineItemsRenderingSettings'
-          description: 'Settings for rendering line items in PDF documents. '
-        quote:
-          $ref: '#/components/schemas/QuoteRenderingSettings'
-          description: Quote-specific rendering settings for PDF documents.
-      additionalProperties: false
-      type: object
-      description: 'Rendering settings that control how different parts of the PDF documents are displayed.
-
-        Includes common settings for all document types such as quotes, invoices, and credit notes and document
-
-        type-specific settings that are defined in their respective objects.'
-    ReceivableSettings:
-      properties:
-        create_without_personal_info:
-          type: boolean
-        deduction_title:
-          anyOf:
-          - type: string
-            maxLength: 32
-            minLength: 1
-          - type: 'null'
-      type: object
-      required:
-      - create_without_personal_info
-    DocumentRenderingSettings-Output:
-      properties:
-        credit_note:
-          $ref: '#/components/schemas/CreditNoteRenderingSettings'
-          description: Credit note-specific rendering settings for PDF documents.
-        custom_title:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: Custom title to be displayed on the PDF documents. If not set, the default title will be used.
-        display_entity_bank_account:
-          type: boolean
-          description: If set to `true`, the entity's bank account details will be displayed on the PDF documents. Defaults to `true`.
-          default: true
-        display_line_items:
-          type: boolean
-          description: If set to `true`, the line items table will be displayed on the quote PDF. Defaults to `true`.
-          default: true
-        invoice:
-          $ref: '#/components/schemas/InvoiceRenderingSettings'
-          description: Invoice-specific rendering settings for PDF documents.
-        line_items:
-          $ref: '#/components/schemas/LineItemsRenderingSettings'
-          description: 'Settings for rendering line items in PDF documents. '
-        quote:
-          $ref: '#/components/schemas/QuoteRenderingSettings'
-          description: Quote-specific rendering settings for PDF documents.
-      additionalProperties: false
-      type: object
-      description: 'Rendering settings that control how different parts of the PDF documents are displayed.
-
-        Includes common settings for all document types such as quotes, invoices, and credit notes and document
-
-        type-specific settings that are defined in their respective objects.'
-    StatusEnum:
-      type: string
-      enum:
-      - active
-      - deleted
-    MailSettings:
-      properties:
-        attach_documents_as_pdf:
-          type: boolean
-          description: Attach documents as PDF in emails.
-          default: true
-        from_email_username:
-          anyOf:
-          - type: string
-            maxLength: 64
-            minLength: 1
-          - type: 'null'
-        from_name:
-          anyOf:
-          - type: string
-            maxLength: 30
-            minLength: 1
-          - type: 'null'
-      type: object
+      - exclusive
+      - inclusive
     PatchSettingsPayload:
       properties:
         accounting:
@@ -2789,13 +2048,152 @@ components:
           default: exclusive
       additionalProperties: false
       type: object
-    ErrorSchema:
+    CreditNoteRenderingSettings:
       properties:
-        message:
+        display_entity_bank_account:
+          type: boolean
+          description: If set to `true`, the entity's bank account details will be displayed on the credit note PDF.
+          default: true
+      additionalProperties: false
+      type: object
+    MailSettings:
+      properties:
+        attach_documents_as_pdf:
+          type: boolean
+          description: Attach documents as PDF in emails.
+          default: true
+        from_email_username:
+          anyOf:
+          - type: string
+            maxLength: 64
+            minLength: 1
+          - type: 'null'
+        from_name:
+          anyOf:
+          - type: string
+            maxLength: 30
+            minLength: 1
+          - type: 'null'
+      type: object
+    DefaultAccountingTaxIDs:
+      properties:
+        deductions:
+          anyOf:
+          - type: string
+            format: uuid
+          - type: 'null'
+          description: ID of the accounting tax ID with which all deductions will be pushed.
+      additionalProperties: false
+      type: object
+    EntityPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EntityResponse'
+          type: array
+          description: A set of entities of different types returned per page
+        next_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+    PayableSettings:
+      properties:
+        allow_cancel_duplicates_automatically:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+        allow_counterpart_autocreation:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+        allow_counterpart_autolinking:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+        approve_page_url:
+          type: string
+          minLength: 1
+          format: uri
+          examples:
+          - https://monite.com
+        default_state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: A state each new payable will have upon creation
+          examples:
+          - new
+        enable_line_items:
+          type: boolean
+          description: Partners can set this to True or False to control line item detection in OCR flows.
+          default: true
+        skip_approval_for_paid_invoice:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          default: false
+      type: object
+      required:
+      - approve_page_url
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
           type: string
       type: object
       required:
-      - message
+      - loc
+      - msg
+      - type
+    PaymentsSettings:
+      properties:
+        payment_page_domain:
+          anyOf:
+          - type: string
+          - type: 'null'
+        payment_page_theme:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentPageTheme'
+          - type: 'null'
+        support_email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: The support email address
+      type: object
+    APIVersion:
+      type: string
+      enum:
+      - '2025-06-23'
+      - '2024-05-25'
+      - '2024-01-31'
+      - '2023-09-01'
+      - '2023-06-04'
+      - '2023-04-12'
+      - '2023-03-14'
+      - '2023-03-01'
+      - '2023-02-07'
+      - '2022-11-16'
     OrganizationResponseSchema:
       properties:
         business_structure:
@@ -2833,27 +2231,396 @@ components:
       required:
       - legal_name
       description: Contains data specific to entities of the `organization` type.
-    CreditNoteRenderingSettings:
+    RemindersSettings:
+      properties:
+        enabled:
+          type: boolean
+          default: true
+      type: object
+    EntityMailSettings:
+      properties:
+        reply_to:
+          anyOf:
+          - items:
+              type: string
+              format: email
+            type: array
+          - type: 'null'
+          description: Reply-to email addresses for outgoing entity emails. When set, recipients can reply directly to these addresses instead of the sender's email address. Used for invoices, reminders, and other automated emails.
+          examples:
+          - - support@example.com
+          - - billing@example.com
+            - support@example.com
+      additionalProperties: false
+      type: object
+      description: Email settings for entity
+    DocumentTypePrefix:
+      properties:
+        credit_note:
+          type: string
+          maxLength: 25
+          minLength: 1
+          default: CN
+        delivery_note:
+          type: string
+          maxLength: 25
+          minLength: 1
+          default: DN
+        invoice:
+          type: string
+          maxLength: 25
+          minLength: 1
+          default: INV
+        purchase_order:
+          type: string
+          maxLength: 25
+          minLength: 1
+          default: PO
+        quote:
+          type: string
+          maxLength: 25
+          minLength: 1
+          default: Q
+      additionalProperties: false
+      type: object
+    Body_put_entities_id_logo:
+      properties:
+        file:
+          type: string
+          format: binary
+      type: object
+      required:
+      - file
+    IndividualSchema:
+      properties:
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+        first_name:
+          type: string
+          maxLength: 100
+          description: A first name of an individual
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_name:
+          type: string
+          maxLength: 100
+          description: A last name of an individual
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the individual's Social Security number
+        title:
+          anyOf:
+          - type: string
+            maxLength: 10
+          - type: 'null'
+          description: A title of an individual
+      additionalProperties: false
+      type: object
+      required:
+      - first_name
+      - last_name
+      description: A schema contains metadata for an individual
+    OcrAutoTaggingSettingsRequest:
+      properties:
+        enabled:
+          type: boolean
+          description: A switch to temporarily disable a keyword without removing it from the list.
+        keywords:
+          items:
+            type: string
+          type: array
+          maxItems: 50
+          minItems: 1
+          description: A list of words that will be searched for assigning a tag in the recognized fields of the document after OCR processing. If at least one match is found, the tag will be assigned. Each keyword must be between 2 and 25 characters long.
+        tag_id:
+          type: string
+          format: uuid
+          description: Tag identifier that will be assigned to the payable document if one of the words listed in keywords is found during OCR.
+      additionalProperties: false
+      type: object
+      required:
+      - enabled
+      - keywords
+      - tag_id
+    LineItemColumnSettings:
+      properties:
+        display:
+          type: boolean
+          default: true
+        label:
+          anyOf:
+          - type: string
+            maxLength: 32
+            minLength: 1
+          - type: 'null'
+          description: Line item table column header to override Monite's default. If not set, the Monite's default will be used.
+      additionalProperties: false
+      type: object
+    OptionalIndividualSchema:
+      properties:
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+        first_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          description: A first name of an individual
+        id_number:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_name:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          description: A last name of an individual
+        ssn_last_4:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last four digits of the individual's Social Security number
+        title:
+          anyOf:
+          - type: string
+            maxLength: 10
+          - type: 'null'
+          description: A title of an individual
+      additionalProperties: false
+      type: object
+      description: A schema for metadata for updating an individual
+    PreviewSchema:
+      properties:
+        height:
+          type: integer
+          description: The image height in pixels.
+          examples:
+          - 400
+        url:
+          type: string
+          description: The image URL.
+          examples:
+          - https://bucketname.s3.amazonaws.com/1/2/3.png
+        width:
+          type: integer
+          description: The image width in pixels.
+          examples:
+          - 200
+      type: object
+      required:
+      - height
+      - url
+      - width
+      description: A preview image generated for a file.
+    NextDocumentNumbers:
+      properties:
+        credit_note:
+          type: integer
+          description: Next credit note number
+          default: 1
+        delivery_note:
+          type: integer
+          description: Next delivery note number
+          default: 1
+        invoice:
+          type: integer
+          description: Next invoice number
+          default: 1
+        purchase_order:
+          type: integer
+          description: Next purchase order number
+          default: 1
+        quote:
+          type: integer
+          description: Next quote number
+          default: 1
+      additionalProperties: false
+      type: object
+    InvoiceRenderingSettings:
       properties:
         display_entity_bank_account:
           type: boolean
-          description: If set to `true`, the entity's bank account details will be displayed on the credit note PDF.
+          description: If set to `true`, the entity's bank account details will be displayed on the invoice PDF.
           default: true
       additionalProperties: false
       type: object
-    QuoteRenderingSettings:
+    ReceivableEditFlow:
+      type: string
+      enum:
+      - compliant
+      - partially_compliant
+      - non_compliant
+    LineItemsRenderingSettings:
       properties:
-        display_entity_bank_account:
+        discount:
+          $ref: '#/components/schemas/LineItemColumnSettings'
+          description: Settings for the discount column in the line items table.
+        measure_unit:
+          $ref: '#/components/schemas/LineItemColumnSettings'
+          description: Settings for the measure unit column in the line items table.
+        name:
+          $ref: '#/components/schemas/LineItemColumnSettings'
+          description: Settings for the name column in the line items table.
+        price:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the price column in the line items table.
+        price_after_vat:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the price after VAT column in the line items table.
+        quantity:
+          $ref: '#/components/schemas/LineItemColumnSettings'
+          description: Settings for the quantity column in the line items table.
+        total_price:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the total price column in the line items table.
+        total_price_after_vat:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the total price after VAT column in the line items table.
+        vat_amount:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the VAT amount column in the line items table.
+        vat_rate:
+          $ref: '#/components/schemas/LineItemNumericColumnSettings'
+          description: Settings for the VAT rate column in the line items table.
+      additionalProperties: false
+      type: object
+    DocumentIDsSettingsRequest:
+      properties:
+        document_type_prefix:
+          $ref: '#/components/schemas/DocumentTypePrefix'
+          description: Prefixes for each document_type.
+          default:
+            credit_note: CN
+            delivery_note: DN
+            invoice: INV
+            purchase_order: PO
+            quote: Q
+        include_date:
           type: boolean
-          description: If set to `true`, the entity's bank account details will be displayed on the quote PDF.
-          default: true
-        display_signature:
-          type: boolean
-          description: If set to `true`, the signature field will be displayed on the quote PDF.
+          description: Optionally add 4-digit of the current year.
           default: false
+        min_digits:
+          type: integer
+          maximum: 25.0
+          minimum: 1.0
+          description: Minimal size of number in document ID Number will be left padded with zeros if less.
+          default: 5
+        next_number:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentIDsSettingsNextNumber'
+          - type: 'null'
+          description: Write-only field. Changes which number will be issued next. Can't be less than the last issued document number.
+        prefix:
+          anyOf:
+          - type: string
+            maxLength: 25
+            minLength: 1
+          - type: 'null'
+          description: Optional prefix. Does not substitute document_type prefix.
+        separator:
+          $ref: '#/components/schemas/DocumentIDSeparators'
+          description: Which character should separate each part of the document_id.
+          default: '-'
+      type: object
+    EntityResponse:
+      oneOf:
+      - $ref: '#/components/schemas/EntityOrganizationResponse'
+      - $ref: '#/components/schemas/EntityIndividualResponse'
+      description: A schema for a response after creation of an entity of different types
+      discriminator:
+        propertyName: type
+        mapping:
+          individual: '#/components/schemas/EntityIndividualResponse'
+          organization: '#/components/schemas/EntityOrganizationResponse'
+    DocumentIDsSettingsNextNumber:
+      properties:
+        credit_note:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
+        delivery_note:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
+        invoice:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
+        purchase_order:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
+        quote:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
       additionalProperties: false
       type: object
-    EntityIndividualResponse:
+    OptionalOrganizationSchema:
+      properties:
+        business_structure:
+          anyOf:
+          - $ref: '#/components/schemas/EntityBusinessStructure'
+          - type: 'null'
+          description: Business structure of the company
+        directors_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        executives_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        legal_entity_id:
+          anyOf:
+          - type: string
+            maxLength: 20
+          - type: 'null'
+          description: A code which identifies uniquely a party of a transaction worldwide
+        legal_name:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: A legal name of an organization
+        owners_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        representative_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+      additionalProperties: false
+      type: object
+      description: A schema contains metadata for updating an organization
+    EntityCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    EntityOrganizationResponse:
       properties:
         id:
           type: string
@@ -2875,14 +2642,14 @@ components:
           - type: string
           - type: 'null'
           description: An official email address of the entity
-        individual:
-          $ref: '#/components/schemas/IndividualResponseSchema'
-          description: A set of metadata describing an individual
         logo:
           anyOf:
           - $ref: '#/components/schemas/FileSchema2'
           - type: 'null'
           description: A logo image of the entity
+        organization:
+          $ref: '#/components/schemas/OrganizationResponseSchema'
+          description: A set of metadata describing an organization
         phone:
           anyOf:
           - type: string
@@ -2918,8 +2685,8 @@ components:
           description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
         type:
           type: string
-          const: individual
-          description: A type for an individual
+          const: organization
+          description: A type for an organization
         website:
           anyOf:
           - type: string
@@ -2934,106 +2701,236 @@ components:
       - created_at
       - updated_at
       - address
-      - individual
+      - organization
       - status
       - type
-    APIVersion:
+    DocumentIDSeparators:
       type: string
       enum:
-      - '2025-06-23'
-      - '2024-05-25'
-      - '2024-01-31'
-      - '2023-09-01'
-      - '2023-06-04'
-      - '2023-04-12'
-      - '2023-03-14'
-      - '2023-03-01'
-      - '2023-02-07'
-      - '2022-11-16'
-    OcrAutoTaggingSettingsRequest:
+      - /
+      - '-'
+      - '|'
+      - .
+      - ''
+    PageSchema:
       properties:
-        enabled:
-          type: boolean
-          description: A switch to temporarily disable a keyword without removing it from the list.
-        keywords:
-          items:
-            type: string
-          type: array
-          maxItems: 50
-          minItems: 1
-          description: A list of words that will be searched for assigning a tag in the recognized fields of the document after OCR processing. If at least one match is found, the tag will be assigned. Each keyword must be between 2 and 25 characters long.
-        tag_id:
+        id:
           type: string
           format: uuid
-          description: Tag identifier that will be assigned to the payable document if one of the words listed in keywords is found during OCR.
-      additionalProperties: false
+          description: A unique ID of the image.
+        mimetype:
+          type: string
+          description: The [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types) of the image.
+          examples:
+          - image/png
+        number:
+          type: integer
+          minimum: 0.0
+          description: The page number in the PDF document, from 0.
+          examples:
+          - 0
+        size:
+          type: integer
+          minimum: 0.0
+          description: Image file size, in bytes.
+          examples:
+          - 21972
+        url:
+          type: string
+          description: The URL to download the image.
+          examples:
+          - https://bucket.s3.amazonaws.com/123/456.png
       type: object
       required:
-      - enabled
-      - keywords
-      - tag_id
-    EntityTypeEnum:
+      - id
+      - mimetype
+      - number
+      - size
+      - url
+      description: 'When a PDF document is uploaded to Monite, it extracts individual pages from the document
+
+        and saves them as PNG images. This object contains the image and metadata of a single page.'
+    UpdateEntityRequest:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/UpdateEntityAddressSchema'
+          - type: 'null'
+          description: An address description of the entity
+        email:
+          anyOf:
+          - type: string
+            format: email
+          - type: 'null'
+          description: An official email address of the entity
+        individual:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalIndividualSchema'
+          - type: 'null'
+          description: A set of meta data describing the individual
+        organization:
+          anyOf:
+          - $ref: '#/components/schemas/OptionalOrganizationSchema'
+          - type: 'null'
+          description: A set of meta data describing the organization
+        phone:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          description: The contact phone number of the entity. Required for US organizations to use payments.
+        registration_authority:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
+          examples:
+          - Amtsgericht Charlottenburg
+        registration_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
+          examples:
+          - HRB 202324
+        tax_id:
+          anyOf:
+          - type: string
+            maxLength: 30
+          - type: 'null'
+          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
+        website:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          description: A website of the entity
+      additionalProperties: false
+      type: object
+      description: A schema for a request to update an entity
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    FileSchema2:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this file.
+        created_at:
+          type: string
+          format: date-time
+          description: UTC date and time when this file was uploaded to Monite. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+        file_type:
+          type: string
+          description: The type of the business object associated with this file.
+          examples:
+          - payables
+        md5:
+          type: string
+          description: The MD5 hash of the file.
+          examples:
+          - 31d1a2dd1ad3dfc39be849d70a68dac0
+        mimetype:
+          type: string
+          description: The file's [media type](https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types).
+          examples:
+          - application/pdf
+        name:
+          type: string
+          maxLength: 512
+          description: The original file name (if available).
+          examples:
+          - invoice.pdf
+        pages:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PageSchema'
+            type: array
+          - type: 'null'
+          description: If the file is a PDF document, this property contains individual pages extracted from the file. Otherwise, an empty array.
+          default: []
+        previews:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/PreviewSchema'
+            type: array
+          - type: 'null'
+          description: Preview images generated for this file. There can be multiple images with different sizes.
+          default: []
+        region:
+          type: string
+          description: Geographical region of the data center where the file is stored.
+          examples:
+          - eu-central-1
+        size:
+          type: integer
+          minimum: 0.0
+          description: The file size in bytes.
+          examples:
+          - 24381
+        url:
+          type: string
+          description: The URL to download the file.
+          examples:
+          - https://bucketname.s3.amazonaws.com/12345/67890.pdf
+      type: object
+      required:
+      - id
+      - created_at
+      - file_type
+      - md5
+      - mimetype
+      - name
+      - region
+      - size
+      - url
+      description: Represents a file (such as a PDF invoice) that was uploaded to Monite.
+    Unit:
+      properties:
+        designation:
+          type: string
+          minLength: 1
+          examples:
+          - kg
+        name:
+          type: string
+          minLength: 1
+          examples:
+          - Kilogram
+      type: object
+      required:
+      - designation
+      - name
+    OrderEnum:
       type: string
       enum:
-      - individual
-      - organization
-    DefaultLedgerAccountIDs:
+      - asc
+      - desc
+    AccountingSettings:
       properties:
-        payments:
+        ledger_account_ids:
           anyOf:
-          - type: string
-            format: uuid
+          - $ref: '#/components/schemas/DefaultLedgerAccountIDs'
           - type: 'null'
-          description: ID of the ledger account to which all payment records will be pushed. Changing this value affects only future data pushes and does not affect payment records that already exist in the accounting system.
-        products:
+          description: Default ledger accounts that will be used for various objects pushed into an accounting system. Use `GET /ledger_accounts` to get the IDs of these ledger accounts.
+        tax_ids:
           anyOf:
-          - type: string
-            format: uuid
+          - $ref: '#/components/schemas/DefaultAccountingTaxIDs'
           - type: 'null'
-          description: ID of the ledger account to which products without a `ledger_account_id` specified will be pushed. Changing this value affects only future data pushes and does not affect products that already exist in the accounting system.
+          description: Default accounting tax IDs that will be used for various objects pushed into an accounting system. Use `GET /accounting_tax_rates` to get the IDs of these taxes.
       additionalProperties: false
       type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    RemindersSettings:
-      properties:
-        enabled:
-          type: boolean
-          default: true
-      type: object
-    ButtonTheme2:
-      properties:
-        primary_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        primary_hover_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        secondary_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-        secondary_hover_color:
-          anyOf:
-          - type: string
-            format: color
-          - type: 'null'
-      type: object
-      required:
-      - primary_color
-      - primary_hover_color
-      - secondary_color
-      - secondary_hover_color
     AllowedCountries:
       type: string
       enum:
@@ -3289,84 +3186,6 @@ components:
       - CW
       - MF
       - SX
-    NextDocumentNumbers:
-      properties:
-        credit_note:
-          type: integer
-          description: Next credit note number
-          default: 1
-        delivery_note:
-          type: integer
-          description: Next delivery note number
-          default: 1
-        invoice:
-          type: integer
-          description: Next invoice number
-          default: 1
-        purchase_order:
-          type: integer
-          description: Next purchase order number
-          default: 1
-        quote:
-          type: integer
-          description: Next quote number
-          default: 1
-      additionalProperties: false
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    PaymentsSettings:
-      properties:
-        payment_page_domain:
-          anyOf:
-          - type: string
-          - type: 'null'
-        payment_page_theme:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPageTheme'
-          - type: 'null'
-        support_email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
-          description: The support email address
-      type: object
-    EntityPaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/EntityResponse'
-          type: array
-          description: A set of entities of different types returned per page
-        next_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
     EntityAddressSchema:
       properties:
         city:
@@ -3406,43 +3225,166 @@ components:
       - line1
       - postal_code
       description: A schema represents address info of the entity
-    DocumentIDsSettingsRequest:
+    PartnerMetadataResponse:
       properties:
-        document_type_prefix:
-          $ref: '#/components/schemas/DocumentTypePrefix'
-          description: Prefixes for each document_type.
-          default:
-            credit_note: CN
-            delivery_note: DN
-            invoice: INV
-            purchase_order: PO
-            quote: Q
-        include_date:
-          type: boolean
-          description: Optionally add 4-digit of the current year.
-          default: false
-        min_digits:
-          type: integer
-          maximum: 25.0
-          minimum: 1.0
-          description: Minimal size of number in document ID Number will be left padded with zeros if less.
-          default: 5
-        next_number:
+        metadata:
+          type: object
+          description: Metadata for partner needs
+      type: object
+    CreateEntityRequest:
+      properties:
+        address:
+          $ref: '#/components/schemas/EntityAddressSchema'
+          description: An address description of the entity
+        email:
+          type: string
+          format: email
+          description: An official email address of the entity
+        individual:
           anyOf:
-          - $ref: '#/components/schemas/DocumentIDsSettingsNextNumber'
+          - $ref: '#/components/schemas/IndividualSchema'
           - type: 'null'
-          description: Write-only field. Changes which number will be issued next. Can't be less than the last issued document number.
-        prefix:
+          description: A set of meta data describing the individual
+        organization:
+          anyOf:
+          - $ref: '#/components/schemas/OrganizationSchema'
+          - type: 'null'
+          description: A set of meta data describing the organization
+        phone:
           anyOf:
           - type: string
-            maxLength: 25
+            maxLength: 100
+          - type: 'null'
+          description: The contact phone number of the entity. Required for US organizations to use payments.
+        registration_authority:
+          anyOf:
+          - type: string
+            maxLength: 100
             minLength: 1
           - type: 'null'
-          description: Optional prefix. Does not substitute document_type prefix.
-        separator:
-          $ref: '#/components/schemas/DocumentIDSeparators'
-          description: Which character should separate each part of the document_id.
-          default: '-'
+          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
+          examples:
+          - Amtsgericht Charlottenburg
+        registration_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
+          examples:
+          - HRB 202324
+        tax_id:
+          anyOf:
+          - type: string
+            maxLength: 30
+          - type: 'null'
+          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
+        type:
+          $ref: '#/components/schemas/EntityTypeEnum'
+          description: A type for an entity
+        website:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
+          description: A website of the entity
+      additionalProperties: false
+      type: object
+      required:
+      - address
+      - email
+      - type
+      description: A schema for a request to create an entity of different types
+    CurrencySettings-Input:
+      properties:
+        default:
+          $ref: '#/components/schemas/CurrencyEnum'
+        exchange_rates:
+          items:
+            anyOf:
+            - $ref: '#/components/schemas/ExchangeRate'
+            - type: 'null'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - default
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PartnerMetadata:
+      properties:
+        metadata:
+          type: object
+          description: Metadata for partner needs
+      type: object
+      required:
+      - metadata
+    EntityStatusEnum:
+      type: string
+      enum:
+      - active
+      - inactive
+      - deleted
+    QuoteRenderingSettings:
+      properties:
+        display_entity_bank_account:
+          type: boolean
+          description: If set to `true`, the entity's bank account details will be displayed on the quote PDF.
+          default: true
+        display_signature:
+          type: boolean
+          description: If set to `true`, the signature field will be displayed on the quote PDF.
+          default: false
+      additionalProperties: false
+      type: object
+    UpdateEntityAddressSchema:
+      properties:
+        city:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: A city (a full name) where the entity is registered
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: 'A country name (as ISO code) where the entity is registered '
+          examples:
+          - DE
+        line1:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: A street where the entity is registered
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          description: An alternative street used by the entity
+        postal_code:
+          anyOf:
+          - type: string
+            maxLength: 10
+          - type: 'null'
+          description: A postal code of the address where the entity is registered
+        state:
+          anyOf:
+          - type: string
+            maxLength: 255
+          - type: 'null'
+          description: A state in a country where the entity is registered
+      additionalProperties: false
       type: object
     CurrencyEnum:
       type: string
@@ -3592,547 +3534,64 @@ components:
       - YER
       - ZAR
       - ZMW
-    IndividualResponseSchema_2:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          type: string
-          maxLength: 100
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_name:
-          type: string
-          maxLength: 100
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-          - type: 'null'
-          description: A title of an individual
-      type: object
-      required:
-      - first_name
-      - last_name
-      description: Contains data specific to entities of the `individual` type.
-    UpdateEntityAddressSchema_2:
-      properties:
-        city:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: A city (a full name) where the entity is registered
-        line1:
-          anyOf:
-          - type: string
-            maxLength: 200
-            minLength: 1
-          - type: 'null'
-          description: A street where the entity is registered
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: An alternative street used by the entity
-        postal_code:
-          anyOf:
-          - type: string
-            maxLength: 10
-            minLength: 1
-          - type: 'null'
-          description: A postal code of the address where the entity is registered
-        state:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: A state in a country where the entity is registered
-      additionalProperties: false
-      type: object
-    EntityAddressResponseSchema:
-      properties:
-        city:
-          type: string
-          maxLength: 255
-          description: A city (a full name) where the entity is registered
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-          description: 'A country name (as ISO code) where the entity is registered '
-          examples:
-          - DE
-        line1:
-          type: string
-          maxLength: 255
-          description: A street where the entity is registered
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: An alternative street used by the entity
-        postal_code:
-          type: string
-          maxLength: 10
-          description: A postal code of the address where the entity is registered
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: A state in a country where the entity is registered
-      additionalProperties: false
-      type: object
-      required:
-      - city
-      - country
-      - line1
-      - postal_code
-      description: A schema represents address info of the entity
-    CreateEntityRequest_2:
-      properties:
-        address:
-          $ref: '#/components/schemas/EntityAddressSchema_2'
-          description: An address description of the entity
-        email:
-          type: string
-          format: email
-          description: An official email address of the entity
-        individual:
-          anyOf:
-          - $ref: '#/components/schemas/IndividualSchema_2'
-          - type: 'null'
-          description: A set of meta data describing the individual
-        organization:
-          anyOf:
-          - $ref: '#/components/schemas/OrganizationSchema_2'
-          - type: 'null'
-          description: A set of meta data describing the organization
-        phone:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: The contact phone number of the entity. Required for US organizations to use payments.
-        registration_authority:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-            minLength: 1
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        type:
-          $ref: '#/components/schemas/EntityTypeEnum'
-          description: A type for an entity
-        website:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: A website of the entity
-      additionalProperties: false
-      type: object
-      required:
-      - address
-      - email
-      - type
-      description: A schema for a request to create an entity of different types
-    OptionalOrganizationSchema_2:
-      properties:
-        business_structure:
-          anyOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          - type: 'null'
-          description: Business structure of the company
-        directors_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        executives_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        legal_entity_id:
-          anyOf:
-          - type: string
-            maxLength: 20
-            minLength: 1
-          - type: 'null'
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-            minLength: 1
-          - type: 'null'
-          description: A legal name of an organization
-        owners_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        representative_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      description: A schema contains metadata for updating an organization
-    OptionalIndividualSchema_2:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-        last_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-            minLength: 1
-          - type: 'null'
-          description: A title of an individual
-      additionalProperties: false
-      type: object
-      description: A schema for metadata for updating an individual
-    IndividualSchema_2:
-      properties:
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-        first_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: A first name of an individual
-        id_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-        last_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: A last name of an individual
-        ssn_last_4:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
-            minLength: 1
-          - type: 'null'
-          description: A title of an individual
-      additionalProperties: false
-      type: object
-      required:
-      - first_name
-      - last_name
-      description: A schema contains metadata for an individual
-    EntityOrganizationResponse_2:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID entity ID
-        created_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        updated_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        address:
-          $ref: '#/components/schemas/EntityAddressResponseSchema'
-          description: An address description of the entity
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: An official email address of the entity
-        logo:
-          anyOf:
-          - $ref: '#/components/schemas/FileSchema2'
-          - type: 'null'
-          description: A logo image of the entity
-        organization:
-          $ref: '#/components/schemas/OrganizationResponseSchema'
-          description: A set of metadata describing an organization
-        phone:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: A phone number of the entity
-        registration_authority:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        status:
-          $ref: '#/components/schemas/EntityStatusEnum'
-          description: record status, 'active' by default
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        type:
-          type: string
-          const: organization
-          description: A type for an organization
-        website:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: A website of the entity
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - address
+    EntityTypeEnum:
+      type: string
+      enum:
+      - individual
       - organization
-      - status
-      - type
-    SettingsResponse:
+    PaymentPageTheme:
       properties:
-        accounting:
-          anyOf:
-          - $ref: '#/components/schemas/AccountingSettings'
-          - type: 'null'
-        allow_purchase_order_autolinking:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Automatically attempt to find a corresponding purchase order for all incoming payables.
-          default: true
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/CurrencySettings-Output'
-          - type: 'null'
-        document_ids:
-          anyOf:
-          - $ref: '#/components/schemas/DocumentIDsSettings'
-          - type: 'null'
-        document_rendering:
-          $ref: '#/components/schemas/DocumentRenderingSettings-Output'
-          description: Settings for rendering documents in PDF format.
-        generate_paid_invoice_pdf:
-          type: boolean
-          description: 'This setting affects how PDF is generated for paid accounts receivable invoices. If set to `true`, once an invoice is fully paid its PDF version is updated to display the amount paid and the payment-related features are removed.
-
-
-            The PDF file gets regenerated at the moment when an invoice becomes paid. It is not issued as a separate document, and the original PDF invoice is no longer available.
-
-
-            This field is deprecated and will be replaced by `document_rendering.invoice.generate_paid_invoice_pdf`.'
-          default: false
-        language:
-          anyOf:
-          - $ref: '#/components/schemas/LanguageCodeEnum'
-          - type: 'null'
-        mail:
-          anyOf:
-          - $ref: '#/components/schemas/EntityMailSettings'
-          - type: 'null'
-          description: Email settings for the entity
-        payables_ocr_auto_tagging:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/OcrAutoTaggingSettingsRequest'
-            type: array
-          - type: 'null'
-          description: Auto tagging settings for all incoming OCR payable documents.
-        payables_skip_approval_flow:
-          type: boolean
-          description: If enabled, the approval policy will be skipped and the payable will be moved to `waiting_to_be_paid` status.
-          default: false
-        payment_priority:
-          anyOf:
-          - $ref: '#/components/schemas/PaymentPriorityEnum'
-          - type: 'null'
-          description: Payment preferences for entity to automate calculating suggested payment date based on payment terms and entity preferences.
-          default: working_capital
-        quote_signature_required:
-          type: boolean
-          description: Sets the default behavior of whether a signature is required to accept quotes.
-          default: false
-        receivable_edit_flow:
-          anyOf:
-          - $ref: '#/components/schemas/ReceivableEditFlow'
-          - type: 'null'
-          default: compliant
-        reminder:
-          anyOf:
-          - $ref: '#/components/schemas/RemindersSettings'
-          - type: 'null'
-        vat_inclusive_discount_mode:
-          $ref: '#/components/schemas/VatModeEnum'
-          description: Defines whether the amount discounts (for percentage discounts it does not matter) on VAT inclusive invoices will be applied on amounts including VAT or excluding VAT.
-          default: exclusive
-        vat_mode:
-          anyOf:
-          - $ref: '#/components/schemas/VatModeEnum'
-          - type: 'null'
-          description: Defines whether the prices of products in receivables will already include VAT or not.
-          default: exclusive
-      type: object
-    UpdateEntityRequest_2:
-      properties:
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/UpdateEntityAddressSchema_2'
-          - type: 'null'
-          description: An address description of the entity
-        email:
+        background_color:
           anyOf:
           - type: string
-            format: email
+            format: color
           - type: 'null'
-          description: An official email address of the entity
-        individual:
-          anyOf:
-          - $ref: '#/components/schemas/OptionalIndividualSchema_2'
-          - type: 'null'
-          description: A set of meta data describing the individual
-        organization:
-          anyOf:
-          - $ref: '#/components/schemas/OptionalOrganizationSchema_2'
-          - type: 'null'
-          description: A set of meta data describing the organization
-        phone:
+        border_radius:
           anyOf:
           - type: string
-            maxLength: 100
           - type: 'null'
-          description: The contact phone number of the entity. Required for US organizations to use payments.
-        registration_authority:
+        button:
+          anyOf:
+          - $ref: '#/components/schemas/ButtonTheme2'
+          - type: 'null'
+        card:
+          anyOf:
+          - $ref: '#/components/schemas/CardTheme2'
+          - type: 'null'
+        font_color:
           anyOf:
           - type: string
-            maxLength: 100
-            minLength: 1
+            format: color
           - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
+        font_family:
           anyOf:
           - type: string
-            maxLength: 100
-            minLength: 1
           - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-            minLength: 1
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        website:
+        font_link_href:
           anyOf:
           - type: string
             maxLength: 2083
             minLength: 1
             format: uri
           - type: 'null'
-          description: A website of the entity
-      additionalProperties: false
+        logo_src:
+          anyOf:
+          - type: string
+            maxLength: 2083
+            minLength: 1
+            format: uri
+          - type: 'null'
       type: object
-      description: A schema for a request to update an entity
+    CardTheme2:
+      properties:
+        background_color:
+          anyOf:
+          - type: string
+            format: color
+          - type: 'null'
+      type: object
+      required:
+      - background_color
     OrganizationSchema_2:
       properties:
         business_structure:
@@ -4172,50 +3631,6 @@ components:
       required:
       - legal_name
       description: A schema contains metadata for an organization
-    EntityAddressSchema_2:
-      properties:
-        city:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: A city (a full name) where the entity is registered
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-          description: 'A country name (as ISO code) where the entity is registered '
-          examples:
-          - DE
-        line1:
-          type: string
-          maxLength: 200
-          minLength: 1
-          description: A street where the entity is registered
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: An alternative street used by the entity
-        postal_code:
-          type: string
-          maxLength: 10
-          minLength: 1
-          description: A postal code of the address where the entity is registered
-        state:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: State, county, province, prefecture, region, or similar component of the entity's address. For US entities, `state` is required and must be a two-letter [USPS state abbreviation](https://pe.usps.com/text/pub28/28apb.htm), for example, NY or CA.
-      additionalProperties: false
-      type: object
-      required:
-      - city
-      - country
-      - line1
-      - postal_code
-      description: A schema represents address info of the entity
     EntityIndividualResponse_2:
       properties:
         id:
@@ -4300,7 +3715,7 @@ components:
       - individual
       - status
       - type
-    IndividualResponseSchema_3:
+    IndividualResponseSchema_2:
       properties:
         date_of_birth:
           anyOf:
@@ -4337,154 +3752,171 @@ components:
       - first_name
       - last_name
       description: Contains data specific to entities of the `individual` type.
-    UpdateEntityAddressSchema_3:
+    SettingsResponse:
       properties:
-        city:
+        accounting:
+          anyOf:
+          - $ref: '#/components/schemas/AccountingSettings'
+          - type: 'null'
+        allow_purchase_order_autolinking:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Automatically attempt to find a corresponding purchase order for all incoming payables.
+          default: true
+        currency:
+          anyOf:
+          - $ref: '#/components/schemas/CurrencySettings-Output'
+          - type: 'null'
+        document_ids:
+          anyOf:
+          - $ref: '#/components/schemas/DocumentIDsSettings'
+          - type: 'null'
+        document_rendering:
+          $ref: '#/components/schemas/DocumentRenderingSettings-Output'
+          description: Settings for rendering documents in PDF format.
+        generate_paid_invoice_pdf:
+          type: boolean
+          description: 'This setting affects how PDF is generated for paid accounts receivable invoices. If set to `true`, once an invoice is fully paid its PDF version is updated to display the amount paid and the payment-related features are removed.
+
+
+            The PDF file gets regenerated at the moment when an invoice becomes paid. It is not issued as a separate document, and the original PDF invoice is no longer available.
+
+
+            This field is deprecated and will be replaced by `document_rendering.invoice.generate_paid_invoice_pdf`.'
+          default: false
+        language:
+          anyOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          - type: 'null'
+        mail:
+          anyOf:
+          - $ref: '#/components/schemas/EntityMailSettings'
+          - type: 'null'
+          description: Email settings for the entity
+        payables_ocr_auto_tagging:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/OcrAutoTaggingSettingsRequest'
+            type: array
+          - type: 'null'
+          description: Auto tagging settings for all incoming OCR payable documents.
+        payables_skip_approval_flow:
+          type: boolean
+          description: If enabled, the approval policy will be skipped and the payable will be moved to `waiting_to_be_paid` status.
+          default: false
+        payment_priority:
+          anyOf:
+          - $ref: '#/components/schemas/PaymentPriorityEnum'
+          - type: 'null'
+          description: Payment preferences for entity to automate calculating suggested payment date based on payment terms and entity preferences.
+          default: working_capital
+        quote_signature_required:
+          type: boolean
+          description: Sets the default behavior of whether a signature is required to accept quotes.
+          default: false
+        receivable_edit_flow:
+          anyOf:
+          - $ref: '#/components/schemas/ReceivableEditFlow'
+          - type: 'null'
+          default: compliant
+        reminder:
+          anyOf:
+          - $ref: '#/components/schemas/RemindersSettings'
+          - type: 'null'
+        vat_inclusive_discount_mode:
+          $ref: '#/components/schemas/VatModeEnum'
+          description: Defines whether the amount discounts (for percentage discounts it does not matter) on VAT inclusive invoices will be applied on amounts including VAT or excluding VAT.
+          default: exclusive
+        vat_mode:
+          anyOf:
+          - $ref: '#/components/schemas/VatModeEnum'
+          - type: 'null'
+          description: Defines whether the prices of products in receivables will already include VAT or not.
+          default: exclusive
+      type: object
+    IndividualSchema_2:
+      properties:
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+        first_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: A first name of an individual
+        id_number:
           anyOf:
           - type: string
             maxLength: 100
             minLength: 1
           - type: 'null'
-          description: A city (a full name) where the entity is registered
-        line1:
+        last_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: A last name of an individual
+        ssn_last_4:
           anyOf:
           - type: string
-            maxLength: 200
-            minLength: 1
+            maxLength: 4
+            minLength: 4
           - type: 'null'
-          description: A street where the entity is registered
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: An alternative street used by the entity
-        postal_code:
+          description: The last four digits of the individual's Social Security number
+        title:
           anyOf:
           - type: string
             maxLength: 10
             minLength: 1
           - type: 'null'
+          description: A title of an individual
+      additionalProperties: false
+      type: object
+      required:
+      - first_name
+      - last_name
+      description: A schema contains metadata for an individual
+    EntityAddressResponseSchema:
+      properties:
+        city:
+          type: string
+          maxLength: 255
+          description: A city (a full name) where the entity is registered
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+          description: 'A country name (as ISO code) where the entity is registered '
+          examples:
+          - DE
+        line1:
+          type: string
+          maxLength: 255
+          description: A street where the entity is registered
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+          - type: 'null'
+          description: An alternative street used by the entity
+        postal_code:
+          type: string
+          maxLength: 10
           description: A postal code of the address where the entity is registered
         state:
           anyOf:
           - type: string
-            maxLength: 100
-            minLength: 1
           - type: 'null'
           description: A state in a country where the entity is registered
       additionalProperties: false
       type: object
-    CreateEntityRequest_3:
-      properties:
-        address:
-          $ref: '#/components/schemas/EntityAddressSchema_3'
-          description: An address description of the entity
-        email:
-          type: string
-          format: email
-          description: An official email address of the entity
-        individual:
-          anyOf:
-          - $ref: '#/components/schemas/IndividualSchema_3'
-          - type: 'null'
-          description: A set of meta data describing the individual
-        organization:
-          anyOf:
-          - $ref: '#/components/schemas/OrganizationSchema_3'
-          - type: 'null'
-          description: A set of meta data describing the organization
-        phone:
-          anyOf:
-          - type: string
-            maxLength: 100
-          - type: 'null'
-          description: The contact phone number of the entity. Required for US organizations to use payments.
-        registration_authority:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The name of the local district court (_Amtsgericht_) where the entity is registered. Required if `registration_number` is provided.
-          examples:
-          - Amtsgericht Charlottenburg
-        registration_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
-          examples:
-          - HRB 202324
-        tax_id:
-          anyOf:
-          - type: string
-            maxLength: 30
-            minLength: 1
-          - type: 'null'
-          description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
-        type:
-          $ref: '#/components/schemas/EntityTypeEnum'
-          description: A type for an entity
-        website:
-          anyOf:
-          - type: string
-            maxLength: 2083
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: A website of the entity
-      additionalProperties: false
-      type: object
       required:
-      - address
-      - email
-      - type
-      description: A schema for a request to create an entity of different types
-    OptionalOrganizationSchema_3:
-      properties:
-        business_structure:
-          anyOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          - type: 'null'
-          description: Business structure of the company
-        directors_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        executives_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        legal_entity_id:
-          anyOf:
-          - type: string
-            maxLength: 20
-            minLength: 1
-          - type: 'null'
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          anyOf:
-          - type: string
-            maxLength: 255
-            minLength: 1
-          - type: 'null'
-          description: A legal name of an organization
-        owners_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        representative_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-      additionalProperties: false
-      type: object
-      description: A schema contains metadata for updating an organization
-    OptionalIndividualSchema_3:
+      - city
+      - country
+      - line1
+      - postal_code
+      description: A schema represents address info of the entity
+    OptionalIndividualSchema_2:
       properties:
         date_of_birth:
           anyOf:
@@ -4528,50 +3960,47 @@ components:
       additionalProperties: false
       type: object
       description: A schema for metadata for updating an individual
-    IndividualSchema_3:
+    OptionalOrganizationSchema_2:
       properties:
-        date_of_birth:
+        business_structure:
           anyOf:
-          - type: string
-            format: date
+          - $ref: '#/components/schemas/EntityBusinessStructure'
           - type: 'null'
-        first_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: A first name of an individual
-        id_number:
+          description: Business structure of the company
+        directors_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        executives_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        legal_entity_id:
           anyOf:
           - type: string
-            maxLength: 100
+            maxLength: 20
             minLength: 1
           - type: 'null'
-        last_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: A last name of an individual
-        ssn_last_4:
+          description: A code which identifies uniquely a party of a transaction worldwide
+        legal_name:
           anyOf:
           - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the individual's Social Security number
-        title:
-          anyOf:
-          - type: string
-            maxLength: 10
+            maxLength: 255
             minLength: 1
           - type: 'null'
-          description: A title of an individual
+          description: A legal name of an organization
+        owners_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+        representative_provided:
+          anyOf:
+          - type: boolean
+          - type: 'null'
       additionalProperties: false
       type: object
-      required:
-      - first_name
-      - last_name
-      description: A schema contains metadata for an individual
-    EntityOrganizationResponse_3:
+      description: A schema contains metadata for updating an organization
+    EntityOrganizationResponse_2:
       properties:
         id:
           type: string
@@ -4655,11 +4084,11 @@ components:
       - organization
       - status
       - type
-    UpdateEntityRequest_3:
+    UpdateEntityRequest_2:
       properties:
         address:
           anyOf:
-          - $ref: '#/components/schemas/UpdateEntityAddressSchema_3'
+          - $ref: '#/components/schemas/UpdateEntityAddressSchema_2'
           - type: 'null'
           description: An address description of the entity
         email:
@@ -4670,12 +4099,12 @@ components:
           description: An official email address of the entity
         individual:
           anyOf:
-          - $ref: '#/components/schemas/OptionalIndividualSchema_3'
+          - $ref: '#/components/schemas/OptionalIndividualSchema_2'
           - type: 'null'
           description: A set of meta data describing the individual
         organization:
           anyOf:
-          - $ref: '#/components/schemas/OptionalOrganizationSchema_3'
+          - $ref: '#/components/schemas/OptionalOrganizationSchema_2'
           - type: 'null'
           description: A set of meta data describing the organization
         phone:
@@ -4720,46 +4149,7 @@ components:
       additionalProperties: false
       type: object
       description: A schema for a request to update an entity
-    OrganizationSchema_3:
-      properties:
-        business_structure:
-          anyOf:
-          - $ref: '#/components/schemas/EntityBusinessStructure'
-          - type: 'null'
-          description: Business structure of the company
-        directors_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        executives_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        legal_entity_id:
-          anyOf:
-          - type: string
-            maxLength: 20
-            minLength: 1
-          - type: 'null'
-          description: A code which identifies uniquely a party of a transaction worldwide
-        legal_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: The legal name of the organization. If this organization will use Monite payment rails, this name must be up to 100 characters long, otherwise it can be up to 255 characters long.
-        owners_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-        representative_provided:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-      type: object
-      required:
-      - legal_name
-      description: A schema contains metadata for an organization
-    EntityAddressSchema_3:
+    EntityAddressSchema_2:
       properties:
         city:
           type: string
@@ -4803,42 +4193,31 @@ components:
       - line1
       - postal_code
       description: A schema represents address info of the entity
-    EntityIndividualResponse_3:
+    CreateEntityRequest_2:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID entity ID
-        created_at:
-          type: string
-          format: date-time
-          description: UTC datetime
-        updated_at:
-          type: string
-          format: date-time
-          description: UTC datetime
         address:
-          $ref: '#/components/schemas/EntityAddressResponseSchema'
+          $ref: '#/components/schemas/EntityAddressSchema_2'
           description: An address description of the entity
         email:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          format: email
           description: An official email address of the entity
         individual:
-          $ref: '#/components/schemas/IndividualResponseSchema_3'
-          description: A set of metadata describing an individual
-        logo:
           anyOf:
-          - $ref: '#/components/schemas/FileSchema2'
+          - $ref: '#/components/schemas/IndividualSchema_2'
           - type: 'null'
-          description: A logo image of the entity
+          description: A set of meta data describing the individual
+        organization:
+          anyOf:
+          - $ref: '#/components/schemas/OrganizationSchema_2'
+          - type: 'null'
+          description: A set of meta data describing the organization
         phone:
           anyOf:
           - type: string
             maxLength: 100
           - type: 'null'
-          description: A phone number of the entity
+          description: The contact phone number of the entity. Required for US organizations to use payments.
         registration_authority:
           anyOf:
           - type: string
@@ -4857,19 +4236,16 @@ components:
           description: (Germany only) The entity's commercial register number (_Handelsregisternummer_) in the German Commercial Register, if available.
           examples:
           - HRB 202324
-        status:
-          $ref: '#/components/schemas/EntityStatusEnum'
-          description: record status, 'active' by default
         tax_id:
           anyOf:
           - type: string
             maxLength: 30
+            minLength: 1
           - type: 'null'
           description: The entity's taxpayer identification number or tax ID. This field is required for entities that are non-VAT registered.
         type:
-          type: string
-          const: individual
-          description: A type for an individual
+          $ref: '#/components/schemas/EntityTypeEnum'
+          description: A type for an entity
         website:
           anyOf:
           - type: string
@@ -4878,15 +4254,52 @@ components:
             format: uri
           - type: 'null'
           description: A website of the entity
+      additionalProperties: false
       type: object
       required:
-      - id
-      - created_at
-      - updated_at
       - address
-      - individual
-      - status
+      - email
       - type
+      description: A schema for a request to create an entity of different types
+    UpdateEntityAddressSchema_2:
+      properties:
+        city:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: A city (a full name) where the entity is registered
+        line1:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          description: A street where the entity is registered
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: An alternative street used by the entity
+        postal_code:
+          anyOf:
+          - type: string
+            maxLength: 10
+            minLength: 1
+          - type: 'null'
+          description: A postal code of the address where the entity is registered
+        state:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: A state in a country where the entity is registered
+      additionalProperties: false
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -4894,4 +4307,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

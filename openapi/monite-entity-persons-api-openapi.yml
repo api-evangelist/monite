@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entity persons across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entity persons across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -355,6 +355,59 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    OptionalPersonRelationship:
+      properties:
+        director:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is a director of the account's legal entity
+        executive:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+        owner:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is an owner of the account's legal entity
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is authorized as the primary representative of the account
+        title:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's title (e.g., CEO, Support Engineer)
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     OptionalPersonRequest:
       properties:
         address:
@@ -406,70 +459,16 @@ components:
           description: The last four digits of the person's Social Security number
       additionalProperties: false
       type: object
-    PersonRequest:
-      properties:
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/PersonAddress'
-          - type: 'null'
-          description: The person's address
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          description: The person's date of birth
-        email:
-          type: string
-          format: email
-          description: The person's email address
-        first_name:
-          type: string
-          description: The person's first name
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's ID number, as appropriate for their country
-        last_name:
-          type: string
-          description: The person's last name
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's phone number
-        relationship:
-          $ref: '#/components/schemas/PersonRelationship'
-          description: Describes the person's relationship to the entity
-        ssn_last_4:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last four digits of the person's Social Security number
-      additionalProperties: false
-      type: object
-      required:
-      - email
-      - first_name
-      - last_name
-      - relationship
-    OptionalPersonAddress:
+    PersonAddress:
       properties:
         city:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           description: City, district, suburb, town, or village
         country:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           description: Two-letter country code (ISO 3166-1 alpha-2)
         line1:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           description: Address line 1 (e.g., street, PO Box, or company name)
         line2:
           anyOf:
@@ -477,9 +476,7 @@ components:
           - type: 'null'
           description: Address line 2 (e.g., apartment, suite, unit, or building)
         postal_code:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           description: ZIP or postal code
         state:
           anyOf:
@@ -488,45 +485,11 @@ components:
           description: State, county, province, or region
       additionalProperties: false
       type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    PersonRelationship:
-      properties:
-        director:
-          type: boolean
-          description: Whether the person is a director of the account's legal entity
-          default: false
-        executive:
-          type: boolean
-          description: Whether the person has significant responsibility to control, manage, or direct the organization
-          default: false
-        owner:
-          type: boolean
-          description: Whether the person is an owner of the account's legal entity
-          default: false
-        percent_ownership:
-          anyOf:
-          - type: number
-            maximum: 100.0
-            minimum: 0.0
-          - type: 'null'
-          description: The percent owned by the person of the account's legal entity
-        representative:
-          type: boolean
-          description: Whether the person is authorized as the primary representative of the account
-          default: false
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's title (e.g., CEO, Support Engineer)
-      additionalProperties: false
-      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
     PersonResponse:
       properties:
         id:
@@ -594,40 +557,31 @@ components:
       - first_name
       - last_name
       - relationship
-    ValidationError:
+    PersonsResponse:
       properties:
-        loc:
+        data:
           items:
-            anyOf:
-            - type: string
-            - type: integer
+            $ref: '#/components/schemas/PersonResponse'
           type: array
-        msg:
-          type: string
-        type:
-          type: string
+          description: array of objects of type person
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
-    OptionalPersonRelationship:
+      - data
+    PersonRelationship:
       properties:
         director:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is a director of the account's legal entity
+          default: false
         executive:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
         owner:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is an owner of the account's legal entity
+          default: false
         percent_ownership:
           anyOf:
           - type: number
@@ -636,10 +590,9 @@ components:
           - type: 'null'
           description: The percent owned by the person of the account's legal entity
         representative:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is authorized as the primary representative of the account
+          default: false
         title:
           anyOf:
           - type: string
@@ -654,48 +607,6 @@ components:
       type: object
       required:
       - error
-    PersonsResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PersonResponse'
-          type: array
-          description: array of objects of type person
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    PersonAddress:
-      properties:
-        city:
-          type: string
-          description: City, district, suburb, town, or village
-        country:
-          type: string
-          description: Two-letter country code (ISO 3166-1 alpha-2)
-        line1:
-          type: string
-          description: Address line 1 (e.g., street, PO Box, or company name)
-        line2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Address line 2 (e.g., apartment, suite, unit, or building)
-        postal_code:
-          type: string
-          description: ZIP or postal code
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: State, county, province, or region
-      additionalProperties: false
-      type: object
-      required:
-      - city
-      - country
-      - line1
-      - postal_code
     ErrorSchema:
       properties:
         message:
@@ -703,20 +614,54 @@ components:
       type: object
       required:
       - message
-    OptionalPersonRequest_2:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    OptionalPersonAddress:
+      properties:
+        city:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: City, district, suburb, town, or village
+        country:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+        line1:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+    PersonRequest:
       properties:
         address:
           anyOf:
-          - $ref: '#/components/schemas/OptionalPersonAddressRequest'
+          - $ref: '#/components/schemas/PersonAddress'
           - type: 'null'
           description: The person's address
-        citizenship:
-          anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          - type: 'null'
-          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
-          examples:
-          - DE
         date_of_birth:
           anyOf:
           - type: string
@@ -724,31 +669,19 @@ components:
           - type: 'null'
           description: The person's date of birth
         email:
-          anyOf:
-          - type: string
-            format: email
-          - type: 'null'
+          type: string
+          format: email
           description: The person's email address
         first_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
+          type: string
           description: The person's first name
         id_number:
           anyOf:
           - type: string
-            maxLength: 100
-            minLength: 1
           - type: 'null'
           description: The person's ID number, as appropriate for their country
         last_name:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
+          type: string
           description: The person's last name
         phone:
           anyOf:
@@ -756,97 +689,20 @@ components:
           - type: 'null'
           description: The person's phone number
         relationship:
-          anyOf:
-          - $ref: '#/components/schemas/OptionalPersonRelationship_2'
-          - type: 'null'
+          $ref: '#/components/schemas/PersonRelationship'
           description: Describes the person's relationship to the entity
         ssn_last_4:
           anyOf:
           - type: string
-            maxLength: 4
-            minLength: 4
           - type: 'null'
           description: The last four digits of the person's Social Security number
       additionalProperties: false
       type: object
-    PersonRelationshipResponse:
-      properties:
-        director:
-          type: boolean
-          description: Whether the person is a director of the account's legal entity
-          default: false
-        executive:
-          type: boolean
-          description: Whether the person has significant responsibility to control, manage, or direct the organization
-          default: false
-        owner:
-          type: boolean
-          description: Whether the person is an owner of the account's legal entity
-          default: false
-        percent_ownership:
-          anyOf:
-          - type: number
-            maximum: 100.0
-            minimum: 0.0
-          - type: 'null'
-          description: The percent owned by the person of the account's legal entity
-        representative:
-          type: boolean
-          description: Whether the person is authorized as the primary representative of the account
-          default: false
-        title:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's title (e.g., CEO, Support Engineer)
-      additionalProperties: false
-      type: object
-    OptionalPersonAddressRequest:
-      properties:
-        city:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: City, district, suburb, town, or village
-        country:
-          anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          - type: 'null'
-          description: Two-letter country code (ISO 3166-1 alpha-2)
-          examples:
-          - DE
-        line1:
-          anyOf:
-          - type: string
-            maxLength: 200
-            minLength: 1
-          - type: 'null'
-          description: Address line 1 (e.g., street, PO Box, or company name)
-        line2:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: Address line 2 (e.g., apartment, suite, unit, or building)
-        postal_code:
-          anyOf:
-          - type: string
-            maxLength: 10
-            minLength: 1
-          - type: 'null'
-          description: ZIP or postal code
-        state:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: State, county, province, or region
-      additionalProperties: false
-      type: object
+      required:
+      - email
+      - first_name
+      - last_name
+      - relationship
     PersonAddressRequest:
       properties:
         city:
@@ -890,150 +746,44 @@ components:
       - country
       - line1
       - postal_code
-    PersonRequest_2:
+    OptionalPersonRelationship_2:
       properties:
-        address:
+        director:
           anyOf:
-          - $ref: '#/components/schemas/PersonAddressRequest'
+          - type: boolean
           - type: 'null'
-          description: The person's address
-        citizenship:
+          description: Whether the person is a director of the account's legal entity
+        executive:
           anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
+          - type: boolean
           - type: 'null'
-          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
-          examples:
-          - DE
-        date_of_birth:
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+        owner:
           anyOf:
-          - type: string
-            format: date
+          - type: boolean
           - type: 'null'
-          description: The person's date of birth
-        email:
-          type: string
-          format: email
-          description: The person's email address
-        first_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: The person's first name
-        id_number:
+          description: Whether the person is an owner of the account's legal entity
+        percent_ownership:
+          anyOf:
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
+          - type: 'null'
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          anyOf:
+          - type: boolean
+          - type: 'null'
+          description: Whether the person is authorized as the primary representative of the account
+        title:
           anyOf:
           - type: string
             maxLength: 100
             minLength: 1
           - type: 'null'
-          description: The person's ID number, as appropriate for their country
-        last_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: The person's last name
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's phone number
-        relationship:
-          $ref: '#/components/schemas/PersonRelationshipRequest'
-          description: Describes the person's relationship to the entity
-        ssn_last_4:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the person's Social Security number
+          description: The person's title (e.g., CEO, Support Engineer)
       additionalProperties: false
       type: object
-      required:
-      - email
-      - first_name
-      - last_name
-      - relationship
-    PersonResponse_2:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: The person's unique identifier
-        created_at:
-          type: string
-          format: date-time
-          description: Time at which the person was created
-        updated_at:
-          type: string
-          format: date-time
-          description: Time at which the person was updated
-        address:
-          anyOf:
-          - $ref: '#/components/schemas/PersonAddressResponse'
-          - type: 'null'
-          description: The person's address
-        citizenship:
-          anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          - type: 'null'
-          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
-          examples:
-          - DE
-        created_by_entity_user_id:
-          anyOf:
-          - type: string
-            format: uuid
-          - type: 'null'
-          description: ID of the entity user who created this person, or null if the person was created using a partner access token.
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          description: The person's date of birth
-        email:
-          type: string
-          format: email
-          description: The person's email address
-        entity_id:
-          type: string
-          format: uuid
-          description: Entity ID
-        first_name:
-          type: string
-          description: The person's first name
-        id_number:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's ID number, as appropriate for their country
-        last_name:
-          type: string
-          description: The person's last name
-        phone:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The person's phone number
-        relationship:
-          $ref: '#/components/schemas/PersonRelationshipResponse'
-          description: Describes the person's relationship to the entity
-        ssn_last_4:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last four digits of the person's Social Security number
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - created_by_entity_user_id
-      - email
-      - entity_id
-      - first_name
-      - last_name
-      - relationship
     AllowedCountries:
       type: string
       enum:
@@ -1289,110 +1039,7 @@ components:
       - CW
       - MF
       - SX
-    OptionalPersonRelationship_2:
-      properties:
-        director:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Whether the person is a director of the account's legal entity
-        executive:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Whether the person has significant responsibility to control, manage, or direct the organization
-        owner:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Whether the person is an owner of the account's legal entity
-        percent_ownership:
-          anyOf:
-          - type: number
-            maximum: 100.0
-            minimum: 0.0
-          - type: 'null'
-          description: The percent owned by the person of the account's legal entity
-        representative:
-          anyOf:
-          - type: boolean
-          - type: 'null'
-          description: Whether the person is authorized as the primary representative of the account
-        title:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: The person's title (e.g., CEO, Support Engineer)
-      additionalProperties: false
-      type: object
-    PersonAddressResponse:
-      properties:
-        city:
-          type: string
-          description: City, district, suburb, town, or village
-        country:
-          type: string
-          description: Two-letter country code (ISO 3166-1 alpha-2)
-        line1:
-          type: string
-          description: Address line 1 (e.g., street, PO Box, or company name)
-        line2:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Address line 2 (e.g., apartment, suite, unit, or building)
-        postal_code:
-          type: string
-          description: ZIP or postal code
-        state:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: State, county, province, or region
-      additionalProperties: false
-      type: object
-      required:
-      - city
-      - country
-      - line1
-      - postal_code
-    PersonRelationshipRequest:
-      properties:
-        director:
-          type: boolean
-          description: Whether the person is a director of the account's legal entity
-          default: false
-        executive:
-          type: boolean
-          description: Whether the person has significant responsibility to control, manage, or direct the organization
-          default: false
-        owner:
-          type: boolean
-          description: Whether the person is an owner of the account's legal entity
-          default: false
-        percent_ownership:
-          anyOf:
-          - type: number
-            maximum: 100.0
-            minimum: 0.0
-          - type: 'null'
-          description: The percent owned by the person of the account's legal entity
-        representative:
-          type: boolean
-          description: Whether the person is authorized as the primary representative of the account
-          default: false
-        title:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: The person's title (e.g., CEO, Support Engineer)
-      additionalProperties: false
-      type: object
-    OptionalPersonRequest_3:
+    OptionalPersonRequest_2:
       properties:
         address:
           anyOf:
@@ -1446,7 +1093,7 @@ components:
           description: The person's phone number
         relationship:
           anyOf:
-          - $ref: '#/components/schemas/OptionalPersonRelationship_3'
+          - $ref: '#/components/schemas/OptionalPersonRelationship_2'
           - type: 'null'
           description: Describes the person's relationship to the entity
         ssn_last_4:
@@ -1458,70 +1105,39 @@ components:
           description: The last four digits of the person's Social Security number
       additionalProperties: false
       type: object
-    PersonRequest_3:
+    PersonRelationshipResponse:
       properties:
-        address:
+        director:
+          type: boolean
+          description: Whether the person is a director of the account's legal entity
+          default: false
+        executive:
+          type: boolean
+          description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
+        owner:
+          type: boolean
+          description: Whether the person is an owner of the account's legal entity
+          default: false
+        percent_ownership:
           anyOf:
-          - $ref: '#/components/schemas/PersonAddressRequest'
+          - type: number
+            maximum: 100.0
+            minimum: 0.0
           - type: 'null'
-          description: The person's address
-        citizenship:
-          anyOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          - type: 'null'
-          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
-          examples:
-          - DE
-        date_of_birth:
-          anyOf:
-          - type: string
-            format: date
-          - type: 'null'
-          description: The person's date of birth
-        email:
-          type: string
-          format: email
-          description: The person's email address
-        first_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: The person's first name
-        id_number:
-          anyOf:
-          - type: string
-            maxLength: 100
-            minLength: 1
-          - type: 'null'
-          description: The person's ID number, as appropriate for their country
-        last_name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: The person's last name
-        phone:
+          description: The percent owned by the person of the account's legal entity
+        representative:
+          type: boolean
+          description: Whether the person is authorized as the primary representative of the account
+          default: false
+        title:
           anyOf:
           - type: string
           - type: 'null'
-          description: The person's phone number
-        relationship:
-          $ref: '#/components/schemas/PersonRelationshipRequest'
-          description: Describes the person's relationship to the entity
-        ssn_last_4:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The last four digits of the person's Social Security number
+          description: The person's title (e.g., CEO, Support Engineer)
       additionalProperties: false
       type: object
-      required:
-      - email
-      - first_name
-      - last_name
-      - relationship
-    PersonResponse_3:
+    PersonResponse_2:
       properties:
         id:
           type: string
@@ -1602,23 +1218,66 @@ components:
       - first_name
       - last_name
       - relationship
-    OptionalPersonRelationship_3:
+    OptionalPersonAddressRequest:
+      properties:
+        city:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: City, district, suburb, town, or village
+        country:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+          examples:
+          - DE
+        line1:
+          anyOf:
+          - type: string
+            maxLength: 200
+            minLength: 1
+          - type: 'null'
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          anyOf:
+          - type: string
+            maxLength: 10
+            minLength: 1
+          - type: 'null'
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+    PersonRelationshipRequest:
       properties:
         director:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is a director of the account's legal entity
+          default: false
         executive:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person has significant responsibility to control, manage, or direct the organization
+          default: false
         owner:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is an owner of the account's legal entity
+          default: false
         percent_ownership:
           anyOf:
           - type: number
@@ -1627,10 +1286,9 @@ components:
           - type: 'null'
           description: The percent owned by the person of the account's legal entity
         representative:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          type: boolean
           description: Whether the person is authorized as the primary representative of the account
+          default: false
         title:
           anyOf:
           - type: string
@@ -1640,6 +1298,100 @@ components:
           description: The person's title (e.g., CEO, Support Engineer)
       additionalProperties: false
       type: object
+    PersonAddressResponse:
+      properties:
+        city:
+          type: string
+          description: City, district, suburb, town, or village
+        country:
+          type: string
+          description: Two-letter country code (ISO 3166-1 alpha-2)
+        line1:
+          type: string
+          description: Address line 1 (e.g., street, PO Box, or company name)
+        line2:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Address line 2 (e.g., apartment, suite, unit, or building)
+        postal_code:
+          type: string
+          description: ZIP or postal code
+        state:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: State, county, province, or region
+      additionalProperties: false
+      type: object
+      required:
+      - city
+      - country
+      - line1
+      - postal_code
+    PersonRequest_2:
+      properties:
+        address:
+          anyOf:
+          - $ref: '#/components/schemas/PersonAddressRequest'
+          - type: 'null'
+          description: The person's address
+        citizenship:
+          anyOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          - type: 'null'
+          description: Required for persons of US entities. The country of the person's citizenship, as a two-letter country code (ISO 3166-1 alpha-2). In case of dual or multiple citizenship, specify any.
+          examples:
+          - DE
+        date_of_birth:
+          anyOf:
+          - type: string
+            format: date
+          - type: 'null'
+          description: The person's date of birth
+        email:
+          type: string
+          format: email
+          description: The person's email address
+        first_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's first name
+        id_number:
+          anyOf:
+          - type: string
+            maxLength: 100
+            minLength: 1
+          - type: 'null'
+          description: The person's ID number, as appropriate for their country
+        last_name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: The person's last name
+        phone:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The person's phone number
+        relationship:
+          $ref: '#/components/schemas/PersonRelationshipRequest'
+          description: Describes the person's relationship to the entity
+        ssn_last_4:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The last four digits of the person's Social Security number
+      additionalProperties: false
+      type: object
+      required:
+      - email
+      - first_name
+      - last_name
+      - relationship
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1647,4 +1399,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

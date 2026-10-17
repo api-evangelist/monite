@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Counterpart addresses across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Counterpart addresses across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -530,113 +530,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CounterpartAddressResponseWithCounterpartID:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique ID of the address in the system
-        city:
-          type: string
-          maxLength: 255
-          description: City name.
-          example: Berlin
-        counterpart_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart that owns the address.
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        is_default:
-          type: boolean
-          description: True if address is the default address of the counterpart.
-        line1:
-          type: string
-          maxLength: 255
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
-          type: string
-          maxLength: 255
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          maxLength: 255
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          maxLength: 255
-          description: State, region, province, or county.
-      type: object
-      required:
-      - id
-      - city
-      - counterpart_id
-      - country
-      - is_default
-      - line1
-      - postal_code
-      description: Address information.
-    CounterpartUpdateAddress:
-      properties:
-        city:
-          type: string
-          maxLength: 255
-          description: City name.
-          example: Berlin
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        line1:
-          type: string
-          maxLength: 255
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
-          type: string
-          maxLength: 255
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          maxLength: 255
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          maxLength: 255
-          description: State, region, province, or county.
-      additionalProperties: false
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -892,6 +785,84 @@ components:
       - CW
       - MF
       - SX
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    CounterpartAddressResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CounterpartAddressResponseWithCounterpartID'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    CounterpartAddressResponseWithCounterpartID:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the address in the system
+        city:
+          type: string
+          maxLength: 255
+          description: City name.
+          example: Berlin
+        counterpart_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart that owns the address.
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        is_default:
+          type: boolean
+          description: True if address is the default address of the counterpart.
+        line1:
+          type: string
+          maxLength: 255
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          maxLength: 255
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          maxLength: 255
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          maxLength: 255
+          description: State, region, province, or county.
+      type: object
+      required:
+      - id
+      - city
+      - counterpart_id
+      - country
+      - is_default
+      - line1
+      - postal_code
+      description: Address information.
     CounterpartAddress:
       properties:
         city:
@@ -930,16 +901,6 @@ components:
       - line1
       - postal_code
       description: Address information.
-    CounterpartAddressResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CounterpartAddressResponseWithCounterpartID'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - data
     ErrorSchemaResponse:
       properties:
         error:
@@ -954,21 +915,20 @@ components:
       type: object
       required:
       - message
-    CounterpartAddressResponseWithCounterpartID_2:
+    HTTPValidationError:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique ID of the address in the system
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CounterpartUpdateAddress:
+      properties:
         city:
           type: string
           maxLength: 255
           description: City name.
           example: Berlin
-        counterpart_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart that owns the address.
         country:
           allOf:
           - $ref: '#/components/schemas/AllowedCountries'
@@ -992,16 +952,9 @@ components:
           type: string
           maxLength: 255
           description: State, region, province, or county.
+      additionalProperties: false
       type: object
-      required:
-      - id
-      - city
-      - counterpart_id
-      - country
-      - line1
-      - postal_code
-      description: Address information.
-    CounterpartAddressResponseWithCounterpartID_3:
+    CounterpartAddressResponseWithCounterpartID_2:
       properties:
         id:
           type: string
@@ -1055,4 +1008,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

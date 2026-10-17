@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Counterpart VAT IDs across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Counterpart VAT IDs across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -439,26 +439,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CounterpartUpdateVatID:
-      properties:
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        type:
-          allOf:
-          - $ref: '#/components/schemas/VatIDTypeEnum'
-          example: eu_vat
-        value:
-          type: string
-          maxLength: 32
-      additionalProperties: false
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     ValidationError:
       properties:
         loc:
@@ -731,31 +711,19 @@ components:
       - CW
       - MF
       - SX
-    CounterpartVatIDResponse:
+    CounterpartUpdateVatID:
       properties:
-        id:
-          type: string
-          format: uuid
-        counterpart_id:
-          type: string
-          format: uuid
         country:
           $ref: '#/components/schemas/AllowedCountries'
         type:
           allOf:
           - $ref: '#/components/schemas/VatIDTypeEnum'
-          default: unknown
           example: eu_vat
         value:
           type: string
           maxLength: 32
-          example: '123456789'
       additionalProperties: false
       type: object
-      required:
-      - id
-      - counterpart_id
-      - value
     VatIDTypeEnum:
       type: string
       enum:
@@ -823,6 +791,31 @@ components:
       type: object
       required:
       - value
+    CounterpartVatIDResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        counterpart_id:
+          type: string
+          format: uuid
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        type:
+          allOf:
+          - $ref: '#/components/schemas/VatIDTypeEnum'
+          default: unknown
+          example: eu_vat
+        value:
+          type: string
+          maxLength: 32
+          example: '123456789'
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - counterpart_id
+      - value
     ErrorSchemaResponse:
       properties:
         error:
@@ -830,6 +823,13 @@ components:
       type: object
       required:
       - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     CounterpartVatIDResourceList:
       properties:
         data:
@@ -840,13 +840,13 @@ components:
       type: object
       required:
       - data
-    ErrorSchema:
+    HTTPValidationError:
       properties:
-        message:
-          type: string
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
       type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -854,4 +854,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

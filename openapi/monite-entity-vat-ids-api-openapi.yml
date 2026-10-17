@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entity VAT IDs across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entity VAT IDs across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -328,65 +328,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    EntityVatIDResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        entity_id:
-          type: string
-          format: uuid
-        type:
-          $ref: '#/components/schemas/VatIDTypeEnum'
-          default: unknown
-          examples:
-          - eu_vat
-        value:
-          type: string
-          maxLength: 32
-          examples:
-          - '123456789'
-      type: object
-      required:
-      - id
-      - country
-      - entity_id
-      - value
-    EntityVatIDResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/EntityVatIDResponse'
-          type: array
-      type: object
-      required:
-      - data
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -642,13 +583,23 @@ components:
       - CW
       - MF
       - SX
-    ErrorSchemaResponse:
+    ValidationError:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
       type: object
       required:
-      - error
+      - loc
+      - msg
+      - type
     VatIDTypeEnum:
       type: string
       enum:
@@ -699,25 +650,6 @@ components:
       - us_ein
       - za_vat
       - unknown
-    EntityVatID:
-      properties:
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        type:
-          $ref: '#/components/schemas/VatIDTypeEnum'
-          default: unknown
-          examples:
-          - eu_vat
-        value:
-          type: string
-          maxLength: 32
-          examples:
-          - '123456789'
-      additionalProperties: false
-      type: object
-      required:
-      - country
-      - value
     EntityUpdateVatID:
       properties:
         country:
@@ -737,6 +669,22 @@ components:
           - type: 'null'
       additionalProperties: false
       type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    EntityVatIDResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EntityVatIDResponse'
+          type: array
+      type: object
+      required:
+      - data
     ErrorSchema:
       properties:
         message:
@@ -744,6 +692,58 @@ components:
       type: object
       required:
       - message
+    EntityVatID:
+      properties:
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        type:
+          $ref: '#/components/schemas/VatIDTypeEnum'
+          default: unknown
+          examples:
+          - eu_vat
+        value:
+          type: string
+          maxLength: 32
+          examples:
+          - '123456789'
+      additionalProperties: false
+      type: object
+      required:
+      - country
+      - value
+    EntityVatIDResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        entity_id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/VatIDTypeEnum'
+          default: unknown
+          examples:
+          - eu_vat
+        value:
+          type: string
+          maxLength: 32
+          examples:
+          - '123456789'
+      type: object
+      required:
+      - id
+      - country
+      - entity_id
+      - value
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -751,4 +751,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

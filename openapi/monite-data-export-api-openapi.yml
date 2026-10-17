@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Data export across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Data export across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -413,6 +413,35 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     AllDocumentExportResponseSchema:
       properties:
         data:
@@ -430,29 +459,63 @@ components:
       type: object
       required:
       - data
-    SupportedFormatSchema:
+    ReceivablesStatusEnum:
+      type: string
+      enum:
+      - draft
+      - issuing
+      - issued
+      - failed
+      - accepted
+      - expired
+      - declined
+      - recurring
+      - partially_paid
+      - paid
+      - overdue
+      - uncollectible
+      - canceled
+      - deleted
+      description: 'This Enum the results of combining two types of statuses from
+
+        QuoteStateEnum, CreditNoteStateEnum and InvoiceStateEnum. You shouldn''t use
+
+        it in your scenarios if only for edge cases in workers, but ideally need to
+
+        remove this shared Enum.'
+    ExportReceivableSchema:
       properties:
-        available_types:
-          additionalProperties:
-            items:
-              $ref: '#/components/schemas/ExportFormat'
-            type: array
-          type: object
-        object_type:
+        name:
           type: string
           enum:
-          - payable
           - receivable
+        statuses:
+          items:
+            $ref: '#/components/schemas/ReceivablesStatusEnum'
+          type: array
       additionalProperties: false
       type: object
       required:
-      - available_types
-      - object_type
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
+      - name
+      - statuses
+    CreateExportTaskResponseSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+      type: object
+      required:
+      - id
+    ExportObjectSchema:
+      oneOf:
+      - $ref: '#/components/schemas/ExportPayableSchema'
+      - $ref: '#/components/schemas/ExportReceivableSchema'
+      additionalProperties: false
+      discriminator:
+        propertyName: name
+        mapping:
+          payable: '#/components/schemas/ExportPayableSchema'
+          receivable: '#/components/schemas/ExportReceivableSchema'
     ExportPayloadSchema:
       properties:
         date_from:
@@ -474,24 +537,74 @@ components:
       - date_to
       - format
       - objects
-    ExportObjectSchema:
-      oneOf:
-      - $ref: '#/components/schemas/ExportPayableSchema'
-      - $ref: '#/components/schemas/ExportReceivableSchema'
-      additionalProperties: false
-      discriminator:
-        propertyName: name
-        mapping:
-          payable: '#/components/schemas/ExportPayableSchema'
-          receivable: '#/components/schemas/ExportReceivableSchema'
-    CreateExportTaskResponseSchema:
+    SupportedFormatSchema:
       properties:
-        id:
+        available_types:
+          additionalProperties:
+            items:
+              $ref: '#/components/schemas/ExportFormat'
+            type: array
+          type: object
+        object_type:
           type: string
-          format: uuid
+          enum:
+          - payable
+          - receivable
+      additionalProperties: false
       type: object
       required:
-      - id
+      - available_types
+      - object_type
+    PayableStateEnum:
+      type: string
+      enum:
+      - draft
+      - new
+      - approve_in_progress
+      - waiting_to_be_paid
+      - partially_paid
+      - paid
+      - canceled
+      - rejected
+    ExportPayableSchema:
+      properties:
+        name:
+          type: string
+          enum:
+          - payable
+        statuses:
+          items:
+            $ref: '#/components/schemas/PayableStateEnum'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - statuses
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    DataExportCursorFields:
+      type: string
+      enum:
+      - created_at
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ExportFormat:
+      type: string
+      enum:
+      - csv
+      - pdf
+      - csv_xero
     DocumentExportResponseSchema:
       properties:
         id:
@@ -530,119 +643,6 @@ components:
       - format
       - language
       - status
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ExportFormat:
-      type: string
-      enum:
-      - csv
-      - pdf
-      - csv_xero
-    ExportPayableSchema:
-      properties:
-        name:
-          type: string
-          enum:
-          - payable
-        statuses:
-          items:
-            $ref: '#/components/schemas/PayableStateEnum'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - statuses
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    DataExportCursorFields:
-      type: string
-      enum:
-      - created_at
-    ExportReceivableSchema:
-      properties:
-        name:
-          type: string
-          enum:
-          - receivable
-        statuses:
-          items:
-            $ref: '#/components/schemas/ReceivablesStatusEnum'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - statuses
-    ReceivablesStatusEnum:
-      type: string
-      enum:
-      - draft
-      - issuing
-      - issued
-      - failed
-      - accepted
-      - expired
-      - declined
-      - recurring
-      - partially_paid
-      - paid
-      - overdue
-      - uncollectible
-      - canceled
-      - deleted
-      description: 'This Enum the results of combining two types of statuses from
-
-        QuoteStateEnum, CreditNoteStateEnum and InvoiceStateEnum. You shouldn''t use
-
-        it in your scenarios if only for edge cases in workers, but ideally need to
-
-        remove this shared Enum.'
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    PayableStateEnum:
-      type: string
-      enum:
-      - draft
-      - new
-      - approve_in_progress
-      - waiting_to_be_paid
-      - partially_paid
-      - paid
-      - canceled
-      - rejected
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -650,4 +650,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

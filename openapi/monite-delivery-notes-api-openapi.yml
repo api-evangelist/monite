@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Delivery notes across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Delivery notes across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -798,98 +798,201 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    TagCategory:
-      type: string
-      enum:
-      - document_type
-      - department
-      - project
-      - cost_center
-      - vendor_type
-      - payment_method
-      - approval_status
-    DeliveryNoteStatusEnum:
-      type: string
-      enum:
-      - created
-      - canceled
-      - delivered
-    CounterpartIndividualResponse:
-      properties:
-        email:
-          type: string
-          format: email
-          description: The person's email address.
-          example: asingh@example.net
-        first_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: The person's first name.
-          example: Adnan
-        is_customer:
-          type: boolean
-          description: Indicates if the counterpart is a customer.
-        is_vendor:
-          type: boolean
-          description: Indicates if the counterpart is a vendor.
-        last_name:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: The person's last name.
-          example: Singh
-        phone:
-          type: string
-          maxLength: 100
-          description: The person's phone number.
-          example: '5553211234'
-        tags:
-          items:
-            $ref: '#/components/schemas/CounterpartTagSchema'
-          type: array
-          description: The list of tags for this counterpart.
-        title:
-          type: string
-          maxLength: 100
-          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
-          example: Mr.
-      type: object
-      required:
-      - first_name
-      - is_customer
-      - is_vendor
-      - last_name
-      description: Represents counterparts that are individuals (natural persons).
-    DeliveryNoteCreateBasedOnRequest:
-      properties:
-        based_on:
-          type: string
-          format: uuid
-          description: The unique ID of a previous document related to the receivable if applicable.
-      additionalProperties: false
-      type: object
-      required:
-      - based_on
-    DeliveryNoteCreateLineItem:
+    DeliveryNoteLineItemResource:
       properties:
         product:
-          allOf:
-          - $ref: '#/components/schemas/DeliveryNoteLineItemProduct'
-          description: Object of product. Can be used instead of product_id, created in product's catalog
-        product_id:
-          type: string
-          format: uuid
-          description: Unique identifier of the product.
+          $ref: '#/components/schemas/DeliveryNoteLineItemProduct'
         quantity:
           type: number
           maximum: 2147483647.0
           minimum: 0.0
           description: The quantity of each of the goods, materials, or services listed in the receivable.
+      type: object
+      required:
+      - product
+      - quantity
+    DeliveryNoteResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the delivery note
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the delivery note was created. Timestamps follow the ISO 8601 standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the delivery note was last updated. Timestamps follow the ISO 8601 standard.
+        based_on:
+          type: string
+          format: uuid
+          description: The unique ID of a previous document related to the delivery note if applicable.
+        based_on_document_id:
+          type: string
+          description: The unique document ID of a previous document related to the delivery note if applicable.
+        counterpart:
+          allOf:
+          - $ref: '#/components/schemas/DeliveryNoteCounterpartResource'
+          description: Counterpart of the delivery note
+        counterpart_address:
+          allOf:
+          - $ref: '#/components/schemas/ReceivablesCounterpartAddress'
+          description: Address of the counterpart
+        counterpart_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user that created the delivery note
+        delivery_date:
+          type: string
+          format: date
+          description: Date of delivery
+        delivery_number:
+          type: string
+          description: Delivery number
+        display_signature_placeholder:
+          type: boolean
+          description: Whether to display a signature placeholder in the generated PDF
+        document_id:
+          type: string
+          description: Document ID of the delivery note
+        entity:
+          anyOf:
+          - $ref: '#/components/schemas/ReceivableEntityOrganization'
+          - $ref: '#/components/schemas/ReceivableEntityIndividual'
+          description: Entity that created the delivery note
+        entity_address:
+          allOf:
+          - $ref: '#/components/schemas/ReceivableEntityAddressSchema'
+          description: Address of the entity that created the delivery note
+        entity_id:
+          type: string
+          format: uuid
+          description: ID of the entity that created the delivery note
+        file_language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language of the customer-facing PDF file (`file_url`). The value matches the counterpart's `language` at the time when this PDF file was generated.
+        file_url:
+          type: string
+          description: The delivery note's PDF URL in the customer-facing language.
+        line_items:
+          items:
+            $ref: '#/components/schemas/DeliveryNoteLineItemResource'
+          type: array
+          minItems: 1
+          description: List of line items in the delivery note
+        memo:
+          type: string
+          description: Additional information regarding the delivery note
+        original_file_language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language of the entity's copy of the PDF file (`original_file_url`). The value matches the entity's `language` at the time when this PDF file was generated.
+        original_file_url:
+          type: string
+          description: The delivery note's PDF URL in the entity's language.
+        status:
+          allOf:
+          - $ref: '#/components/schemas/DeliveryNoteStatusEnum'
+          description: Status of the delivery note
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - counterpart
+      - counterpart_address
+      - counterpart_id
+      - display_signature_placeholder
+      - document_id
+      - entity
+      - entity_address
+      - entity_id
+      - file_language
+      - line_items
+      - original_file_language
+      - status
+      example:
+        id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+        status: created
+        created_at: '2022-01-01T00:00:00Z'
+        updated_at: '2022-01-01T00:00:00Z'
+        entity_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+        entity:
+          name: Entity Name
+        entity_address:
+          line1: Entity Street
+          city: Entity City
+          postal_code: '123009'
+          country: DE
+        created_by_entity_user_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+        counterpart_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+        counterpart:
+          name: Counterpart Name
+        counterpart_address:
+          line1: Counterpart Street
+          city: Counterpart City
+          postal_code: '123009'
+          country: DE
+        line_items:
+        - quantity: 20
+          product:
+            name: Product Name
+            description: Description of product
+            measure_unit:
+              name: pcs
+              description: Pieces
+        document_id: DN-2022-01-01-0001
+        delivery_date: '2022-01-01'
+        delivery_number: 102-2022-0987
+        memo: This is a memo
+        display_signature_placeholder: true
+        file_url: https://example.com/delivery_note.pdf
+        original_file_url: https://example.com/delivery_note_original.pdf
+        file_language: en
+        original_file_language: de
+        based_on: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
+        based_on_document_id: IN-2022-01-01-0001
+    DeliveryNoteCounterpartResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the counterpart
+        individual:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartIndividualResponse'
+          description: Individual counterpart
+        language:
+          allOf:
+          - $ref: '#/components/schemas/LanguageCodeEnum'
+          description: The language used to generate pdf documents for this counterpart.
+        organization:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartOrganizationResponse'
+          description: Organization counterpart
       additionalProperties: false
       type: object
       required:
-      - quantity
+      - id
+    UnitRequest:
+      properties:
+        description:
+          type: string
+          maxLength: 200
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+      type: object
+      required:
+      - name
     CounterpartOrganizationResponse:
       properties:
         email:
@@ -924,39 +1027,6 @@ components:
       - is_vendor
       - legal_name
       description: Represents counterparts that are organizations (juridical persons).
-    DeliveryNoteUpdateRequest:
-      properties:
-        counterpart_address_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart address selected for the delivery note
-        counterpart_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart
-        delivery_date:
-          type: string
-          format: date
-          description: Date of delivery
-        delivery_number:
-          type: string
-          description: Delivery number
-        display_signature_placeholder:
-          type: boolean
-          description: Whether to display a signature placeholder in the generated PDF
-        line_items:
-          items:
-            $ref: '#/components/schemas/DeliveryNoteCreateLineItem'
-          type: array
-          maxItems: 100
-          minItems: 1
-          description: List of line items in the delivery note
-        memo:
-          type: string
-          description: Additional information regarding the delivery note
-      additionalProperties: false
-      type: object
-      description: Delivery Note update request schema
     LanguageCodeEnum:
       type: string
       enum:
@@ -1140,53 +1210,60 @@ components:
       - yo
       - za
       - zu
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    DeliveryNoteCounterpartResource:
+    HTTPValidationError:
       properties:
-        id:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    ReceivableEntityIndividual:
+      properties:
+        email:
           type: string
-          format: uuid
-          description: ID of the counterpart
-        individual:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartIndividualResponse'
-          description: Individual counterpart
-        language:
-          allOf:
-          - $ref: '#/components/schemas/LanguageCodeEnum'
-          description: The language used to generate pdf documents for this counterpart.
-        organization:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartOrganizationResponse'
-          description: Organization counterpart
-      additionalProperties: false
+          format: email
+          description: An email of the entity
+        first_name:
+          type: string
+          description: The first name of the entity issuing the receivable
+        last_name:
+          type: string
+          description: The last name of the entity issuing the receivable
+        logo:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: A link to the entity logo
+        phone:
+          type: string
+          description: A phone number of the entity
+        registration_authority:
+          type: string
+          description: The registration authority of the entity
+        registration_number:
+          type: string
+          description: The registration number of the entity
+        tax_id:
+          type: string
+          description: The Tax ID of the entity issuing the receivable
+        type:
+          type: string
+          enum:
+          - individual
+          description: The entity type
+        website:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: A website of the entity
       type: object
       required:
-      - id
-    DeliveryNoteCursorFields:
-      type: string
-      enum:
-      - status
-      - document_id
-      - delivery_date
-      - created_at
-    DeliveryNoteLineItemResource:
-      properties:
-        product:
-          $ref: '#/components/schemas/DeliveryNoteLineItemProduct'
-        quantity:
-          type: number
-          maximum: 2147483647.0
-          minimum: 0.0
-          description: The quantity of each of the goods, materials, or services listed in the receivable.
-      type: object
-      required:
-      - product
-      - quantity
+      - first_name
+      - last_name
+      - type
+      description: A Response schema for an entity of individual type
     DeliveryNoteCreateRequest:
       properties:
         counterpart_address_id:
@@ -1249,121 +1326,101 @@ components:
         delivery_number: 102-2025-0987
         memo: This is a memo
         display_signature_placeholder: true
-    ReceivablesCounterpartAddress:
+    CounterpartTagSchema:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: A unique ID of this tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        created_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        updated_at:
+          type: string
+          format: date-time
+          description: Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
+          example: '2022-09-07T16:35:18.484507+00:00'
+        category:
+          allOf:
+          - $ref: '#/components/schemas/TagCategory'
+          description: The tag category.
+          example: department
+        created_by_entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the tag.
+          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
+        description:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The tag description.
+          example: Tag for the Marketing Department
+        name:
+          type: string
+          description: The tag name.
+          example: Marketing
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - name
+      description: Represents a user-defined tag that can be assigned to resources to filter them.
+    ReceivableEntityAddressSchema:
       properties:
         city:
           type: string
-          description: City name.
-          example: Berlin
+          maxLength: 255
+          description: A city (a full name) where the entity is registered
         country:
           allOf:
           - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          description: 'A country name (as ISO code) where the entity is registered '
+          default: DE
           example: DE
         line1:
           type: string
-          description: Street address.
-          example: Flughafenstrasse 52
+          maxLength: 255
+          description: A street where the entity is registered
         line2:
           type: string
-          description: Additional address information (if any).
+          maxLength: 100
+          description: An alternative street used by the entity
         postal_code:
           type: string
-          description: ZIP or postal code.
-          example: '10115'
+          maxLength: 10
+          description: A postal code of the address where the entity is registered
         state:
           type: string
-          description: State, region, province, or county.
-      type: object
-      required:
-      - city
-      - country
-      - line1
-      - postal_code
-      description: Address information.
-    DeliveryNoteLineItemProduct:
-      properties:
-        description:
-          type: string
-          maxLength: 2000
-          description: Description of the product.
-        measure_unit:
-          $ref: '#/components/schemas/UnitRequest'
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: Name of the product.
+          description: A state in a country where the entity is registered
       additionalProperties: false
       type: object
       required:
-      - name
-    ReceivableEntityIndividual:
+      - city
+      - line1
+      - postal_code
+      description: A schema represents address info of the entity
+    ValidationError:
       properties:
-        email:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
           type: string
-          format: email
-          description: An email of the entity
-        first_name:
-          type: string
-          description: The first name of the entity issuing the receivable
-        last_name:
-          type: string
-          description: The last name of the entity issuing the receivable
-        logo:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          description: A link to the entity logo
-        phone:
-          type: string
-          description: A phone number of the entity
-        registration_authority:
-          type: string
-          description: The registration authority of the entity
-        registration_number:
-          type: string
-          description: The registration number of the entity
-        tax_id:
-          type: string
-          description: The Tax ID of the entity issuing the receivable
         type:
           type: string
-          enum:
-          - individual
-          description: The entity type
-        website:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          description: A website of the entity
       type: object
       required:
-      - first_name
-      - last_name
+      - loc
+      - msg
       - type
-      description: A Response schema for an entity of individual type
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    UnitRequest:
-      properties:
-        description:
-          type: string
-          maxLength: 200
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-      type: object
-      required:
-      - name
     ReceivableEntityOrganization:
       properties:
         email:
@@ -1410,74 +1467,151 @@ components:
       - name
       - type
       description: A Response schema for an entity of organization type
-    CounterpartTagSchema:
+    CounterpartIndividualResponse:
       properties:
-        id:
+        email:
           type: string
-          format: uuid
-          description: A unique ID of this tag.
-          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
-        created_at:
-          type: string
-          format: date-time
-          description: Date and time when the tag was created. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
-          example: '2022-09-07T16:35:18.484507+00:00'
-        updated_at:
-          type: string
-          format: date-time
-          description: Date and time when the tag was last updated. Timestamps follow the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard.
-          example: '2022-09-07T16:35:18.484507+00:00'
-        category:
-          allOf:
-          - $ref: '#/components/schemas/TagCategory'
-          description: The tag category.
-          example: department
-        created_by_entity_user_id:
-          type: string
-          format: uuid
-          description: ID of the user who created the tag.
-          example: ea837e28-509b-4b6a-a600-d54b6aa0b1f5
-        description:
+          format: email
+          description: The person's email address.
+          example: asingh@example.net
+        first_name:
           type: string
           maxLength: 255
           minLength: 1
-          description: The tag description.
-          example: Tag for the Marketing Department
+          description: The person's first name.
+          example: Adnan
+        is_customer:
+          type: boolean
+          description: Indicates if the counterpart is a customer.
+        is_vendor:
+          type: boolean
+          description: Indicates if the counterpart is a vendor.
+        last_name:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: The person's last name.
+          example: Singh
+        phone:
+          type: string
+          maxLength: 100
+          description: The person's phone number.
+          example: '5553211234'
+        tags:
+          items:
+            $ref: '#/components/schemas/CounterpartTagSchema'
+          type: array
+          description: The list of tags for this counterpart.
+        title:
+          type: string
+          maxLength: 100
+          description: 'The person''s title or honorific. Examples: Mr., Ms., Dr., Prof.'
+          example: Mr.
+      type: object
+      required:
+      - first_name
+      - is_customer
+      - is_vendor
+      - last_name
+      description: Represents counterparts that are individuals (natural persons).
+    DeliveryNoteLineItemProduct:
+      properties:
+        description:
+          type: string
+          maxLength: 2000
+          description: Description of the product.
+        measure_unit:
+          $ref: '#/components/schemas/UnitRequest'
         name:
           type: string
-          description: The tag name.
-          example: Marketing
+          maxLength: 100
+          minLength: 1
+          description: Name of the product.
+      additionalProperties: false
       type: object
       required:
-      - id
-      - created_at
-      - updated_at
       - name
-      description: Represents a user-defined tag that can be assigned to resources to filter them.
-    HTTPValidationError:
+    DeliveryNoteResourceList:
       properties:
-        detail:
+        data:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/DeliveryNoteResource'
           type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+          description: List of delivery notes
+        next_pagination_token:
           type: string
-        type:
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      additionalProperties: false
+      type: object
+      required:
+      - data
+    DeliveryNoteCreateLineItem:
+      properties:
+        product:
+          allOf:
+          - $ref: '#/components/schemas/DeliveryNoteLineItemProduct'
+          description: Object of product. Can be used instead of product_id, created in product's catalog
+        product_id:
+          type: string
+          format: uuid
+          description: Unique identifier of the product.
+        quantity:
+          type: number
+          maximum: 2147483647.0
+          minimum: 0.0
+          description: The quantity of each of the goods, materials, or services listed in the receivable.
+      additionalProperties: false
+      type: object
+      required:
+      - quantity
+    ErrorSchema:
+      properties:
+        message:
           type: string
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - message
+    DeliveryNoteUpdateRequest:
+      properties:
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart address selected for the delivery note
+        counterpart_id:
+          type: string
+          format: uuid
+          description: ID of the counterpart
+        delivery_date:
+          type: string
+          format: date
+          description: Date of delivery
+        delivery_number:
+          type: string
+          description: Delivery number
+        display_signature_placeholder:
+          type: boolean
+          description: Whether to display a signature placeholder in the generated PDF
+        line_items:
+          items:
+            $ref: '#/components/schemas/DeliveryNoteCreateLineItem'
+          type: array
+          maxItems: 100
+          minItems: 1
+          description: List of line items in the delivery note
+        memo:
+          type: string
+          description: Additional information regarding the delivery note
+      additionalProperties: false
+      type: object
+      description: Delivery Note update request schema
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
     AllowedCountries:
       type: string
       enum:
@@ -1733,23 +1867,29 @@ components:
       - CW
       - MF
       - SX
-    DeliveryNoteResourceList:
+    DeliveryNoteStatusEnum:
+      type: string
+      enum:
+      - created
+      - canceled
+      - delivered
+    DeliveryNoteCursorFields:
+      type: string
+      enum:
+      - status
+      - document_id
+      - delivery_date
+      - created_at
+    DeliveryNoteCreateBasedOnRequest:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/DeliveryNoteResource'
-          type: array
-          description: List of delivery notes
-        next_pagination_token:
+        based_on:
           type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+          format: uuid
+          description: The unique ID of a previous document related to the receivable if applicable.
       additionalProperties: false
       type: object
       required:
-      - data
+      - based_on
     ErrorSchemaResponse:
       properties:
         error:
@@ -1757,188 +1897,48 @@ components:
       type: object
       required:
       - error
-    DeliveryNoteResource:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique ID of the delivery note
-        created_at:
-          type: string
-          format: date-time
-          description: Time at which the delivery note was created. Timestamps follow the ISO 8601 standard.
-        updated_at:
-          type: string
-          format: date-time
-          description: Time at which the delivery note was last updated. Timestamps follow the ISO 8601 standard.
-        based_on:
-          type: string
-          format: uuid
-          description: The unique ID of a previous document related to the delivery note if applicable.
-        based_on_document_id:
-          type: string
-          description: The unique document ID of a previous document related to the delivery note if applicable.
-        counterpart:
-          allOf:
-          - $ref: '#/components/schemas/DeliveryNoteCounterpartResource'
-          description: Counterpart of the delivery note
-        counterpart_address:
-          allOf:
-          - $ref: '#/components/schemas/ReceivablesCounterpartAddress'
-          description: Address of the counterpart
-        counterpart_id:
-          type: string
-          format: uuid
-          description: ID of the counterpart
-        created_by_entity_user_id:
-          type: string
-          format: uuid
-          description: ID of the user that created the delivery note
-        delivery_date:
-          type: string
-          format: date
-          description: Date of delivery
-        delivery_number:
-          type: string
-          description: Delivery number
-        display_signature_placeholder:
-          type: boolean
-          description: Whether to display a signature placeholder in the generated PDF
-        document_id:
-          type: string
-          description: Document ID of the delivery note
-        entity:
-          anyOf:
-          - $ref: '#/components/schemas/ReceivableEntityOrganization'
-          - $ref: '#/components/schemas/ReceivableEntityIndividual'
-          description: Entity that created the delivery note
-        entity_address:
-          allOf:
-          - $ref: '#/components/schemas/ReceivableEntityAddressSchema'
-          description: Address of the entity that created the delivery note
-        entity_id:
-          type: string
-          format: uuid
-          description: ID of the entity that created the delivery note
-        file_language:
-          allOf:
-          - $ref: '#/components/schemas/LanguageCodeEnum'
-          description: The language of the customer-facing PDF file (`file_url`). The value matches the counterpart's `language` at the time when this PDF file was generated.
-        file_url:
-          type: string
-          description: The delivery note's PDF URL in the customer-facing language.
-        line_items:
-          items:
-            $ref: '#/components/schemas/DeliveryNoteLineItemResource'
-          type: array
-          minItems: 1
-          description: List of line items in the delivery note
-        memo:
-          type: string
-          description: Additional information regarding the delivery note
-        original_file_language:
-          allOf:
-          - $ref: '#/components/schemas/LanguageCodeEnum'
-          description: The language of the entity's copy of the PDF file (`original_file_url`). The value matches the entity's `language` at the time when this PDF file was generated.
-        original_file_url:
-          type: string
-          description: The delivery note's PDF URL in the entity's language.
-        status:
-          allOf:
-          - $ref: '#/components/schemas/DeliveryNoteStatusEnum'
-          description: Status of the delivery note
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - counterpart
-      - counterpart_address
-      - counterpart_id
-      - display_signature_placeholder
-      - document_id
-      - entity
-      - entity_address
-      - entity_id
-      - file_language
-      - line_items
-      - original_file_language
-      - status
-      example:
-        id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
-        status: created
-        created_at: '2022-01-01T00:00:00Z'
-        updated_at: '2022-01-01T00:00:00Z'
-        entity_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
-        entity:
-          name: Entity Name
-        entity_address:
-          line1: Entity Street
-          city: Entity City
-          postal_code: '123009'
-          country: DE
-        created_by_entity_user_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
-        counterpart_id: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
-        counterpart:
-          name: Counterpart Name
-        counterpart_address:
-          line1: Counterpart Street
-          city: Counterpart City
-          postal_code: '123009'
-          country: DE
-        line_items:
-        - quantity: 20
-          product:
-            name: Product Name
-            description: Description of product
-            measure_unit:
-              name: pcs
-              description: Pieces
-        document_id: DN-2022-01-01-0001
-        delivery_date: '2022-01-01'
-        delivery_number: 102-2022-0987
-        memo: This is a memo
-        display_signature_placeholder: true
-        file_url: https://example.com/delivery_note.pdf
-        original_file_url: https://example.com/delivery_note_original.pdf
-        file_language: en
-        original_file_language: de
-        based_on: a1b2c3d4-e5f6-g7h8-i9j0-k1l2m3n4o5p6
-        based_on_document_id: IN-2022-01-01-0001
-    ReceivableEntityAddressSchema:
+    ReceivablesCounterpartAddress:
       properties:
         city:
           type: string
-          maxLength: 255
-          description: A city (a full name) where the entity is registered
+          description: City name.
+          example: Berlin
         country:
           allOf:
           - $ref: '#/components/schemas/AllowedCountries'
-          description: 'A country name (as ISO code) where the entity is registered '
-          default: DE
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
           example: DE
         line1:
           type: string
-          maxLength: 255
-          description: A street where the entity is registered
+          description: Street address.
+          example: Flughafenstrasse 52
         line2:
           type: string
-          maxLength: 100
-          description: An alternative street used by the entity
+          description: Additional address information (if any).
         postal_code:
           type: string
-          maxLength: 10
-          description: A postal code of the address where the entity is registered
+          description: ZIP or postal code.
+          example: '10115'
         state:
           type: string
-          description: A state in a country where the entity is registered
-      additionalProperties: false
+          description: State, region, province, or county.
       type: object
       required:
       - city
+      - country
       - line1
       - postal_code
-      description: A schema represents address info of the entity
+      description: Address information.
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1946,4 +1946,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

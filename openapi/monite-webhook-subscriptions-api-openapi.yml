@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Webhook subscriptions across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Webhook subscriptions across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -1072,6 +1072,11 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    WebhookSubscriptionCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
     MessageResponse:
       properties:
         message:
@@ -1079,6 +1084,56 @@ components:
       type: object
       required:
       - message
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    WebhookSubscriptionResourceWithSecret:
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_types:
+          items:
+            type: string
+          type: array
+        object_type:
+          $ref: '#/components/schemas/WebhookObjectType'
+        secret:
+          type: string
+        status:
+          $ref: '#/components/schemas/WebhookSubscriptionStatus'
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      type: object
+      required:
+      - id
+      - event_types
+      - object_type
+      - secret
+      - status
+      - url
     UpdateWebhookSubscriptionRequest:
       properties:
         event_types:
@@ -1100,69 +1155,6 @@ components:
           - type: 'null'
       additionalProperties: false
       type: object
-    CreateWebhookSubscriptionRequest:
-      properties:
-        event_types:
-          items:
-            type: string
-          type: array
-        object_type:
-          $ref: '#/components/schemas/WebhookObjectType'
-        url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-      additionalProperties: false
-      type: object
-      required:
-      - object_type
-      - url
-    WebhookObjectType:
-      type: string
-      enum:
-      - account
-      - accounting_connection
-      - approval
-      - approval_request
-      - approval_policy
-      - approval_policy_process
-      - batch_payment
-      - comment
-      - counterpart
-      - counterpart_address
-      - counterpart_bank_account
-      - counterpart_contact_person
-      - counterpart_partner_metadata
-      - counterpart_tax_id
-      - entity
-      - entity_bank_account
-      - entity_settings
-      - entity_user
-      - export
-      - overdue_reminder
-      - partner_settings
-      - payable
-      - payables_credit_note
-      - payables_purchase_order
-      - payable.line_item
-      - payment
-      - payment_intent
-      - payment_link
-      - payment_reminder
-      - product
-      - project
-      - receivable
-      - recurrence
-      - role
-      - tag
-      - todo_task
-      - workflow
-      - workflow_pipeline
-      - ocr_task
-      - delivery_note
-      - receipt
-      - transaction
     EventResourceForWebhookClient:
       properties:
         id:
@@ -1210,23 +1202,13 @@ components:
       - object_id
       - object_type
       - webhook_subscription_id
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    WebhookSubscriptionCursorFields:
-      type: string
-      enum:
-      - created_at
-      - updated_at
-    HTTPValidationError:
+    ErrorSchemaResponse:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
       type: object
+      required:
+      - error
     ErrorSchema:
       properties:
         message:
@@ -1234,56 +1216,56 @@ components:
       type: object
       required:
       - message
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    WebhookSubscriptionResourceWithSecret:
-      properties:
-        id:
-          type: string
-          format: uuid
-        event_types:
-          items:
-            type: string
-          type: array
-        object_type:
-          $ref: '#/components/schemas/WebhookObjectType'
-        secret:
-          type: string
-        status:
-          $ref: '#/components/schemas/WebhookSubscriptionStatus'
-        url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-      type: object
-      required:
-      - id
-      - event_types
-      - object_type
-      - secret
-      - status
-      - url
     WebhookSubscriptionStatus:
       type: string
       enum:
       - enabled
       - disabled
+    WebhookObjectType:
+      type: string
+      enum:
+      - account
+      - accounting_connection
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - batch_payment
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_user
+      - export
+      - overdue_reminder
+      - partner_settings
+      - payable
+      - payables_credit_note
+      - payables_purchase_order
+      - payable.line_item
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_reminder
+      - product
+      - project
+      - receivable
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - workflow
+      - workflow_pipeline
+      - ocr_task
+      - delivery_note
+      - receipt
+      - transaction
     WebhookSubscriptionPaginationResource:
       properties:
         data:
@@ -1305,13 +1287,13 @@ components:
       type: object
       required:
       - data
-    ErrorSchemaResponse:
+    HTTPValidationError:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
       type: object
-      required:
-      - error
     WebhookSubscriptionResource:
       properties:
         id:
@@ -1337,47 +1319,25 @@ components:
       - object_type
       - status
       - url
-    EventResourceForWebhookClient_2:
+    CreateWebhookSubscriptionRequest:
       properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          description: The timestamp that was generated at the time of making the database transaction that has initially caused the event
-        action:
-          type: string
-        api_version:
-          anyOf:
-          - type: string
-          - type: 'null'
-        description:
-          type: string
-        entity_id:
-          type: string
-          format: uuid
-        object:
-          anyOf:
-          - {}
-          - type: 'null'
+        event_types:
+          items:
+            type: string
+          type: array
         object_type:
           $ref: '#/components/schemas/WebhookObjectType'
-        webhook_subscription_id:
+        url:
           type: string
-          format: uuid
+          maxLength: 2083
+          minLength: 1
+          format: uri
+      additionalProperties: false
       type: object
       required:
-      - id
-      - action
-      - api_version
-      - description
-      - entity_id
       - object_type
-      - webhook_subscription_id
-    EventResourceForWebhookClient_3:
+      - url
+    EventResourceForWebhookClient_2:
       properties:
         id:
           type: string
@@ -1424,4 +1384,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

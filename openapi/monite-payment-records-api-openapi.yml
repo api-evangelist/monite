@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payment records across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payment records across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -640,102 +640,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    PaymentRecordObjectRequest:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the invoice
-        type:
-          $ref: '#/components/schemas/ObjectTypeEnum'
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    PaymentRecordStatusEnum:
-      type: string
-      enum:
-      - created
-      - processing
-      - succeeded
-      - canceled
-    PaymentRecordCursorFields:
-      type: string
-      enum:
-      - paid_at
-      - amount
-      - overpaid_amount
-    PaymentRecordResponseList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PaymentRecordResponse'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    PaymentRecordRequest:
-      properties:
-        amount:
-          type: integer
-          description: Positive amount in case of successful payment, negative amount in case of payment failure or refund, represented in minor currency units (e.g., cents).
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: Currency code (ISO 4217) indicating the currency in which the payment was made.
-        entity_user_id:
-          type: string
-          format: uuid
-          description: ID of the user associated with the payment, if applicable.
-        object:
-          allOf:
-          - $ref: '#/components/schemas/PaymentRecordObjectRequest'
-          description: Reference object linked to this payment record, indicating the type (receivable or payable) and its identifier.
-        paid_at:
-          type: string
-          format: date-time
-          description: Timestamp marking when the payment was executed. Null if payment hasn't occurred yet.
-        payment_intent_id:
-          type: string
-          format: uuid
-          description: Identifier for an payment intent.
-        payment_intent_status:
-          type: string
-          description: Raw status string of the external payment intent.
-        payment_method:
-          type: string
-          description: Payment method used or planned for the transaction.
-        planned_payment_date:
-          type: string
-          format: date
-          description: Scheduled date for future payments, required when the payment is planned but not yet executed.
-        status:
-          type: string
-          enum:
-          - created
-          - processing
-          - succeeded
-          description: Status of the payment record indicating its current stage (e.g., created, processing, succeeded).
-          default: succeeded
-      additionalProperties: false
-      type: object
-      required:
-      - amount
-      - currency
-      - object
     PaymentRecordObjectResponse:
       properties:
         id:
@@ -757,20 +661,29 @@ components:
       - new_status
       - old_status
       - type
-    HTTPValidationError:
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ObjectTypeEnum:
+      type: string
+      enum:
+      - receivable
+      - payable
+    PaymentRecordObjectRequest:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ErrorSchema:
-      properties:
-        message:
+        id:
           type: string
+          format: uuid
+          description: ID of the invoice
+        type:
+          $ref: '#/components/schemas/ObjectTypeEnum'
+      additionalProperties: false
       type: object
       required:
-      - message
+      - id
+      - type
     ValidationError:
       properties:
         loc:
@@ -788,43 +701,6 @@ components:
       - loc
       - msg
       - type
-    PaymentRecordUpdateRequest:
-      properties:
-        amount:
-          type: integer
-          description: Positive amount in case of successful payment, negative amount in case of payment failure or refund, represented in minor currency units (e.g., cents).
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: Currency code (ISO 4217) indicating the currency in which the payment was made.
-        entity_user_id:
-          type: string
-          format: uuid
-          description: ID of the user associated with the payment, if applicable.
-        object:
-          allOf:
-          - $ref: '#/components/schemas/PaymentRecordObjectRequest'
-          description: Reference object linked to this payment record, indicating the type (receivable or payable) and its identifier.
-        paid_at:
-          type: string
-          format: date-time
-          description: Timestamp marking when the payment was executed. Null if payment hasn't occurred yet.
-        payment_intent_id:
-          type: string
-          format: uuid
-          description: Identifier for an payment intent.
-        payment_intent_status:
-          type: string
-          description: Raw status string of the external payment intent.
-        payment_method:
-          type: string
-          description: Payment method used or planned for the transaction.
-        planned_payment_date:
-          type: string
-          format: date
-          description: Scheduled date for future payments, required when the payment is planned but not yet executed.
-      additionalProperties: false
-      type: object
     PaymentRecordHistoryResponse:
       properties:
         entity_user_id:
@@ -840,6 +716,26 @@ components:
       required:
       - status
       - timestamp
+    PaymentRecordStatusEnum:
+      type: string
+      enum:
+      - created
+      - processing
+      - succeeded
+      - canceled
+    PaymentRecordMarkAsSucceededRequest:
+      properties:
+        paid_at:
+          type: string
+          format: date-time
+          description: Timestamp marking when the payment was executed.
+        payment_intent_status:
+          type: string
+          description: Raw status string of the external payment intent.
+      additionalProperties: false
+      type: object
+      required:
+      - paid_at
     PaymentRecordStatusUpdateRequest:
       properties:
         payment_intent_status:
@@ -847,18 +743,6 @@ components:
           description: Raw status string of the external payment intent.
       additionalProperties: false
       type: object
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ObjectTypeEnum:
-      type: string
-      enum:
-      - receivable
-      - payable
     PaymentRecordResponse:
       properties:
         id:
@@ -919,19 +803,80 @@ components:
       - history
       - is_external
       - object
-    PaymentRecordMarkAsSucceededRequest:
+    ErrorSchemaResponse:
       properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    PaymentRecordUpdateRequest:
+      properties:
+        amount:
+          type: integer
+          description: Positive amount in case of successful payment, negative amount in case of payment failure or refund, represented in minor currency units (e.g., cents).
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: Currency code (ISO 4217) indicating the currency in which the payment was made.
+        entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user associated with the payment, if applicable.
+        object:
+          allOf:
+          - $ref: '#/components/schemas/PaymentRecordObjectRequest'
+          description: Reference object linked to this payment record, indicating the type (receivable or payable) and its identifier.
         paid_at:
           type: string
           format: date-time
-          description: Timestamp marking when the payment was executed.
+          description: Timestamp marking when the payment was executed. Null if payment hasn't occurred yet.
+        payment_intent_id:
+          type: string
+          format: uuid
+          description: Identifier for an payment intent.
         payment_intent_status:
           type: string
           description: Raw status string of the external payment intent.
+        payment_method:
+          type: string
+          description: Payment method used or planned for the transaction.
+        planned_payment_date:
+          type: string
+          format: date
+          description: Scheduled date for future payments, required when the payment is planned but not yet executed.
+      additionalProperties: false
+      type: object
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    PaymentRecordResponseList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentRecordResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
       additionalProperties: false
       type: object
       required:
-      - paid_at
+      - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     CurrencyEnum:
       type: string
       enum:
@@ -1080,6 +1025,61 @@ components:
       - YER
       - ZAR
       - ZMW
+    PaymentRecordRequest:
+      properties:
+        amount:
+          type: integer
+          description: Positive amount in case of successful payment, negative amount in case of payment failure or refund, represented in minor currency units (e.g., cents).
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: Currency code (ISO 4217) indicating the currency in which the payment was made.
+        entity_user_id:
+          type: string
+          format: uuid
+          description: ID of the user associated with the payment, if applicable.
+        object:
+          allOf:
+          - $ref: '#/components/schemas/PaymentRecordObjectRequest'
+          description: Reference object linked to this payment record, indicating the type (receivable or payable) and its identifier.
+        paid_at:
+          type: string
+          format: date-time
+          description: Timestamp marking when the payment was executed. Null if payment hasn't occurred yet.
+        payment_intent_id:
+          type: string
+          format: uuid
+          description: Identifier for an payment intent.
+        payment_intent_status:
+          type: string
+          description: Raw status string of the external payment intent.
+        payment_method:
+          type: string
+          description: Payment method used or planned for the transaction.
+        planned_payment_date:
+          type: string
+          format: date
+          description: Scheduled date for future payments, required when the payment is planned but not yet executed.
+        status:
+          type: string
+          enum:
+          - created
+          - processing
+          - succeeded
+          description: Status of the payment record indicating its current stage (e.g., created, processing, succeeded).
+          default: succeeded
+      additionalProperties: false
+      type: object
+      required:
+      - amount
+      - currency
+      - object
+    PaymentRecordCursorFields:
+      type: string
+      enum:
+      - paid_at
+      - amount
+      - overpaid_amount
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1087,4 +1087,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Events across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Events across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -231,51 +231,42 @@ components:
       enum:
       - asc
       - desc
-    WebhookObjectType:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    EventCursorFields:
       type: string
       enum:
-      - account
-      - accounting_connection
-      - approval
-      - approval_request
-      - approval_policy
-      - approval_policy_process
-      - batch_payment
-      - comment
-      - counterpart
-      - counterpart_address
-      - counterpart_bank_account
-      - counterpart_contact_person
-      - counterpart_partner_metadata
-      - counterpart_tax_id
-      - entity
-      - entity_bank_account
-      - entity_settings
-      - entity_user
-      - export
-      - overdue_reminder
-      - partner_settings
-      - payable
-      - payables_credit_note
-      - payables_purchase_order
-      - payable.line_item
-      - payment
-      - payment_intent
-      - payment_link
-      - payment_reminder
-      - product
-      - project
-      - receivable
-      - recurrence
-      - role
-      - tag
-      - todo_task
-      - workflow
-      - workflow_pipeline
-      - ocr_task
-      - delivery_note
-      - receipt
-      - transaction
+      - created_at
+      - updated_at
     EventPaginationResource:
       properties:
         data:
@@ -339,6 +330,51 @@ components:
       - name
       - object_id
       - object_type
+    WebhookObjectType:
+      type: string
+      enum:
+      - account
+      - accounting_connection
+      - approval
+      - approval_request
+      - approval_policy
+      - approval_policy_process
+      - batch_payment
+      - comment
+      - counterpart
+      - counterpart_address
+      - counterpart_bank_account
+      - counterpart_contact_person
+      - counterpart_partner_metadata
+      - counterpart_tax_id
+      - entity
+      - entity_bank_account
+      - entity_settings
+      - entity_user
+      - export
+      - overdue_reminder
+      - partner_settings
+      - payable
+      - payables_credit_note
+      - payables_purchase_order
+      - payable.line_item
+      - payment
+      - payment_intent
+      - payment_link
+      - payment_reminder
+      - product
+      - project
+      - receivable
+      - recurrence
+      - role
+      - tag
+      - todo_task
+      - workflow
+      - workflow_pipeline
+      - ocr_task
+      - delivery_note
+      - receipt
+      - transaction
     HTTPValidationError:
       properties:
         detail:
@@ -346,79 +382,7 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    EventCursorFields:
-      type: string
-      enum:
-      - created_at
-      - updated_at
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
     EventResource_2:
-      properties:
-        id:
-          type: string
-          format: uuid
-        created_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
-          description: The timestamp that was generated at the time of making the database transaction that has initially caused the event
-        action:
-          type: string
-        api_version:
-          anyOf:
-          - type: string
-          - type: 'null'
-        description:
-          type: string
-        entity_id:
-          type: string
-          format: uuid
-        object:
-          anyOf:
-          - {}
-          - type: 'null'
-        object_type:
-          $ref: '#/components/schemas/WebhookObjectType'
-      type: object
-      required:
-      - id
-      - action
-      - api_version
-      - description
-      - entity_id
-      - object_type
-    EventResource_3:
       properties:
         id:
           type: string
@@ -461,4 +425,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

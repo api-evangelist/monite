@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entity bank account verifications across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entity bank account verifications across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -374,29 +374,33 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    CompleteVerificationAirwallexPlaidRequest:
+    AirwallexMandateType:
+      type: string
+      enum:
+      - us_ach_debit
+    BankAccountVerificationType:
+      type: string
+      enum:
+      - airwallex_plaid
+      - micro_deposit
+    VerificationRequest:
       properties:
-        account:
-          allOf:
-          - $ref: '#/components/schemas/AirwallexPlaidAccount'
-          description: The bank account that was selected in the Plaid Modal
-        institution:
-          allOf:
-          - $ref: '#/components/schemas/AirwallexPlaidInstitution'
-          description: The financial institution that was selected in the Plaid Modal
-        mandate:
-          $ref: '#/components/schemas/AirwallexMandate'
-        public_token:
-          type: string
-          minLength: 1
-          description: The Plaid Public Token
+        airwallex_plaid:
+          $ref: '#/components/schemas/VerificationAirwallexPlaidRequest'
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
       additionalProperties: false
       type: object
       required:
-      - account
-      - institution
-      - mandate
-      - public_token
+      - airwallex_plaid
+      - type
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     AirwallexMandate:
       properties:
         email:
@@ -418,22 +422,18 @@ components:
       - signatory
       - type
       - version
-    CompleteRefreshVerificationResponse:
+    CompleteRefreshVerificationRequest:
       properties:
-        verifications:
-          $ref: '#/components/schemas/BankAccountVerifications'
+        type:
+          $ref: '#/components/schemas/BankAccountVerificationType'
       additionalProperties: false
       type: object
       required:
-      - verifications
-    AirwallexMandateType:
-      type: string
-      enum:
-      - us_ach_debit
-    VerificationResponse:
+      - type
+    CompleteVerificationRequest:
       properties:
         airwallex_plaid:
-          $ref: '#/components/schemas/VerificationAirwallexPlaidResponse'
+          $ref: '#/components/schemas/CompleteVerificationAirwallexPlaidRequest'
         type:
           $ref: '#/components/schemas/BankAccountVerificationType'
       additionalProperties: false
@@ -441,10 +441,27 @@ components:
       required:
       - airwallex_plaid
       - type
-    VerificationRequest:
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    VerificationResponse:
       properties:
         airwallex_plaid:
-          $ref: '#/components/schemas/VerificationAirwallexPlaidRequest'
+          $ref: '#/components/schemas/VerificationAirwallexPlaidResponse'
         type:
           $ref: '#/components/schemas/BankAccountVerificationType'
       additionalProperties: false
@@ -462,80 +479,6 @@ components:
       type: object
       required:
       - status
-    AirwallexMandateVersion:
-      type: string
-      enum:
-      - '1.0'
-    BankAccountVerificationType:
-      type: string
-      enum:
-      - airwallex_plaid
-      - micro_deposit
-    AirwallexPlaidInstitution:
-      properties:
-        id:
-          type: string
-          minLength: 1
-          description: The institution identifier assigned by Plaid
-        name:
-          type: string
-          minLength: 1
-          description: The full financial institution name
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - name
-    AirwallexPlaidAccount:
-      properties:
-        id:
-          type: string
-          minLength: 1
-          description: Plaid`s unique identifier for the account
-        mask:
-          type: string
-          minLength: 1
-          description: The last 2-4 alphanumeric characters of an account's official account number
-        name:
-          type: string
-          minLength: 1
-          description: The name of the account, either assigned by the user or by the financial institution itself
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - mask
-      - name
-    VerificationAirwallexPlaidRequest:
-      properties:
-        client_name:
-          type: string
-          maxLength: 30
-          minLength: 1
-          description: The name of your application to be displayed in Plaid Modal
-        link_customization_name:
-          type: string
-          minLength: 1
-          description: The name of the Link customization configured on the Plaid Dashboard. If not specified, the default customization will be applied
-        redirect_url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          description: URL to handle the OAuth verification flow
-      additionalProperties: false
-      type: object
-      required:
-      - client_name
-      - redirect_url
-    BankAccountVerifications:
-      properties:
-        airwallex_plaid:
-          allOf:
-          - $ref: '#/components/schemas/AirwallexPlaidVerification'
-          description: Airwallex Plaid verification
-      additionalProperties: false
-      type: object
     VerificationAirwallexPlaidResponse:
       properties:
         client_name:
@@ -567,58 +510,71 @@ components:
       - expires_at
       - link_token
       - redirect_url
-    CompleteVerificationResponse:
+    AirwallexPlaidAccount:
       properties:
         id:
           type: string
-          format: uuid
-          description: Deprecated. Use bank_account_id instead.
-          deprecated: true
-        account_holder_name:
+          minLength: 1
+          description: Plaid`s unique identifier for the account
+        mask:
           type: string
-          description: Account holder's name
-        account_number:
+          minLength: 1
+          description: The last 2-4 alphanumeric characters of an account's official account number
+        name:
           type: string
-          description: Account number (required if IBAN is not provided)
-        bank_account_id:
-          type: string
-          format: uuid
-        bank_name:
-          type: string
-          description: The name of the entity`s bank account.
-        bic:
-          type: string
-          description: The BIC of the entity`s bank account.
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        currency:
-          $ref: '#/components/schemas/CurrencyEnum'
-        display_name:
-          type: string
-        iban:
-          type: string
-          description: The IBAN of the entity`s bank account.
-        is_default:
-          type: boolean
-          description: Marks if a bank account should be used by default for the currency. Only 1 can be True for each currency.
-        routing_number:
-          type: string
-          description: Routing number (US)
-        sort_code:
-          type: string
-          description: Sort code (GB)
-        verifications:
-          $ref: '#/components/schemas/BankAccountVerifications'
-        was_created_by_user_id:
-          type: string
-          format: uuid
+          minLength: 1
+          description: The name of the account, either assigned by the user or by the financial institution itself
       additionalProperties: false
       type: object
       required:
       - id
-      - bank_account_id
-      - is_default
-      - verifications
+      - mask
+      - name
+    CompleteVerificationAirwallexPlaidRequest:
+      properties:
+        account:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidAccount'
+          description: The bank account that was selected in the Plaid Modal
+        institution:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidInstitution'
+          description: The financial institution that was selected in the Plaid Modal
+        mandate:
+          $ref: '#/components/schemas/AirwallexMandate'
+        public_token:
+          type: string
+          minLength: 1
+          description: The Plaid Public Token
+      additionalProperties: false
+      type: object
+      required:
+      - account
+      - institution
+      - mandate
+      - public_token
+    VerificationAirwallexPlaidRequest:
+      properties:
+        client_name:
+          type: string
+          maxLength: 30
+          minLength: 1
+          description: The name of your application to be displayed in Plaid Modal
+        link_customization_name:
+          type: string
+          minLength: 1
+          description: The name of the Link customization configured on the Plaid Dashboard. If not specified, the default customization will be applied
+        redirect_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: URL to handle the OAuth verification flow
+      additionalProperties: false
+      type: object
+      required:
+      - client_name
+      - redirect_url
     ErrorSchema:
       properties:
         message:
@@ -626,30 +582,29 @@ components:
       type: object
       required:
       - message
-    HTTPValidationError:
+    AirwallexPlaidInstitution:
       properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        id:
           type: string
-        type:
+          minLength: 1
+          description: The institution identifier assigned by Plaid
+        name:
           type: string
+          minLength: 1
+          description: The full financial institution name
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - id
+      - name
+    CompleteRefreshVerificationResponse:
+      properties:
+        verifications:
+          $ref: '#/components/schemas/BankAccountVerifications'
+      additionalProperties: false
+      type: object
+      required:
+      - verifications
     AllowedCountries:
       type: string
       enum:
@@ -905,23 +860,64 @@ components:
       - CW
       - MF
       - SX
-    CompleteVerificationRequest:
-      properties:
-        airwallex_plaid:
-          $ref: '#/components/schemas/CompleteVerificationAirwallexPlaidRequest'
-        type:
-          $ref: '#/components/schemas/BankAccountVerificationType'
-      additionalProperties: false
-      type: object
-      required:
-      - airwallex_plaid
-      - type
     AirwallexPlaidBankAccountVerificationStatus:
       type: string
       enum:
       - verified
       - expired
       - suspended
+    CompleteVerificationResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Deprecated. Use bank_account_id instead.
+          deprecated: true
+        account_holder_name:
+          type: string
+          description: Account holder's name
+        account_number:
+          type: string
+          description: Account number (required if IBAN is not provided)
+        bank_account_id:
+          type: string
+          format: uuid
+        bank_name:
+          type: string
+          description: The name of the entity`s bank account.
+        bic:
+          type: string
+          description: The BIC of the entity`s bank account.
+        country:
+          $ref: '#/components/schemas/AllowedCountries'
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        display_name:
+          type: string
+        iban:
+          type: string
+          description: The IBAN of the entity`s bank account.
+        is_default:
+          type: boolean
+          description: Marks if a bank account should be used by default for the currency. Only 1 can be True for each currency.
+        routing_number:
+          type: string
+          description: Routing number (US)
+        sort_code:
+          type: string
+          description: Sort code (GB)
+        verifications:
+          $ref: '#/components/schemas/BankAccountVerifications'
+        was_created_by_user_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - bank_account_id
+      - is_default
+      - verifications
     ErrorSchemaResponse:
       properties:
         error:
@@ -929,14 +925,18 @@ components:
       type: object
       required:
       - error
-    CompleteRefreshVerificationRequest:
+    BankAccountVerifications:
       properties:
-        type:
-          $ref: '#/components/schemas/BankAccountVerificationType'
+        airwallex_plaid:
+          allOf:
+          - $ref: '#/components/schemas/AirwallexPlaidVerification'
+          description: Airwallex Plaid verification
       additionalProperties: false
       type: object
-      required:
-      - type
+    AirwallexMandateVersion:
+      type: string
+      enum:
+      - '1.0'
     CurrencyEnum:
       type: string
       enum:
@@ -1092,4 +1092,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

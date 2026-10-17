@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payable line items across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payable line items across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -707,11 +707,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
     ErrorSchema2:
       properties:
         message:
@@ -719,21 +714,6 @@ components:
       type: object
       required:
       - message
-    LineItemPaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/LineItemResponse'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-      type: object
-      required:
-      - data
     HTTPValidationError:
       properties:
         detail:
@@ -741,135 +721,11 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    LineItemRequest:
-      properties:
-        accounting_tax_rate_id:
-          type: string
-          format: uuid
-          description: ID of the tax rate reference used for accounting integration. May be used to override auto-picked tax rate reference in accounting platform in case of any platform-specific constraints.
-          example: dd13735f-ef3a-4312-8c37-835d70341375
-        description:
-          type: string
-          description: Description of the product.
-        ledger_account_id:
-          type: string
-          format: uuid
-          description: ID of the account record used to store bookkeeping entries for balance-sheet and income-statement transactions.
-          example: 7df884fd-8be8-4eba-b6ff-417b66efe033
-        name:
-          type: string
-          description: Name of the product.
-        quantity:
-          type: number
-          minimum: 0.0
-          description: The quantity of each of the goods, materials, or services listed in the payable.
-          example: 1.22
-        tax:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-          example: 1250
-        unit:
-          type: string
-          description: The unit of the product
-          example: meter
-        unit_price:
-          type: integer
-          description: The unit price of the product, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 1200
-      additionalProperties: false
-      type: object
-    ErrorSchemaResponse2:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
-      type: object
-      required:
-      - error
-    LineItemsReplaceRequest:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/LineItemInternalRequest'
-          type: array
-      type: object
-      required:
-      - data
-    LineItemInternalRequest:
-      properties:
-        accounting_tax_rate_id:
-          type: string
-          format: uuid
-          description: ID of the tax rate reference used for accounting integration. May be used to override auto-picked tax rate reference in accounting platform in case of any platform-specific constraints.
-          example: dd13735f-ef3a-4312-8c37-835d70341375
-        description:
-          type: string
-          description: Description of the product.
-        ledger_account_id:
-          type: string
-          format: uuid
-          description: ID of the account record used to store bookkeeping entries for balance-sheet and income-statement transactions.
-          example: 7df884fd-8be8-4eba-b6ff-417b66efe033
-        name:
-          type: string
-          description: Name of the product.
-        quantity:
-          type: number
-          minimum: 0.0
-          description: The quantity of each of the goods, materials, or services listed in the payable.
-          example: 1.22
-        subtotal:
-          type: integer
-        tax:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-          example: 1250
-        total:
-          type: integer
-        unit:
-          type: string
-          description: The unit of the product
-          example: meter
-        unit_price:
-          type: integer
-          description: The unit price of the product, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          example: 1200
-      additionalProperties: false
-      type: object
-    LineItemCursorFields:
+    OrderEnum:
       type: string
       enum:
-      - created_at
-      - updated_at
-    LineItemsReplaceResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/LineItemResponse'
-          type: array
-      type: object
-      required:
-      - data
+      - asc
+      - desc
     LineItemResponse:
       properties:
         id:
@@ -936,6 +792,150 @@ components:
       required:
       - id
       - payable_id
+    LineItemsReplaceResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/LineItemResponse'
+          type: array
+      type: object
+      required:
+      - data
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    LineItemInternalRequest:
+      properties:
+        accounting_tax_rate_id:
+          type: string
+          format: uuid
+          description: ID of the tax rate reference used for accounting integration. May be used to override auto-picked tax rate reference in accounting platform in case of any platform-specific constraints.
+          example: dd13735f-ef3a-4312-8c37-835d70341375
+        description:
+          type: string
+          description: Description of the product.
+        ledger_account_id:
+          type: string
+          format: uuid
+          description: ID of the account record used to store bookkeeping entries for balance-sheet and income-statement transactions.
+          example: 7df884fd-8be8-4eba-b6ff-417b66efe033
+        name:
+          type: string
+          description: Name of the product.
+        quantity:
+          type: number
+          minimum: 0.0
+          description: The quantity of each of the goods, materials, or services listed in the payable.
+          example: 1.22
+        subtotal:
+          type: integer
+        tax:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
+        total:
+          type: integer
+        unit:
+          type: string
+          description: The unit of the product
+          example: meter
+        unit_price:
+          type: integer
+          description: The unit price of the product, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 1200
+      additionalProperties: false
+      type: object
+    LineItemPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/LineItemResponse'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+      type: object
+      required:
+      - data
+    LineItemCursorFields:
+      type: string
+      enum:
+      - created_at
+      - updated_at
+    LineItemRequest:
+      properties:
+        accounting_tax_rate_id:
+          type: string
+          format: uuid
+          description: ID of the tax rate reference used for accounting integration. May be used to override auto-picked tax rate reference in accounting platform in case of any platform-specific constraints.
+          example: dd13735f-ef3a-4312-8c37-835d70341375
+        description:
+          type: string
+          description: Description of the product.
+        ledger_account_id:
+          type: string
+          format: uuid
+          description: ID of the account record used to store bookkeeping entries for balance-sheet and income-statement transactions.
+          example: 7df884fd-8be8-4eba-b6ff-417b66efe033
+        name:
+          type: string
+          description: Name of the product.
+        quantity:
+          type: number
+          minimum: 0.0
+          description: The quantity of each of the goods, materials, or services listed in the payable.
+          example: 1.22
+        tax:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
+        unit:
+          type: string
+          description: The unit of the product
+          example: meter
+        unit_price:
+          type: integer
+          description: The unit price of the product, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          example: 1200
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
+    LineItemsReplaceRequest:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/LineItemInternalRequest'
+          type: array
+      type: object
+      required:
+      - data
   securitySchemes:
     HTTPBearer:
       type: http
@@ -943,4 +943,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

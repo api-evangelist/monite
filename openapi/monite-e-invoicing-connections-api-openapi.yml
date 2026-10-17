@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged E-invoicing connections across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged E-invoicing connections across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -542,6 +542,37 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    EinvoicingConnectionUpdateRequest:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/UpdateEinvoicingAddress'
+          description: Integration Address
+        is_receiver:
+          type: boolean
+          description: Set to `true` if the entity needs to receive e-invoices.
+        is_sender:
+          type: boolean
+          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     EinvoicingAddress:
       properties:
         address_line1:
@@ -570,42 +601,6 @@ components:
       - city
       - country
       - postal_code
-    EinvoicingConnectionUpdateRequest:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/UpdateEinvoicingAddress'
-          description: Integration Address
-        is_receiver:
-          type: boolean
-          description: Set to `true` if the entity needs to receive e-invoices.
-        is_sender:
-          type: boolean
-          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
-      additionalProperties: false
-      type: object
-    EinvoicingConnectionCreateRequest:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/EinvoicingAddress'
-          description: Integration Address
-        entity_vat_id_id:
-          type: string
-          format: uuid
-          description: Entity VAT ID identifier for the integration
-        is_receiver:
-          type: boolean
-          description: Set to `true` if the entity needs to receive e-invoices.
-          default: true
-        is_sender:
-          type: boolean
-          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
-          default: true
-      additionalProperties: false
-      type: object
-      required:
-      - address
     EInvoicingRetrieveListData:
       properties:
         data:
@@ -617,75 +612,6 @@ components:
       type: object
       required:
       - data
-    UpdateEinvoicingAddress:
-      properties:
-        address_line1:
-          type: string
-          description: Street address line 1
-        address_line2:
-          type: string
-          description: Street address line 2
-        city:
-          type: string
-          description: City name
-        postal_code:
-          type: string
-          description: Postal/ZIP code
-        state:
-          type: string
-          description: State/Province/County
-      additionalProperties: false
-      type: object
-      required:
-      - address_line1
-      - city
-      - postal_code
-    EinvoicingNetworkCredentialsCreateRequest:
-      properties:
-        network_credentials_identifier:
-          type: string
-          description: Network participant identifier
-          example: '12345678'
-        network_credentials_schema:
-          allOf:
-          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
-          description: Network scheme identifier
-          example: NL:KVK
-      additionalProperties: false
-      type: object
-      required:
-      - network_credentials_identifier
-      - network_credentials_schema
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    AllowedEinvoicingCountryCodes:
-      type: string
-      enum:
-      - DE
-      - NL
-      - BE
     EinvoiceSchemaTypeEnum:
       type: string
       enum:
@@ -694,41 +620,6 @@ components:
       - NL:VAT
       - BE:VAT
       - BE:EN
-    EinvoicingNetworkCredentialsResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of the credentials
-        created_at:
-          type: string
-          format: date-time
-          description: Date of credential
-        updated_at:
-          type: string
-          format: date-time
-          description: Last update of credential
-        einvoicing_connection_id:
-          type: string
-          format: uuid
-          description: ID of the Einvoicing connection
-        network_credentials_identifier:
-          type: string
-          description: Network participant identifier
-          example: '12345678'
-        network_credentials_schema:
-          allOf:
-          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
-          description: Network scheme identifier
-          example: NL:KVK
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - einvoicing_connection_id
-      - network_credentials_identifier
-      - network_credentials_schema
     EinvoicingConnectionResponse:
       properties:
         id:
@@ -786,6 +677,12 @@ components:
       - entity_id
       - legal_name
       - status
+    AllowedEinvoicingCountryCodes:
+      type: string
+      enum:
+      - DE
+      - NL
+      - BE
     ErrorSchemaResponse:
       properties:
         error:
@@ -800,6 +697,109 @@ components:
       type: object
       required:
       - message
+    UpdateEinvoicingAddress:
+      properties:
+        address_line1:
+          type: string
+          description: Street address line 1
+        address_line2:
+          type: string
+          description: Street address line 2
+        city:
+          type: string
+          description: City name
+        postal_code:
+          type: string
+          description: Postal/ZIP code
+        state:
+          type: string
+          description: State/Province/County
+      additionalProperties: false
+      type: object
+      required:
+      - address_line1
+      - city
+      - postal_code
+    EinvoicingConnectionCreateRequest:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/EinvoicingAddress'
+          description: Integration Address
+        entity_vat_id_id:
+          type: string
+          format: uuid
+          description: Entity VAT ID identifier for the integration
+        is_receiver:
+          type: boolean
+          description: Set to `true` if the entity needs to receive e-invoices.
+          default: true
+        is_sender:
+          type: boolean
+          description: Set to `true` if the entity needs to send e-invoices. Either `is_sender` or `is_receiver` or both must be `true`.
+          default: true
+      additionalProperties: false
+      type: object
+      required:
+      - address
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    EinvoicingNetworkCredentialsResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of the credentials
+        created_at:
+          type: string
+          format: date-time
+          description: Date of credential
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update of credential
+        einvoicing_connection_id:
+          type: string
+          format: uuid
+          description: ID of the Einvoicing connection
+        network_credentials_identifier:
+          type: string
+          description: Network participant identifier
+          example: '12345678'
+        network_credentials_schema:
+          allOf:
+          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
+          description: Network scheme identifier
+          example: NL:KVK
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - einvoicing_connection_id
+      - network_credentials_identifier
+      - network_credentials_schema
+    EinvoicingNetworkCredentialsCreateRequest:
+      properties:
+        network_credentials_identifier:
+          type: string
+          description: Network participant identifier
+          example: '12345678'
+        network_credentials_schema:
+          allOf:
+          - $ref: '#/components/schemas/EinvoiceSchemaTypeEnum'
+          description: Network scheme identifier
+          example: NL:KVK
+      additionalProperties: false
+      type: object
+      required:
+      - network_credentials_identifier
+      - network_credentials_schema
   securitySchemes:
     HTTPBearer:
       type: http
@@ -807,4 +807,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

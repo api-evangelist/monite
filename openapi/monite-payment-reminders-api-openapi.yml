@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payment reminders across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payment reminders across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -415,16 +415,22 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    GetAllPaymentReminders:
+    Reminder:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/PaymentReminderResponse'
-          type: array
+        body:
+          type: string
+        days_before:
+          type: integer
+          maximum: 10000.0
+          minimum: 1.0
+        subject:
+          type: string
       additionalProperties: false
       type: object
       required:
-      - data
+      - body
+      - days_before
+      - subject
     PaymentReminderUpdateRequest:
       properties:
         name:
@@ -447,48 +453,6 @@ components:
           description: Reminder to send for final payment term
       additionalProperties: false
       type: object
-    Recipients:
-      properties:
-        bcc:
-          items:
-            type: string
-            format: email
-          type: array
-        cc:
-          items:
-            type: string
-            format: email
-          type: array
-        to:
-          items:
-            type: string
-            format: email
-          type: array
-      additionalProperties: false
-      type: object
-    Reminder:
-      properties:
-        body:
-          type: string
-        days_before:
-          type: integer
-          maximum: 10000.0
-          minimum: 1.0
-        subject:
-          type: string
-      additionalProperties: false
-      type: object
-      required:
-      - body
-      - days_before
-      - subject
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     ValidationError:
       properties:
         loc:
@@ -506,18 +470,6 @@ components:
       - loc
       - msg
       - type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    StatusEnum:
-      type: string
-      enum:
-      - active
-      - deleted
     PaymentReminderResponse:
       properties:
         id:
@@ -561,6 +513,37 @@ components:
       - entity_id
       - name
       - status
+    StatusEnum:
+      type: string
+      enum:
+      - active
+      - deleted
+    Recipients:
+      properties:
+        bcc:
+          items:
+            type: string
+            format: email
+          type: array
+        cc:
+          items:
+            type: string
+            format: email
+          type: array
+        to:
+          items:
+            type: string
+            format: email
+          type: array
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     PaymentReminder:
       properties:
         name:
@@ -585,6 +568,16 @@ components:
       type: object
       required:
       - name
+    GetAllPaymentReminders:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/PaymentReminderResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
     ErrorSchema:
       properties:
         message:
@@ -592,6 +585,13 @@ components:
       type: object
       required:
       - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -599,4 +599,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

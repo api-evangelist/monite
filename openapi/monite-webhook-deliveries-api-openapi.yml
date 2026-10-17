@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Webhook deliveries across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Webhook deliveries across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -343,27 +343,71 @@ components:
       enum:
       - asc
       - desc
-    WebhookDeliveryPaginationResource:
+    ValidationError:
       properties:
-        data:
+        loc:
           items:
-            $ref: '#/components/schemas/WebhookDeliveryResource'
+            anyOf:
+            - type: string
+            - type: integer
           type: array
-          description: A set of webhooks returned per page
-        next_pagination_token:
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    WebhookDeliveryResource:
+      properties:
+        id:
+          type: string
+          format: uuid
+        event_id:
+          type: string
+          format: uuid
+        requests_made_count:
+          type: integer
+        response:
           anyOf:
           - type: string
           - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-        prev_pagination_token:
+        response_status_code:
           anyOf:
-          - type: string
+          - type: integer
           - type: 'null'
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+        url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+        was_successful:
+          anyOf:
+          - type: boolean
+          - type: 'null'
       additionalProperties: false
       type: object
       required:
-      - data
+      - id
+      - event_id
+      - requests_made_count
+      - url
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     WebhookObjectType:
       type: string
       enum:
@@ -409,40 +453,27 @@ components:
       - delivery_note
       - receipt
       - transaction
-    WebhookDeliveryResource:
+    WebhookDeliveryPaginationResource:
       properties:
-        id:
-          type: string
-          format: uuid
-        event_id:
-          type: string
-          format: uuid
-        requests_made_count:
-          type: integer
-        response:
+        data:
+          items:
+            $ref: '#/components/schemas/WebhookDeliveryResource'
+          type: array
+          description: A set of webhooks returned per page
+        next_pagination_token:
           anyOf:
           - type: string
           - type: 'null'
-        response_status_code:
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+        prev_pagination_token:
           anyOf:
-          - type: integer
+          - type: string
           - type: 'null'
-        url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-        was_successful:
-          anyOf:
-          - type: boolean
-          - type: 'null'
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
       additionalProperties: false
       type: object
       required:
-      - id
-      - event_id
-      - requests_made_count
-      - url
+      - data
     HTTPValidationError:
       properties:
         detail:
@@ -450,42 +481,11 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
     WebhookDeliveryCursorFields:
       type: string
       enum:
       - created_at
       - updated_at
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -493,4 +493,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

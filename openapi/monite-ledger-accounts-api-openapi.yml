@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Ledger accounts across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Ledger accounts across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -481,11 +481,35 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     OrderEnum:
       type: string
       enum:
       - asc
       - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     LedgerAccountResponse:
       properties:
         id:
@@ -547,6 +571,13 @@ components:
       - status
       - type
       description: Represents a general ledger account retrieved from an accounting system.
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
     LedgerAccountUpdateRequest:
       properties:
         description:
@@ -563,13 +594,6 @@ components:
           description: Account code in the accounting system
       type: object
       description: Schema for updating an existing ledger account.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     ErrorSchema:
       properties:
         message:
@@ -577,34 +601,6 @@ components:
       type: object
       required:
       - message
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    LedgerAccountCursorFields:
-      type: string
-      enum:
-      - name
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
     LedgerAccountCreateRequest:
       properties:
         description:
@@ -621,20 +617,10 @@ components:
           description: Account code in the accounting system
       type: object
       description: Schema for creating a new ledger account.
-    LedgerAccountListResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/LedgerAccountResponse'
-          type: array
-        next_pagination_token:
-          type: string
-        prev_pagination_token:
-          type: string
-      type: object
-      required:
-      - data
-      description: A paginated list of ledger accounts.
+    LedgerAccountCursorFields:
+      type: string
+      enum:
+      - name
     CurrencyEnum:
       type: string
       enum:
@@ -783,6 +769,20 @@ components:
       - YER
       - ZAR
       - ZMW
+    LedgerAccountListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/LedgerAccountResponse'
+          type: array
+        next_pagination_token:
+          type: string
+        prev_pagination_token:
+          type: string
+      type: object
+      required:
+      - data
+      description: A paginated list of ledger accounts.
   securitySchemes:
     HTTPBearer:
       type: http
@@ -790,4 +790,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

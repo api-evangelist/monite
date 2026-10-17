@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Payment links across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Payment links across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -225,6 +225,106 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    PaymentObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          $ref: '#/components/schemas/PaymentObjectType'
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - type
+    Invoice:
+      properties:
+        due_date:
+          type: string
+          format: date
+        file:
+          $ref: '#/components/schemas/InvoiceFile'
+        issue_date:
+          type: string
+          format: date
+      additionalProperties: false
+      type: object
+    PaymentObjectType:
+      type: string
+      enum:
+      - payable
+      - receivable
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CreatePaymentLinkRequest:
+      properties:
+        amount:
+          type: integer
+          minimum: 1.0
+          description: The payment amount in [minor units](https://docs.monite.com/references/currencies#minor-units). Required if `object` is not specified.
+          example: 120550
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The payment currency. Required if `object` is not specified.
+          example: EUR
+        expires_at:
+          type: string
+          format: date-time
+        invoice:
+          allOf:
+          - $ref: '#/components/schemas/Invoice'
+          description: An object containing information about the invoice being paid. Used only if `object` is not specified.
+        object:
+          allOf:
+          - $ref: '#/components/schemas/PaymentObject'
+          description: If the invoice being paid is a payable or receivable stored in Monite, provide the `object` object containing the invoice type and ID. Otherwise, use the `amount`, `currency`, `payment_reference`, and (optionally) `invoice` fields to specify the invoice-related data.
+        payment_methods:
+          items:
+            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
+          type: array
+          minItems: 1
+          uniqueItems: true
+        payment_reference:
+          type: string
+          description: A payment reference number that the recipient can use to identify the payer or purpose of the transaction. Required if `object` is not specified.
+          example: 011/7057/26072
+        recipient:
+          $ref: '#/components/schemas/PaymentAccountObject'
+        return_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
+          example: https://pay.example.com/complete
+      additionalProperties: false
+      type: object
+      required:
+      - payment_methods
+      - recipient
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     InvoiceFile:
       properties:
         mimetype:
@@ -263,7 +363,7 @@ components:
       - googlepay
       - affirm
       - klarna
-    PayerAccountResponse:
+    RecipientAccountResponse:
       properties:
         id:
           type: string
@@ -285,6 +385,101 @@ components:
       required:
       - id
       - type
+    PaymentIntent:
+      properties:
+        id:
+          type: string
+          format: uuid
+        updated_at:
+          type: string
+          format: date-time
+        application_fee_amount:
+          type: integer
+        object:
+          $ref: '#/components/schemas/PaymentObject'
+        provider:
+          type: string
+        selected_payment_method:
+          type: string
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - updated_at
+      - status
+    PublicPaymentLinkResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+        amount:
+          type: integer
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
+        expires_at:
+          type: string
+          format: date-time
+        invoice:
+          $ref: '#/components/schemas/Invoice'
+        payer:
+          $ref: '#/components/schemas/PayerAccountResponse'
+        payment_intent:
+          $ref: '#/components/schemas/PaymentIntent'
+        payment_intent_id:
+          type: string
+          format: uuid
+        payment_methods:
+          items:
+            type: string
+          type: array
+        payment_page_url:
+          type: string
+          maxLength: 2083
+          minLength: 1
+          format: uri
+        payment_reference:
+          type: string
+        recipient:
+          $ref: '#/components/schemas/RecipientAccountResponse'
+        return_url:
+          type: string
+          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
+          example: https://pay.example.com/complete
+        status:
+          type: string
+      type: object
+      required:
+      - id
+      - amount
+      - currency
+      - expires_at
+      - payment_intent_id
+      - payment_methods
+      - payment_page_url
+      - recipient
+      - status
+    PaymentAccountObject:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
     BankAccount:
       properties:
         id:
@@ -356,177 +551,6 @@ components:
       type: object
       required:
       - id
-    PaymentObject:
-      properties:
-        id:
-          type: string
-          format: uuid
-        type:
-          $ref: '#/components/schemas/PaymentObjectType'
-      additionalProperties: false
-      type: object
-      required:
-      - id
-      - type
-    PaymentAccountType:
-      type: string
-      enum:
-      - entity
-      - counterpart
-    PaymentObjectType:
-      type: string
-      enum:
-      - payable
-      - receivable
-    CreatePaymentLinkRequest:
-      properties:
-        amount:
-          type: integer
-          minimum: 1.0
-          description: The payment amount in [minor units](https://docs.monite.com/references/currencies#minor-units). Required if `object` is not specified.
-          example: 120550
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The payment currency. Required if `object` is not specified.
-          example: EUR
-        expires_at:
-          type: string
-          format: date-time
-        invoice:
-          allOf:
-          - $ref: '#/components/schemas/Invoice'
-          description: An object containing information about the invoice being paid. Used only if `object` is not specified.
-        object:
-          allOf:
-          - $ref: '#/components/schemas/PaymentObject'
-          description: If the invoice being paid is a payable or receivable stored in Monite, provide the `object` object containing the invoice type and ID. Otherwise, use the `amount`, `currency`, `payment_reference`, and (optionally) `invoice` fields to specify the invoice-related data.
-        payment_methods:
-          items:
-            $ref: '#/components/schemas/MoniteAllPaymentMethodsTypes'
-          type: array
-          minItems: 1
-          uniqueItems: true
-        payment_reference:
-          type: string
-          description: A payment reference number that the recipient can use to identify the payer or purpose of the transaction. Required if `object` is not specified.
-          example: 011/7057/26072
-        recipient:
-          $ref: '#/components/schemas/PaymentAccountObject'
-        return_url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
-          example: https://pay.example.com/complete
-      additionalProperties: false
-      type: object
-      required:
-      - payment_methods
-      - recipient
-    Invoice:
-      properties:
-        due_date:
-          type: string
-          format: date
-        file:
-          $ref: '#/components/schemas/InvoiceFile'
-        issue_date:
-          type: string
-          format: date
-      additionalProperties: false
-      type: object
-    PaymentIntent:
-      properties:
-        id:
-          type: string
-          format: uuid
-        updated_at:
-          type: string
-          format: date-time
-        application_fee_amount:
-          type: integer
-        object:
-          $ref: '#/components/schemas/PaymentObject'
-        provider:
-          type: string
-        selected_payment_method:
-          type: string
-        status:
-          type: string
-      type: object
-      required:
-      - id
-      - updated_at
-      - status
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    PaymentAccountObject:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of a payment account
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PaymentAccountType'
-          description: Type of a payment account. Can be `entity` or `counterpart`
-      type: object
-      required:
-      - id
-      - type
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    RecipientAccountResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: ID of a payment account
-        bank_accounts:
-          items:
-            $ref: '#/components/schemas/BankAccount'
-          type: array
-          description: List of bank accounts
-        name:
-          type: string
-          description: Display name of a payment account
-        type:
-          allOf:
-          - $ref: '#/components/schemas/PaymentAccountType'
-          description: Type of a payment account. Can be `entity` or `counterpart`
-      type: object
-      required:
-      - id
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -782,6 +806,11 @@ components:
       - CW
       - MF
       - SX
+    PaymentAccountType:
+      type: string
+      enum:
+      - entity
+      - counterpart
     ErrorSchemaResponse:
       properties:
         error:
@@ -789,57 +818,6 @@ components:
       type: object
       required:
       - error
-    PublicPaymentLinkResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-        amount:
-          type: integer
-        currency:
-          $ref: '#/components/schemas/CurrencyEnum'
-        expires_at:
-          type: string
-          format: date-time
-        invoice:
-          $ref: '#/components/schemas/Invoice'
-        payer:
-          $ref: '#/components/schemas/PayerAccountResponse'
-        payment_intent:
-          $ref: '#/components/schemas/PaymentIntent'
-        payment_intent_id:
-          type: string
-          format: uuid
-        payment_methods:
-          items:
-            type: string
-          type: array
-        payment_page_url:
-          type: string
-          maxLength: 2083
-          minLength: 1
-          format: uri
-        payment_reference:
-          type: string
-        recipient:
-          $ref: '#/components/schemas/RecipientAccountResponse'
-        return_url:
-          type: string
-          description: The URL where to redirect the payer after the payment. If `return_url` is specified, then after the payment is completed the payment page will display the "Return to platform" link that navigates to this URL.
-          example: https://pay.example.com/complete
-        status:
-          type: string
-      type: object
-      required:
-      - id
-      - amount
-      - currency
-      - expires_at
-      - payment_intent_id
-      - payment_methods
-      - payment_page_url
-      - recipient
-      - status
     CurrencyEnum:
       type: string
       enum:
@@ -988,6 +966,28 @@ components:
       - YER
       - ZAR
       - ZMW
+    PayerAccountResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: ID of a payment account
+        bank_accounts:
+          items:
+            $ref: '#/components/schemas/BankAccount'
+          type: array
+          description: List of bank accounts
+        name:
+          type: string
+          description: Display name of a payment account
+        type:
+          allOf:
+          - $ref: '#/components/schemas/PaymentAccountType'
+          description: Type of a payment account. Can be `entity` or `counterpart`
+      type: object
+      required:
+      - id
+      - type
   securitySchemes:
     HTTPBearer:
       type: http
@@ -995,4 +995,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

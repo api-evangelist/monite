@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Cost centers across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Cost centers across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -486,6 +486,23 @@ components:
       enum:
       - asc
       - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
     AccountingCostCenterResponse:
       properties:
         id:
@@ -514,46 +531,6 @@ components:
       - created_at
       - updated_at
       description: Represents a cost center retrieved from an accounting system.
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    TaxRateAccountCursorFields:
-      type: string
-      enum:
-      - name
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    AccountingCostCenterUpdateRequest:
-      properties:
-        description:
-          type: string
-          maxLength: 2048
-          description: Description of the cost center
-        name:
-          type: string
-          maxLength: 500
-          description: Name of the cost center
-      type: object
-      description: Schema for updating an existing cost center.
     AccountingCostCenterCreateRequest:
       properties:
         description:
@@ -566,6 +543,22 @@ components:
           description: Name of the cost center
       type: object
       description: Schema for creating a new cost center.
+    TaxRateAccountCursorFields:
+      type: string
+      enum:
+      - name
+    AccountingCostCenterUpdateRequest:
+      properties:
+        description:
+          type: string
+          maxLength: 2048
+          description: Description of the cost center
+        name:
+          type: string
+          maxLength: 500
+          description: Name of the cost center
+      type: object
+      description: Schema for updating an existing cost center.
     ErrorSchemaResponse:
       properties:
         error:
@@ -573,6 +566,20 @@ components:
       type: object
       required:
       - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     AccountingCostCenterListResponse:
       properties:
         data:
@@ -586,13 +593,6 @@ components:
       type: object
       required:
       - data
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
   securitySchemes:
     HTTPBearer:
       type: http
@@ -600,4 +600,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Products across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Products across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -563,11 +563,90 @@ paths:
       description: Oak POC environment
 components:
   schemas:
+    ProductCursorFields:
+      type: string
+      enum:
+      - name
     OrderEnum:
       type: string
       enum:
       - asc
       - desc
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    Price:
+      properties:
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency in which the price of the product is set.
+        value:
+          type: integer
+          maximum: 9007199254740991.0
+          minimum: 0.0
+          description: The actual price of the product.
+      additionalProperties: false
+      type: object
+      required:
+      - currency
+      - value
+    ProductServiceRequest:
+      properties:
+        description:
+          type: string
+          maxLength: 2000
+          description: Description of the product.
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the product. For example, an internal product code or SKU (stock keeping unit). Client applications can use this field to map the products in Monite to an external product catalog.
+          examples:
+          - HT-1234-S-BL
+          - SERVICE-67890
+        ledger_account_id:
+          type: string
+          format: uuid
+        measure_unit_id:
+          type: string
+          format: uuid
+          description: The unique ID reference of the unit used to measure the quantity of this product (e.g. items, meters, kilograms).
+        name:
+          type: string
+          maxLength: 100
+          minLength: 1
+          description: Name of the product.
+        price:
+          $ref: '#/components/schemas/Price'
+        smallest_amount:
+          type: number
+          maximum: 2147483647.0
+          minimum: 0.0
+          description: The smallest amount allowed for this product.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ProductServiceTypeEnum'
+          description: Specifies whether this offering is a product or service. This may affect the applicable tax rates.
+          default: product
+      additionalProperties: false
+      type: object
+      required:
+      - name
     ProductServicePaginationResponse:
       properties:
         data:
@@ -585,6 +664,87 @@ components:
       required:
       - data
       description: A paginated list of products and services
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    ProductServiceResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique ID of the product.
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the product was created. Timestamps follow the ISO 8601 standard.
+        updated_at:
+          type: string
+          format: date-time
+          description: Time at which the product was last updated. Timestamps follow the ISO 8601 standard.
+        description:
+          type: string
+          description: Description of the product.
+        entity_id:
+          type: string
+          format: uuid
+        entity_user_id:
+          type: string
+          format: uuid
+        external_reference:
+          type: string
+          maxLength: 255
+          minLength: 1
+          description: A user-defined identifier of the product. For example, an internal product code or SKU (stock keeping unit). Client applications can use this field to map the products in Monite to an external product catalog.
+          examples:
+          - HT-1234-S-BL
+          - SERVICE-67890
+        ledger_account_id:
+          type: string
+          format: uuid
+        measure_unit_id:
+          type: string
+          format: uuid
+          description: The unique ID reference of the unit used to measure the quantity of this product (e.g. items, meters, kilograms).
+        name:
+          type: string
+          description: Name of the product.
+        price:
+          $ref: '#/components/schemas/Price'
+        smallest_amount:
+          type: number
+          maximum: 2147483647.0
+          minimum: 0.0
+          description: The smallest amount allowed for this product.
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ProductServiceTypeEnum'
+          description: Specifies whether this offering is a product or service. This may affect the applicable tax rates.
+          default: product
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - entity_id
+      - name
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     CurrencyEnum:
       type: string
       enum:
@@ -733,157 +893,6 @@ components:
       - YER
       - ZAR
       - ZMW
-    Price:
-      properties:
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The currency in which the price of the product is set.
-        value:
-          type: integer
-          maximum: 9007199254740991.0
-          minimum: 0.0
-          description: The actual price of the product.
-      additionalProperties: false
-      type: object
-      required:
-      - currency
-      - value
-    ProductCursorFields:
-      type: string
-      enum:
-      - name
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ProductServiceTypeEnum:
-      type: string
-      enum:
-      - product
-      - service
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
-    ProductServiceResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique ID of the product.
-        created_at:
-          type: string
-          format: date-time
-          description: Time at which the product was created. Timestamps follow the ISO 8601 standard.
-        updated_at:
-          type: string
-          format: date-time
-          description: Time at which the product was last updated. Timestamps follow the ISO 8601 standard.
-        description:
-          type: string
-          description: Description of the product.
-        entity_id:
-          type: string
-          format: uuid
-        entity_user_id:
-          type: string
-          format: uuid
-        external_reference:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: A user-defined identifier of the product. For example, an internal product code or SKU (stock keeping unit). Client applications can use this field to map the products in Monite to an external product catalog.
-          examples:
-          - HT-1234-S-BL
-          - SERVICE-67890
-        ledger_account_id:
-          type: string
-          format: uuid
-        measure_unit_id:
-          type: string
-          format: uuid
-          description: The unique ID reference of the unit used to measure the quantity of this product (e.g. items, meters, kilograms).
-        name:
-          type: string
-          description: Name of the product.
-        price:
-          $ref: '#/components/schemas/Price'
-        smallest_amount:
-          type: number
-          maximum: 2147483647.0
-          minimum: 0.0
-          description: The smallest amount allowed for this product.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ProductServiceTypeEnum'
-          description: Specifies whether this offering is a product or service. This may affect the applicable tax rates.
-          default: product
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - entity_id
-      - name
-    ProductServiceRequest:
-      properties:
-        description:
-          type: string
-          maxLength: 2000
-          description: Description of the product.
-        external_reference:
-          type: string
-          maxLength: 255
-          minLength: 1
-          description: A user-defined identifier of the product. For example, an internal product code or SKU (stock keeping unit). Client applications can use this field to map the products in Monite to an external product catalog.
-          examples:
-          - HT-1234-S-BL
-          - SERVICE-67890
-        ledger_account_id:
-          type: string
-          format: uuid
-        measure_unit_id:
-          type: string
-          format: uuid
-          description: The unique ID reference of the unit used to measure the quantity of this product (e.g. items, meters, kilograms).
-        name:
-          type: string
-          maxLength: 100
-          minLength: 1
-          description: Name of the product.
-        price:
-          $ref: '#/components/schemas/Price'
-        smallest_amount:
-          type: number
-          maximum: 2147483647.0
-          minimum: 0.0
-          description: The smallest amount allowed for this product.
-        type:
-          allOf:
-          - $ref: '#/components/schemas/ProductServiceTypeEnum'
-          description: Specifies whether this offering is a product or service. This may affect the applicable tax rates.
-          default: product
-      additionalProperties: false
-      type: object
-      required:
-      - name
     ProductServiceUpdate:
       properties:
         description:
@@ -923,20 +932,11 @@ components:
           description: Specifies whether this offering is a product or service. This may affect the applicable tax rates.
       additionalProperties: false
       type: object
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
+    ProductServiceTypeEnum:
+      type: string
+      enum:
+      - product
+      - service
   securitySchemes:
     HTTPBearer:
       type: http
@@ -944,4 +944,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

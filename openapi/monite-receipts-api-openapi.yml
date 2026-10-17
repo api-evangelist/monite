@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Receipts across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Receipts across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -1186,28 +1186,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ReceiptLineItemUpdateSchema:
-      properties:
-        accounting_tax_rate_id:
-          type: string
-          format: uuid
-          description: Accounting tax rate ID.
-        cost_center_id:
-          type: string
-          format: uuid
-          description: Cost center ID.
-        ledger_account_id:
-          type: string
-          format: uuid
-          description: Ledger account ID.
-        name:
-          type: string
-          description: Line item name/description.
-        total:
-          type: integer
-          description: Line item total in minor units.
-      additionalProperties: false
-      type: object
     ReceiptResponseSchema:
       properties:
         id:
@@ -1298,16 +1276,28 @@ components:
       - created_at
       - updated_at
       - origin
-    SourceOfReceiptDataEnum:
-      type: string
-      enum:
-      - ocr
-      - user_specified
-    ReceiptOriginEnum:
-      type: string
-      enum:
-      - upload
-      - email
+    ReceiptLineItemUpdateSchema:
+      properties:
+        accounting_tax_rate_id:
+          type: string
+          format: uuid
+          description: Accounting tax rate ID.
+        cost_center_id:
+          type: string
+          format: uuid
+          description: Cost center ID.
+        ledger_account_id:
+          type: string
+          format: uuid
+          description: Ledger account ID.
+        name:
+          type: string
+          description: Line item name/description.
+        total:
+          type: integer
+          description: Line item total in minor units.
+      additionalProperties: false
+      type: object
     ReceiptUpdateSchema:
       properties:
         base64_encoded_file:
@@ -1351,6 +1341,18 @@ components:
           description: Transaction ID.
       additionalProperties: false
       type: object
+    SourceOfReceiptDataEnum:
+      type: string
+      enum:
+      - ocr
+      - user_specified
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
     ReceiptPaginationResponse:
       properties:
         data:
@@ -1367,66 +1369,40 @@ components:
       type: object
       required:
       - data
-    ErrorSchemaResponse2:
+    ErrorSchema2:
       properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
+        message:
+          type: string
       type: object
       required:
-      - error
-    ReceiptCursorFields:
-      type: string
-      enum:
-      - id
-      - created_at
-    ReceiptLineItemCreateSchema:
+      - message
+    ValidationError:
       properties:
-        accounting_tax_rate_id:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
           type: string
-          format: uuid
-          description: Accounting tax rate ID.
-        cost_center_id:
+        type:
           type: string
-          format: uuid
-          description: Cost center ID.
-        ledger_account_id:
-          type: string
-          format: uuid
-          description: Ledger account ID.
-        name:
-          type: string
-          description: Line item name/description.
-        total:
-          type: integer
-          description: Line item total in minor units.
-      additionalProperties: false
       type: object
+      required:
+      - loc
+      - msg
+      - type
     ReceiptLineItemCursorFields:
       type: string
       enum:
       - created_at
       - updated_at
-    ReceiptLineItemsPaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/ReceiptLineItemResponseSchema'
-          type: array
-        next_pagination_token:
-          type: string
-          description: Next page token.
-        prev_pagination_token:
-          type: string
-          description: Previous page token.
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    OrderEnum:
+    ReceiptOriginEnum:
       type: string
       enum:
-      - asc
-      - desc
+      - upload
+      - email
     ReceiptLineItemResponseSchema:
       properties:
         id:
@@ -1474,7 +1450,7 @@ components:
       - created_at
       - updated_at
       - receipt_id
-    ReceiptUploadFile:
+    ReceiptAttachFile:
       properties:
         file:
           type: string
@@ -1530,14 +1506,7 @@ components:
           description: Transaction ID.
       additionalProperties: false
       type: object
-    ErrorSchema2:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    ReceiptAttachFile:
+    ReceiptUploadFile:
       properties:
         file:
           type: string
@@ -1545,30 +1514,39 @@ components:
       type: object
       required:
       - file
-    HTTPValidationError:
+    ReceiptLineItemsPaginationResponse:
       properties:
-        detail:
+        data:
           items:
-            $ref: '#/components/schemas/ValidationError'
+            $ref: '#/components/schemas/ReceiptLineItemResponseSchema'
           type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
+        next_pagination_token:
           type: string
-        type:
+          description: Next page token.
+        prev_pagination_token:
           type: string
+          description: Previous page token.
+      additionalProperties: false
       type: object
       required:
-      - loc
-      - msg
-      - type
+      - data
+    ReceiptCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
+      type: object
+      required:
+      - error
     CurrencyEnum:
       type: string
       enum:
@@ -1717,6 +1695,28 @@ components:
       - YER
       - ZAR
       - ZMW
+    ReceiptLineItemCreateSchema:
+      properties:
+        accounting_tax_rate_id:
+          type: string
+          format: uuid
+          description: Accounting tax rate ID.
+        cost_center_id:
+          type: string
+          format: uuid
+          description: Cost center ID.
+        ledger_account_id:
+          type: string
+          format: uuid
+          description: Ledger account ID.
+        name:
+          type: string
+          description: Line item name/description.
+        total:
+          type: integer
+          description: Line item total in minor units.
+      additionalProperties: false
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -1724,4 +1724,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

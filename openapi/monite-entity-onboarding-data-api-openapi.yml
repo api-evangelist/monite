@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Entity onboarding data across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Entity onboarding data across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -224,90 +224,14 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    BusinessProfile-Input:
+    HTTPValidationError:
       properties:
-        description_of_goods_or_services:
-          anyOf:
-          - type: string
-            maxLength: 500
-            minLength: 1
-          - type: 'null'
-          description: Required for US entities. A free-form description of the products the entity sells (whether online or at offline retail stores) or the services it provides to its customers.
-          examples:
-          - Acme Inc. is an online computer store that offers a wide range of computer products, laptops, smartphones, tablets, accessories, and more.
-        estimated_monthly_revenue:
-          anyOf:
-          - $ref: '#/components/schemas/EstimatedMonthlyRevenue'
-          - type: 'null'
-          description: Required for US entities. The approximate revenue that the business generates per month.
-        mcc:
-          anyOf:
-          - type: string
-            maxLength: 4
-            minLength: 4
-          - type: 'null'
-          description: The merchant category code of the entity. MCCs are used to classify businesses based on the goods or services they provide.
-          examples:
-          - '5734'
-        operating_countries:
-          anyOf:
-          - items:
-              $ref: '#/components/schemas/AllowedCountries'
-            type: array
-          - type: 'null'
-          description: Required for US entities. A list of primary countries where the business conducts its operations, such as selling products or providing services. Use two-letter country codes (ISO 3166-2 alpha-2).
-        url:
-          anyOf:
-          - type: string
-            minLength: 1
-            format: uri
-          - type: 'null'
-          description: The business's publicly available website.
-      additionalProperties: false
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
       type: object
-    EntityOnboardingDataResponse:
-      properties:
-        business_profile:
-          anyOf:
-          - $ref: '#/components/schemas/BusinessProfile-Output'
-          - type: 'null'
-          description: Business information about the entity.
-        ownership_declaration:
-          anyOf:
-          - $ref: '#/components/schemas/OwnershipDeclaration-Output'
-          - type: 'null'
-          description: Used to attest that the beneficial owner information provided is both current and correct.
-        tos_acceptance:
-          anyOf:
-          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Output'
-          - type: 'null'
-          description: Details on the entity's acceptance of the service agreement.
-        treasury_tos_acceptance:
-          anyOf:
-          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Output'
-          - type: 'null'
-          description: Details on the entity's acceptance of the Stripe Treasury service agreement.
-      type: object
-    EstimatedMonthlyRevenue:
-      properties:
-        amount:
-          anyOf:
-          - type: integer
-            maximum: 9.223372036854776e+18
-            minimum: 1.0
-          - type: 'null'
-          description: The amount of the monthly revenue, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
-          examples:
-          - 250
-        currency:
-          anyOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          - type: 'null'
-          description: '[Currency code](https://docs.monite.com/references/currencies) of the revenue.'
-          examples:
-          - USD
-      type: object
-    TermsOfServiceAcceptance-Output:
+    TermsOfServiceAcceptance-Input:
       properties:
         date:
           anyOf:
@@ -318,36 +242,13 @@ components:
         ip:
           anyOf:
           - type: string
+            format: ipvanyaddress
           - type: 'null'
           description: The IP address from which the entity representative accepted the service agreement. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
           examples:
           - 203.0.113.24
       additionalProperties: false
       type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -603,60 +504,56 @@ components:
       - CW
       - MF
       - SX
-    ErrorSchema:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    ErrorSchemaResponse:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema'
-      type: object
-      required:
-      - error
-    TermsOfServiceAcceptance-Input:
+    OwnershipDeclaration-Output:
       properties:
         date:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
-          description: The date and time (in the ISO 8601 format) when the entity representative accepted the service agreement.
+          description: The date and time (in the ISO 8601 format) when the beneficial owner attestation was made.
+        ip:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The IP address from which the beneficial owner attestation was made. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
+          examples:
+          - 203.0.113.24
+      additionalProperties: false
+      type: object
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    OwnershipDeclaration-Input:
+      properties:
+        date:
+          anyOf:
+          - type: string
+            format: date-time
+          - type: 'null'
+          description: The date and time (in the ISO 8601 format) when the beneficial owner attestation was made.
         ip:
           anyOf:
           - type: string
             format: ipvanyaddress
           - type: 'null'
-          description: The IP address from which the entity representative accepted the service agreement. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
+          description: The IP address from which the beneficial owner attestation was made. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
           examples:
           - 203.0.113.24
-      additionalProperties: false
-      type: object
-    EntityOnboardingDataRequest:
-      properties:
-        business_profile:
-          anyOf:
-          - $ref: '#/components/schemas/BusinessProfile-Input'
-          - type: 'null'
-          description: Business information about the entity.
-        ownership_declaration:
-          anyOf:
-          - $ref: '#/components/schemas/OwnershipDeclaration-Input'
-          - type: 'null'
-          description: Used to attest that the beneficial owner information provided is both current and correct.
-        tos_acceptance:
-          anyOf:
-          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Input'
-          - type: 'null'
-          description: Details on the entity's acceptance of the service agreement.
-        treasury_tos_acceptance:
-          anyOf:
-          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Input'
-          - type: 'null'
-          description: Details on the entity's acceptance of the Stripe Treasury service agreement.
       additionalProperties: false
       type: object
     BusinessProfile-Output:
@@ -700,39 +597,123 @@ components:
           description: The business's publicly available website.
       additionalProperties: false
       type: object
-    OwnershipDeclaration-Input:
+    TermsOfServiceAcceptance-Output:
       properties:
         date:
           anyOf:
           - type: string
             format: date-time
           - type: 'null'
-          description: The date and time (in the ISO 8601 format) when the beneficial owner attestation was made.
+          description: The date and time (in the ISO 8601 format) when the entity representative accepted the service agreement.
         ip:
           anyOf:
           - type: string
-            format: ipvanyaddress
           - type: 'null'
-          description: The IP address from which the beneficial owner attestation was made. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
+          description: The IP address from which the entity representative accepted the service agreement. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
           examples:
           - 203.0.113.24
       additionalProperties: false
       type: object
-    OwnershipDeclaration-Output:
+    EntityOnboardingDataResponse:
       properties:
-        date:
+        business_profile:
+          anyOf:
+          - $ref: '#/components/schemas/BusinessProfile-Output'
+          - type: 'null'
+          description: Business information about the entity.
+        ownership_declaration:
+          anyOf:
+          - $ref: '#/components/schemas/OwnershipDeclaration-Output'
+          - type: 'null'
+          description: Used to attest that the beneficial owner information provided is both current and correct.
+        tos_acceptance:
+          anyOf:
+          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Output'
+          - type: 'null'
+          description: Details on the entity's acceptance of the service agreement.
+        treasury_tos_acceptance:
+          anyOf:
+          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Output'
+          - type: 'null'
+          description: Details on the entity's acceptance of the Stripe Treasury service agreement.
+      type: object
+    EntityOnboardingDataRequest:
+      properties:
+        business_profile:
+          anyOf:
+          - $ref: '#/components/schemas/BusinessProfile-Input'
+          - type: 'null'
+          description: Business information about the entity.
+        ownership_declaration:
+          anyOf:
+          - $ref: '#/components/schemas/OwnershipDeclaration-Input'
+          - type: 'null'
+          description: Used to attest that the beneficial owner information provided is both current and correct.
+        tos_acceptance:
+          anyOf:
+          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Input'
+          - type: 'null'
+          description: Details on the entity's acceptance of the service agreement.
+        treasury_tos_acceptance:
+          anyOf:
+          - $ref: '#/components/schemas/TermsOfServiceAcceptance-Input'
+          - type: 'null'
+          description: Details on the entity's acceptance of the Stripe Treasury service agreement.
+      additionalProperties: false
+      type: object
+    ErrorSchemaResponse:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema'
+      type: object
+      required:
+      - error
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    BusinessProfile-Input:
+      properties:
+        description_of_goods_or_services:
           anyOf:
           - type: string
-            format: date-time
+            maxLength: 500
+            minLength: 1
           - type: 'null'
-          description: The date and time (in the ISO 8601 format) when the beneficial owner attestation was made.
-        ip:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The IP address from which the beneficial owner attestation was made. If omitted or set to `null` in the request, the IP address is inferred from the request origin or the `X-Forwarded-For` request header.
+          description: Required for US entities. A free-form description of the products the entity sells (whether online or at offline retail stores) or the services it provides to its customers.
           examples:
-          - 203.0.113.24
+          - Acme Inc. is an online computer store that offers a wide range of computer products, laptops, smartphones, tablets, accessories, and more.
+        estimated_monthly_revenue:
+          anyOf:
+          - $ref: '#/components/schemas/EstimatedMonthlyRevenue'
+          - type: 'null'
+          description: Required for US entities. The approximate revenue that the business generates per month.
+        mcc:
+          anyOf:
+          - type: string
+            maxLength: 4
+            minLength: 4
+          - type: 'null'
+          description: The merchant category code of the entity. MCCs are used to classify businesses based on the goods or services they provide.
+          examples:
+          - '5734'
+        operating_countries:
+          anyOf:
+          - items:
+              $ref: '#/components/schemas/AllowedCountries'
+            type: array
+          - type: 'null'
+          description: Required for US entities. A list of primary countries where the business conducts its operations, such as selling products or providing services. Use two-letter country codes (ISO 3166-2 alpha-2).
+        url:
+          anyOf:
+          - type: string
+            minLength: 1
+            format: uri
+          - type: 'null'
+          description: The business's publicly available website.
       additionalProperties: false
       type: object
     CurrencyEnum:
@@ -883,6 +864,25 @@ components:
       - YER
       - ZAR
       - ZMW
+    EstimatedMonthlyRevenue:
+      properties:
+        amount:
+          anyOf:
+          - type: integer
+            maximum: 9.223372036854776e+18
+            minimum: 1.0
+          - type: 'null'
+          description: The amount of the monthly revenue, in [minor units](https://docs.monite.com/references/currencies#minor-units). For example, $12.50 is represented as 1250.
+          examples:
+          - 250
+        currency:
+          anyOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          - type: 'null'
+          description: '[Currency code](https://docs.monite.com/references/currencies) of the revenue.'
+          examples:
+          - USD
+      type: object
   securitySchemes:
     HTTPBearer:
       type: http
@@ -890,4 +890,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

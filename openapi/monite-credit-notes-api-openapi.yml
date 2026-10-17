@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Credit notes across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Credit notes across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -2252,16 +2252,363 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    TagCategory:
+    CreditNoteUploadFile:
+      properties:
+        file:
+          type: string
+          format: binary
+      type: object
+      required:
+      - file
+    CounterpartRawAddress:
+      properties:
+        city:
+          type: string
+          description: City name.
+          example: Berlin
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        line1:
+          type: string
+          description: Street address.
+          example: Flughafenstrasse 52
+        line2:
+          type: string
+          description: Additional address information (if any).
+        postal_code:
+          type: string
+          description: ZIP or postal code.
+          example: '10115'
+        state:
+          type: string
+          description: State, region, province, or county.
+      type: object
+      description: Address information.
+    CreditNoteLineItemUpdateRequest:
+      properties:
+        description:
+          type: string
+          description: Detailed description of the line item
+          example: Premium version of Product XYZ with extended warranty
+        name:
+          type: string
+          description: Name or title of the line item
+          example: Product XYZ
+        quantity:
+          type: number
+          minimum: 0.0
+          description: Quantity of items
+          example: 2.0
+        tax:
+          type: integer
+          maximum: 10000.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
+        unit:
+          type: string
+          description: Unit of measurement
+          example: pieces
+        unit_price:
+          type: integer
+          description: Price per unit in smallest currency unit
+          example: 5000
+      additionalProperties: false
+      type: object
+      description: Schema for updating an existing credit note line item. All fields are optional.
+    CreditNoteCreateRequest:
+      properties:
+        based_on:
+          type: string
+          format: uuid
+          description: ID of the payable this credit note is based on. The credit note will be linked to this payable
+          example: 123e4567-e89b-12d3-a456-426614174000
+        based_on_document_id:
+          type: string
+          maxLength: 255
+          description: The document ID of the original payable that this credit note refers to
+          example: INV-2287
+        counterpart_address_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's address
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_bank_account_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's bank account
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart (vendor/supplier)
+          example: 123e4567-e89b-12d3-a456-426614174000
+        counterpart_vat_id_id:
+          type: string
+          format: uuid
+          description: The ID of the counterpart's VAT registration
+          example: 123e4567-e89b-12d3-a456-426614174000
+        currency:
+          allOf:
+          - $ref: '#/components/schemas/CurrencyEnum'
+          description: The currency code of the credit note
+          default: EUR
+          example: EUR
+        description:
+          type: string
+          maxLength: 255
+          description: An arbitrary description of this credit note
+          example: Credit note for returned items from invoice INV-2287
+        document_id:
+          type: string
+          maxLength: 255
+          description: A unique credit note number assigned by the credit note issuer for tracking purposes
+          example: CN-2287
+        issued_at:
+          type: string
+          format: date
+          description: The date when the credit note was issued, in the YYYY-MM-DD format
+          example: '2024-01-15'
+        project_id:
+          type: string
+          format: uuid
+          description: The ID of the project this credit note belongs to
+          example: 123e4567-e89b-12d3-a456-426614174000
+        sender:
+          type: string
+          maxLength: 255
+          description: The email address from which the credit note was received
+          example: supplier@example.com
+        subtotal:
+          type: integer
+          minimum: 0.0
+          description: The subtotal amount before taxes
+          example: 1000
+        tag_ids:
+          items:
+            type: string
+            format: uuid
+          type: array
+          description: List of tag IDs associated with this credit note
+          example:
+          - 123e4567-e89b-12d3-a456-426614174000
+        tax:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: The tax percentage applied to the subtotal
+          example: 20
+        tax_amount:
+          type: integer
+          minimum: 0.0
+          description: The calculated tax amount
+          example: 200
+        total_amount:
+          type: integer
+          minimum: 0.0
+          description: The total amount including taxes
+          example: 1200
+      additionalProperties: false
+      type: object
+      required:
+      - document_id
+      - issued_at
+      description: Schema for creating a new credit note.
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    CounterpartRawBankAccount:
+      properties:
+        account_holder_name:
+          type: string
+          description: Vendor's bank account name.
+        account_number:
+          type: string
+          description: Vendor's bank account number, IBAN, or similar (if specified in the payable document).
+          example: '123456789012'
+        bic:
+          type: string
+          description: SWIFT code (BIC) of the vendor's bank.
+          example: DEUTDE2HXXX
+        iban:
+          type: string
+          description: required for non-GB bank accounts
+        routing_number:
+          type: string
+          description: required for US bank accounts
+        sort_code:
+          type: string
+          description: required for GB bank accounts
+      type: object
+    ErrorSchema2:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    CreditNoteLineItemResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the line item
+          example: 123e4567-e89b-12d3-a456-426614174000
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp when the line item was created
+          example: '2024-01-15T14:30:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Timestamp when the line item was last updated
+          example: '2024-01-15T14:30:00Z'
+        created_by_user_id:
+          type: string
+          format: uuid
+          description: ID of the user who created the line item
+          example: 123e4567-e89b-12d3-a456-426614174000
+        credit_note_id:
+          type: string
+          format: uuid
+          description: ID of the parent credit note
+          example: 123e4567-e89b-12d3-a456-426614174000
+        description:
+          type: string
+          description: Detailed description of the line item
+          example: Premium version of Product XYZ with extended warranty
+        name:
+          type: string
+          description: Name or title of the line item
+          example: Product XYZ
+        quantity:
+          type: number
+          minimum: 0.0
+          description: Quantity of items
+          example: 2.0
+        subtotal:
+          type: integer
+          description: Subtotal amount before tax
+          example: 10000
+        tax:
+          type: integer
+          minimum: 0.0
+          description: Tax percentage
+          example: 20
+        tax_amount:
+          type: integer
+          description: Tax amount
+          example: 2000
+        total:
+          type: integer
+          description: Total amount including tax
+          example: 12000
+        unit:
+          type: string
+          description: Unit of measurement
+          example: pieces
+        unit_price:
+          type: integer
+          description: Price per unit in smallest currency unit
+          example: 5000
+      additionalProperties: false
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - credit_note_id
+      description: Schema for credit note line item response. Includes all fields that can be returned from the API.
+    CreditNotePaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteResponse'
+          type: array
+          description: List of credit notes for the current page
+        next_pagination_token:
+          type: string
+          description: Token to retrieve the next page of results
+          example: eyJwYWdlIjoyfQ==
+        prev_pagination_token:
+          type: string
+          description: Token to retrieve the previous page of results
+          example: eyJwYWdlIjoxfQ==
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: A paginated list of credit notes.
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
+          type: string
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+    CreditNoteValidationsResource:
+      properties:
+        required_fields:
+          items:
+            $ref: '#/components/schemas/CreditNoteFieldsAllowedForValidate'
+          type: array
+      type: object
+      required:
+      - required_fields
+    CreditNoteFieldsAllowedForValidate:
       type: string
       enum:
-      - document_type
-      - department
-      - project
-      - cost_center
-      - vendor_type
-      - payment_method
-      - approval_status
+      - currency
+      - document_id
+      - issued_at
+      - tax_amount
+      - based_on
+      - total_amount
+      - subtotal
+      - description
+      - tax
+      - file_id
+      - counterpart_id
+      - counterpart_bank_account_id
+      - counterpart_address_id
+      - counterpart_vat_id_id
+      - line_items
+      - line_items.quantity
+      - line_items.unit_price
+      - line_items.tax
+      - line_items.unit
+      - line_items.name
+      - line_items.description
+      - line_items.subtotal
+      - line_items.total
+      - line_items.tax_amount
+    PayableCreditNoteStateEnum:
+      type: string
+      enum:
+      - new
+      - draft
+      - applied
+      - approved
+      - rejected
+      - canceled
+      - submitted_for_approval
     CreditNoteUpdateRequest:
       properties:
         based_on:
@@ -2400,6 +2747,15 @@ components:
       - updated_at
       - name
       description: Represents a user-defined tag that can be assigned to resources to filter them.
+    CreditNoteLineItemCursorFields:
+      type: string
+      enum:
+      - id
+      - created_at
+      - name
+      - total
+      - quantity
+      - unit_price
     CreditNoteResponse:
       properties:
         id:
@@ -2575,325 +2931,20 @@ components:
       - source_of_data
       - status
       description: Schema for credit note response. Includes all fields that can be returned from the API.
-    CreditNoteLineItemCreateRequest:
+    CounterpartRawVatID:
       properties:
-        description:
-          type: string
-          description: Detailed description of the line item
-          example: Premium version of Product XYZ with extended warranty
-        name:
-          type: string
-          description: Name or title of the line item
-          example: Product XYZ
-        quantity:
-          type: number
-          minimum: 0.0
-          description: Quantity of items
-          example: 2.0
-        tax:
-          type: integer
-          maximum: 10000.0
-          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-          example: 1250
-        unit:
-          type: string
-          description: Unit of measurement
-          example: pieces
-        unit_price:
-          type: integer
-          description: Price per unit in smallest currency unit (e.g. cents)
-          example: 5000
-      additionalProperties: false
-      type: object
-      description: Schema for creating a new credit note line item.
-    CounterpartRawAddress:
-      properties:
-        city:
-          type: string
-          description: City name.
-          example: Berlin
         country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        line1:
+          $ref: '#/components/schemas/AllowedCountries'
+        type:
           type: string
-          description: Street address.
-          example: Flughafenstrasse 52
-        line2:
+        value:
           type: string
-          description: Additional address information (if any).
-        postal_code:
-          type: string
-          description: ZIP or postal code.
-          example: '10115'
-        state:
-          type: string
-          description: State, region, province, or county.
       type: object
-      description: Address information.
-    CreditNoteFieldsAllowedForValidate:
-      type: string
-      enum:
-      - currency
-      - document_id
-      - issued_at
-      - tax_amount
-      - based_on
-      - total_amount
-      - subtotal
-      - description
-      - tax
-      - file_id
-      - counterpart_id
-      - counterpart_bank_account_id
-      - counterpart_address_id
-      - counterpart_vat_id_id
-      - line_items
-      - line_items.quantity
-      - line_items.unit_price
-      - line_items.tax
-      - line_items.unit
-      - line_items.name
-      - line_items.description
-      - line_items.subtotal
-      - line_items.total
-      - line_items.tax_amount
-    CreditNoteUploadFile:
-      properties:
-        file:
-          type: string
-          format: binary
-      type: object
-      required:
-      - file
-    ErrorSchemaResponse2:
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorSchema2'
-      type: object
-      required:
-      - error
-    OriginEnum:
-      type: string
-      enum:
-      - upload
-      - einvoicing
-    CreditNoteLineItemUpdateRequest:
-      properties:
-        description:
-          type: string
-          description: Detailed description of the line item
-          example: Premium version of Product XYZ with extended warranty
-        name:
-          type: string
-          description: Name or title of the line item
-          example: Product XYZ
-        quantity:
-          type: number
-          minimum: 0.0
-          description: Quantity of items
-          example: 2.0
-        tax:
-          type: integer
-          maximum: 10000.0
-          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
-          example: 1250
-        unit:
-          type: string
-          description: Unit of measurement
-          example: pieces
-        unit_price:
-          type: integer
-          description: Price per unit in smallest currency unit
-          example: 5000
-      additionalProperties: false
-      type: object
-      description: Schema for updating an existing credit note line item. All fields are optional.
-    CreditNoteLineItemCursorFields:
+    CreditNoteCursorFields:
       type: string
       enum:
       - id
       - created_at
-      - name
-      - total
-      - quantity
-      - unit_price
-    CreditNoteCreateRequest:
-      properties:
-        based_on:
-          type: string
-          format: uuid
-          description: ID of the payable this credit note is based on. The credit note will be linked to this payable
-          example: 123e4567-e89b-12d3-a456-426614174000
-        based_on_document_id:
-          type: string
-          maxLength: 255
-          description: The document ID of the original payable that this credit note refers to
-          example: INV-2287
-        counterpart_address_id:
-          type: string
-          format: uuid
-          description: The ID of the counterpart's address
-          example: 123e4567-e89b-12d3-a456-426614174000
-        counterpart_bank_account_id:
-          type: string
-          format: uuid
-          description: The ID of the counterpart's bank account
-          example: 123e4567-e89b-12d3-a456-426614174000
-        counterpart_id:
-          type: string
-          format: uuid
-          description: The ID of the counterpart (vendor/supplier)
-          example: 123e4567-e89b-12d3-a456-426614174000
-        counterpart_vat_id_id:
-          type: string
-          format: uuid
-          description: The ID of the counterpart's VAT registration
-          example: 123e4567-e89b-12d3-a456-426614174000
-        currency:
-          allOf:
-          - $ref: '#/components/schemas/CurrencyEnum'
-          description: The currency code of the credit note
-          default: EUR
-          example: EUR
-        description:
-          type: string
-          maxLength: 255
-          description: An arbitrary description of this credit note
-          example: Credit note for returned items from invoice INV-2287
-        document_id:
-          type: string
-          maxLength: 255
-          description: A unique credit note number assigned by the credit note issuer for tracking purposes
-          example: CN-2287
-        issued_at:
-          type: string
-          format: date
-          description: The date when the credit note was issued, in the YYYY-MM-DD format
-          example: '2024-01-15'
-        project_id:
-          type: string
-          format: uuid
-          description: The ID of the project this credit note belongs to
-          example: 123e4567-e89b-12d3-a456-426614174000
-        sender:
-          type: string
-          maxLength: 255
-          description: The email address from which the credit note was received
-          example: supplier@example.com
-        subtotal:
-          type: integer
-          minimum: 0.0
-          description: The subtotal amount before taxes
-          example: 1000
-        tag_ids:
-          items:
-            type: string
-            format: uuid
-          type: array
-          description: List of tag IDs associated with this credit note
-          example:
-          - 123e4567-e89b-12d3-a456-426614174000
-        tax:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: The tax percentage applied to the subtotal
-          example: 20
-        tax_amount:
-          type: integer
-          minimum: 0.0
-          description: The calculated tax amount
-          example: 200
-        total_amount:
-          type: integer
-          minimum: 0.0
-          description: The total amount including taxes
-          example: 1200
-      additionalProperties: false
-      type: object
-      required:
-      - document_id
-      - issued_at
-      description: Schema for creating a new credit note.
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    CreditNoteValidationsResource:
-      properties:
-        required_fields:
-          items:
-            $ref: '#/components/schemas/CreditNoteFieldsAllowedForValidate'
-          type: array
-      type: object
-      required:
-      - required_fields
-    CreditNoteLineItemPaginationResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CreditNoteLineItemResponse'
-          type: array
-          description: List of credit note line items for the current page
-        next_pagination_token:
-          type: string
-          description: Token to retrieve the next page of results
-          example: eyJwYWdlIjoyfQ==
-        prev_pagination_token:
-          type: string
-          description: Token to retrieve the previous page of results
-          example: eyJwYWdlIjoxfQ==
-      additionalProperties: false
-      type: object
-      required:
-      - data
-      description: A paginated list of credit note line items.
-    PayableCreditNoteStateEnum:
-      type: string
-      enum:
-      - new
-      - draft
-      - applied
-      - approved
-      - rejected
-      - canceled
-      - submitted_for_approval
-    CounterpartRawData:
-      properties:
-        address:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawAddress'
-          description: The address of the vendor or supplier.
-        bank_account:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawBankAccount'
-          description: Object representing counterpart bank account.
-        email:
-          type: string
-          format: email
-          description: The email address of the organization
-          example: acme@example.com
-        name:
-          type: string
-          description: Vendor or supplier name.
-          example: Acme Inc.
-        phone:
-          type: string
-          description: The phone number of the organization
-          example: '5551231234'
-        tax_id:
-          type: string
-          description: The tax id of the counterpart.
-          example: DE12345678
-        vat_id:
-          allOf:
-          - $ref: '#/components/schemas/CounterpartRawVatID'
-          description: VAT ID of the vendor or supplier which was used in the invoice.
-      type: object
     CurrencyExchangeSchema:
       properties:
         default_currency_code:
@@ -2909,6 +2960,18 @@ components:
       - default_currency_code
       - rate
       - total
+    CreditNoteLineItemReplaceRequest:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteLineItemCreateRequest'
+          type: array
+          description: List of credit note line items to replace existing ones
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: Schema for replacing all line items of a credit note.
     CreditNoteValidationResponse:
       properties:
         id:
@@ -2922,63 +2985,11 @@ components:
       type: object
       required:
       - id
-    CreditNoteCursorFields:
+    OrderEnum:
       type: string
       enum:
-      - id
-      - created_at
-    CreditNoteLineItemReplaceRequest:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CreditNoteLineItemCreateRequest'
-          type: array
-          description: List of credit note line items to replace existing ones
-      additionalProperties: false
-      type: object
-      required:
-      - data
-      description: Schema for replacing all line items of a credit note.
-    ErrorSchema2:
-      properties:
-        message:
-          type: string
-      type: object
-      required:
-      - message
-    CounterpartRawVatID:
-      properties:
-        country:
-          $ref: '#/components/schemas/AllowedCountries'
-        type:
-          type: string
-        value:
-          type: string
-      type: object
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
+      - asc
+      - desc
     AllowedCountries:
       type: string
       enum:
@@ -3234,33 +3245,8 @@ components:
       - CW
       - MF
       - SX
-    CreditNoteLineItemResponse:
+    CreditNoteLineItemCreateRequest:
       properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier of the line item
-          example: 123e4567-e89b-12d3-a456-426614174000
-        created_at:
-          type: string
-          format: date-time
-          description: Timestamp when the line item was created
-          example: '2024-01-15T14:30:00Z'
-        updated_at:
-          type: string
-          format: date-time
-          description: Timestamp when the line item was last updated
-          example: '2024-01-15T14:30:00Z'
-        created_by_user_id:
-          type: string
-          format: uuid
-          description: ID of the user who created the line item
-          example: 123e4567-e89b-12d3-a456-426614174000
-        credit_note_id:
-          type: string
-          format: uuid
-          description: ID of the parent credit note
-          example: 123e4567-e89b-12d3-a456-426614174000
         description:
           type: string
           description: Detailed description of the line item
@@ -3274,82 +3260,66 @@ components:
           minimum: 0.0
           description: Quantity of items
           example: 2.0
-        subtotal:
-          type: integer
-          description: Subtotal amount before tax
-          example: 10000
         tax:
           type: integer
-          minimum: 0.0
-          description: Tax percentage
-          example: 20
-        tax_amount:
-          type: integer
-          description: Tax amount
-          example: 2000
-        total:
-          type: integer
-          description: Total amount including tax
-          example: 12000
+          maximum: 10000.0
+          description: 'VAT rate in percent [minor units](https://docs.monite.com/references/currencies#minor-units). Example: 12.5% is 1250.'
+          example: 1250
         unit:
           type: string
           description: Unit of measurement
           example: pieces
         unit_price:
           type: integer
-          description: Price per unit in smallest currency unit
+          description: Price per unit in smallest currency unit (e.g. cents)
           example: 5000
       additionalProperties: false
       type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - credit_note_id
-      description: Schema for credit note line item response. Includes all fields that can be returned from the API.
-    CreditNotePaginationResponse:
+      description: Schema for creating a new credit note line item.
+    CounterpartRawData:
       properties:
-        data:
-          items:
-            $ref: '#/components/schemas/CreditNoteResponse'
-          type: array
-          description: List of credit notes for the current page
-        next_pagination_token:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawAddress'
+          description: The address of the vendor or supplier.
+        bank_account:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawBankAccount'
+          description: Object representing counterpart bank account.
+        email:
           type: string
-          description: Token to retrieve the next page of results
-          example: eyJwYWdlIjoyfQ==
-        prev_pagination_token:
+          format: email
+          description: The email address of the organization
+          example: acme@example.com
+        name:
           type: string
-          description: Token to retrieve the previous page of results
-          example: eyJwYWdlIjoxfQ==
-      additionalProperties: false
+          description: Vendor or supplier name.
+          example: Acme Inc.
+        phone:
+          type: string
+          description: The phone number of the organization
+          example: '5551231234'
+        tax_id:
+          type: string
+          description: The tax id of the counterpart.
+          example: DE12345678
+        vat_id:
+          allOf:
+          - $ref: '#/components/schemas/CounterpartRawVatID'
+          description: VAT ID of the vendor or supplier which was used in the invoice.
+      type: object
+    OriginEnum:
+      type: string
+      enum:
+      - upload
+      - einvoicing
+    ErrorSchemaResponse2:
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorSchema2'
       type: object
       required:
-      - data
-      description: A paginated list of credit notes.
-    CounterpartRawBankAccount:
-      properties:
-        account_holder_name:
-          type: string
-          description: Vendor's bank account name.
-        account_number:
-          type: string
-          description: Vendor's bank account number, IBAN, or similar (if specified in the payable document).
-          example: '123456789012'
-        bic:
-          type: string
-          description: SWIFT code (BIC) of the vendor's bank.
-          example: DEUTDE2HXXX
-        iban:
-          type: string
-          description: required for non-GB bank accounts
-        routing_number:
-          type: string
-          description: required for US bank accounts
-        sort_code:
-          type: string
-          description: required for GB bank accounts
-      type: object
+      - error
     CurrencyEnum:
       type: string
       enum:
@@ -3498,6 +3468,36 @@ components:
       - YER
       - ZAR
       - ZMW
+    CreditNoteLineItemPaginationResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/CreditNoteLineItemResponse'
+          type: array
+          description: List of credit note line items for the current page
+        next_pagination_token:
+          type: string
+          description: Token to retrieve the next page of results
+          example: eyJwYWdlIjoyfQ==
+        prev_pagination_token:
+          type: string
+          description: Token to retrieve the previous page of results
+          example: eyJwYWdlIjoxfQ==
+      additionalProperties: false
+      type: object
+      required:
+      - data
+      description: A paginated list of credit note line items.
+    TagCategory:
+      type: string
+      enum:
+      - document_type
+      - department
+      - project
+      - cost_center
+      - vendor_type
+      - payment_method
+      - approval_status
   securitySchemes:
     HTTPBearer:
       type: http
@@ -3505,4 +3505,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

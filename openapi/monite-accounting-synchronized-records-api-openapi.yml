@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged Accounting synchronized records across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Accounting synchronized records across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -323,44 +323,16 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    ServiceProvidersEnum:
-      type: string
-      enum:
-      - codat
-      - railz
-    ObjectMatchTypes:
-      type: string
-      enum:
-      - product
-      - customer
-      - vendor
-      - receivable
-      - bill
-      - payment_record
-    Platform:
-      type: string
-      enum:
-      - xero
-      - quickbooks
-      - quickbooks_online
-      - quickbooks_online_sandbox
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    HTTPValidationError:
-      properties:
-        detail:
-          items:
-            $ref: '#/components/schemas/ValidationError'
-          type: array
-      type: object
     SyncRecordCursorFields:
       type: string
       enum:
       - created_at
       - updated_at
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
     ValidationError:
       properties:
         loc:
@@ -378,23 +350,6 @@ components:
       - loc
       - msg
       - type
-    SyncRecordResourceList:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/SyncRecordResource'
-          type: array
-        next_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
-          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
-        prev_pagination_token:
-          type: string
-          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
-          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
-      type: object
-      required:
-      - data
     SyncRecordResource:
       properties:
         id:
@@ -443,6 +398,21 @@ components:
       - last_pulled_at
       - sync_status
       - object_type
+    SyncStatus:
+      type: string
+      enum:
+      - pending
+      - error
+      - done
+    ObjectMatchTypes:
+      type: string
+      enum:
+      - product
+      - customer
+      - vendor
+      - receivable
+      - bill
+      - payment_record
     ErrorSchemaResponse:
       properties:
         error:
@@ -450,12 +420,6 @@ components:
       type: object
       required:
       - error
-    SyncStatus:
-      type: string
-      enum:
-      - pending
-      - error
-      - done
     ErrorSchema:
       properties:
         message:
@@ -463,6 +427,42 @@ components:
       type: object
       required:
       - message
+    SyncRecordResourceList:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/SyncRecordResource'
+          type: array
+        next_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the next page of results, or `null` if there is no next page (i.e. you've reached the last page).
+          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
+        prev_pagination_token:
+          type: string
+          description: A token that can be sent in the `pagination_token` query parameter to get the previous page of results, or `null` if there is no previous page (i.e. you've reached the first page).
+          example: eyJvcmRlciI6ImFzYyIsImxpbWl0IjoyLCJwYWdpbmF0aW9uX2ZpbHRlcnMiOnsiZW50aXR5X2lkIjoiOWQyYjRjOGYtMjA4Ny00NzM4LWJhOTEtNzM1OTY4M2M0OWE0In0sInBhZ2luYXRpb25fdG9rZW5fdHlwZSI6Im5leHQiLCJjdXJzb3JfZmllbGQiOm51bGwsImN1cnNvcl9maWVsZF92YWx1ZSI6bnVsbCwiY3VycmVudF9vaWQiOjR9
+      type: object
+      required:
+      - data
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+      type: object
+    Platform:
+      type: string
+      enum:
+      - xero
+      - quickbooks
+      - quickbooks_online
+      - quickbooks_online_sandbox
+    ServiceProvidersEnum:
+      type: string
+      enum:
+      - codat
+      - railz
   securitySchemes:
     HTTPBearer:
       type: http
@@ -470,4 +470,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

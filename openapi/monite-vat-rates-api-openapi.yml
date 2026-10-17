@@ -7,7 +7,7 @@ info:
     email: developers@monite.com
   termsOfService: https://monite.com/terms
   version: '1.0'
-  description: 'Operations tagged VAT rates across 3 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json, monite-openapi.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged VAT rates across 2 of this provider''s published API definitions: monite-openapi-2023-09-01.json, monite-openapi-2024-05-25.json. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.dev.monite.com/v1
   description: Development environment
@@ -138,78 +138,6 @@ paths:
       description: Oak POC environment
 components:
   schemas:
-    VatRateComponent:
-      properties:
-        name:
-          type: string
-          maxLength: 64
-          description: Display name of the Tax.
-        value:
-          type: number
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'Percent multiplied by a 100. Example: 12.125% is 1212.5. Will be rounded to 2 decimal places'
-      additionalProperties: false
-      type: object
-      required:
-      - name
-      - value
-    VatRateResponse:
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier of the vat rate object.
-        created_at:
-          type: string
-          format: date-time
-          description: Date/time when this rate was recorded in the table.
-        updated_at:
-          type: string
-          format: date-time
-          description: Date/time when this rate was updated in the table.
-        components:
-          items:
-            $ref: '#/components/schemas/VatRateComponent'
-          type: array
-          maxItems: 3
-          minItems: 1
-          description: Sub-taxes included in the VAT.
-        country:
-          allOf:
-          - $ref: '#/components/schemas/AllowedCountries'
-          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
-          example: DE
-        created_by:
-          allOf:
-          - $ref: '#/components/schemas/VatRateCreator'
-          description: 'By whom this rate was recorded: monite employee | accounting system.'
-          default: monite
-          deprecated: true
-        status:
-          allOf:
-          - $ref: '#/components/schemas/VatRateStatusEnum'
-          description: 'Status for this vat rate: active | inactive.'
-        valid_from:
-          type: string
-          format: date
-          description: Date starting from when this rate can be used.
-        valid_until:
-          type: string
-          format: date
-          description: Date when this rate was depreciated, after this date rate cannot be used.
-        value:
-          type: integer
-          maximum: 10000.0
-          minimum: 0.0
-          description: 'Percent minor units. Example: 12.5% is 1250.'
-      type: object
-      required:
-      - id
-      - created_at
-      - updated_at
-      - country
-      - value
     HTTPValidationError:
       properties:
         detail:
@@ -217,33 +145,6 @@ components:
             $ref: '#/components/schemas/ValidationError'
           type: array
       type: object
-    VatRateListResponse:
-      properties:
-        data:
-          items:
-            $ref: '#/components/schemas/VatRateResponse'
-          type: array
-      additionalProperties: false
-      type: object
-      required:
-      - data
-    ValidationError:
-      properties:
-        loc:
-          items:
-            anyOf:
-            - type: string
-            - type: integer
-          type: array
-        msg:
-          type: string
-        type:
-          type: string
-      type: object
-      required:
-      - loc
-      - msg
-      - type
     AllowedCountries:
       type: string
       enum:
@@ -499,13 +400,33 @@ components:
       - CW
       - MF
       - SX
-    ErrorSchema:
+    ValidationError:
       properties:
-        message:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+        msg:
+          type: string
+        type:
           type: string
       type: object
       required:
-      - message
+      - loc
+      - msg
+      - type
+    VatRateListResponse:
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/VatRateResponse'
+          type: array
+      additionalProperties: false
+      type: object
+      required:
+      - data
     ErrorSchemaResponse:
       properties:
         error:
@@ -513,21 +434,100 @@ components:
       type: object
       required:
       - error
-    ProductServiceTypeEnum:
-      type: string
-      enum:
-      - product
-      - service
-    VatRateCreator:
-      type: string
-      enum:
-      - monite
-      - accounting
     VatRateStatusEnum:
       type: string
       enum:
       - active
       - inactive
+    VatRateComponent:
+      properties:
+        name:
+          type: string
+          maxLength: 64
+          description: Display name of the Tax.
+        value:
+          type: number
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Percent multiplied by a 100. Example: 12.125% is 1212.5. Will be rounded to 2 decimal places'
+      additionalProperties: false
+      type: object
+      required:
+      - name
+      - value
+    ErrorSchema:
+      properties:
+        message:
+          type: string
+      type: object
+      required:
+      - message
+    VatRateCreator:
+      type: string
+      enum:
+      - monite
+      - accounting
+    VatRateResponse:
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier of the vat rate object.
+        created_at:
+          type: string
+          format: date-time
+          description: Date/time when this rate was recorded in the table.
+        updated_at:
+          type: string
+          format: date-time
+          description: Date/time when this rate was updated in the table.
+        components:
+          items:
+            $ref: '#/components/schemas/VatRateComponent'
+          type: array
+          maxItems: 3
+          minItems: 1
+          description: Sub-taxes included in the VAT.
+        country:
+          allOf:
+          - $ref: '#/components/schemas/AllowedCountries'
+          description: Two-letter ISO country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          example: DE
+        created_by:
+          allOf:
+          - $ref: '#/components/schemas/VatRateCreator'
+          description: 'By whom this rate was recorded: monite employee | accounting system.'
+          default: monite
+          deprecated: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/VatRateStatusEnum'
+          description: 'Status for this vat rate: active | inactive.'
+        valid_from:
+          type: string
+          format: date
+          description: Date starting from when this rate can be used.
+        valid_until:
+          type: string
+          format: date
+          description: Date when this rate was depreciated, after this date rate cannot be used.
+        value:
+          type: integer
+          maximum: 10000.0
+          minimum: 0.0
+          description: 'Percent minor units. Example: 12.5% is 1250.'
+      type: object
+      required:
+      - id
+      - created_at
+      - updated_at
+      - country
+      - value
+    ProductServiceTypeEnum:
+      type: string
+      enum:
+      - product
+      - service
   securitySchemes:
     HTTPBearer:
       type: http
@@ -535,4 +535,3 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
-- monite-openapi.yml

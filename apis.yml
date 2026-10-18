@@ -30,6 +30,15 @@ tags:
 - Payments
 - B2B
 - Fintech
+- Software-as-a-Service
+tags_raw:
+- Company
+- Embedded Finance
+- Invoicing
+- Accounts Payable
+- Payments
+- B2B
+- Fintech
 - SaaS
 
 maintainers:
@@ -150,6 +159,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Access Tokens
+  tags_raw:
   - Access tokens
   properties:
   - type: OpenAPI
@@ -174,6 +185,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Accounting Connections
+  tags_raw:
   - Accounting connections
   properties:
   - type: OpenAPI
@@ -295,6 +308,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - ApprovalPolicies
+  tags_raw:
   - Approval policies
   properties:
   - type: OpenAPI
@@ -319,6 +334,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Approval Requests
+  tags_raw:
   - Approval requests
   properties:
   - type: OpenAPI
@@ -367,6 +384,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Batch Payments
+  tags_raw:
   - Batch payments
   properties:
   - type: OpenAPI
@@ -415,6 +434,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Cost Centers
+  tags_raw:
   - Cost centers
   properties:
   - type: OpenAPI
@@ -586,6 +607,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Credit Notes
+  tags_raw:
   - Credit notes
   properties:
   - type: OpenAPI
@@ -634,6 +657,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Data Export
+  tags_raw:
   - Data export
   properties:
   - type: OpenAPI
@@ -683,6 +708,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Delivery Notes
+  tags_raw:
   - Delivery notes
   properties:
   - type: OpenAPI
@@ -925,6 +952,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Event
+  tags_raw:
   - Events
   properties:
   - type: OpenAPI
@@ -949,6 +978,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -997,6 +1028,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Ledger Accounts
+  tags_raw:
   - Ledger accounts
   properties:
   - type: OpenAPI
@@ -1262,6 +1295,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Partner Settings
+  tags_raw:
   - Partner settings
   properties:
   - type: OpenAPI
@@ -1334,6 +1369,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Payment Intents
+  tags_raw:
   - Payment intents
   properties:
   - type: OpenAPI
@@ -1358,6 +1395,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Payment Links
+  tags_raw:
   - Payment links
   properties:
   - type: OpenAPI
@@ -1382,6 +1421,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Payment Methods
+  tags_raw:
   - Payment methods
   properties:
   - type: OpenAPI
@@ -1430,6 +1471,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Payment Reminders
+  tags_raw:
   - Payment reminders
   properties:
   - type: OpenAPI
@@ -1454,6 +1497,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Payment Terms
+  tags_raw:
   - Payment terms
   properties:
   - type: OpenAPI
@@ -1478,6 +1523,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - PDF Templates
+  tags_raw:
   - PDF templates
   properties:
   - type: OpenAPI
@@ -1502,6 +1549,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Product
+  tags_raw:
   - Products
   properties:
   - type: OpenAPI
@@ -1526,6 +1575,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
@@ -1550,6 +1601,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Purchase Orders
+  tags_raw:
   - Purchase orders
   properties:
   - type: OpenAPI
@@ -1742,6 +1795,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
@@ -1766,6 +1821,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - VAT Rates
+  tags_raw:
   - VAT rates
   properties:
   - type: OpenAPI
@@ -1790,6 +1847,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Webhook Deliveries
+  tags_raw:
   - Webhook deliveries
   properties:
   - type: OpenAPI
@@ -1814,6 +1873,8 @@ apis:
   humanURL: https://docs.monite.com/api/concepts/overview
   baseURL: https://api.monite.com/v1
   tags:
+  - Webhook Subscriptions
+  tags_raw:
   - Webhook subscriptions
   properties:
   - type: OpenAPI

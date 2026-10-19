@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.monite.com/_fern-files/docs.monite.com/9686796bddc2d6efcf41e03253cf6e254160c84d38eba4e3711f47d24e80402d/apis/v2024-05-25/openapi/2024-05-25.yaml",
+ "requested_url": "https://docs.monite.com/_fern-files/docs.monite.com/9686796bddc2d6efcf41e03253cf6e254160c84d38eba4e3711f47d24e80402d/apis/v2024-05-25/openapi/2024-05-25.yaml",
+ "status": 200,
+ "content_type": "application/octet-stream",
+ "bytes": 1767517,
+ "sha256": "9686796bddc2d6efcf41e03253cf6e254160c84d38eba4e3711f47d24e80402d",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 0.916), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

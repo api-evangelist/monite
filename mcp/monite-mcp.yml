@@ -5,12 +5,11 @@ generated: '2026-10-09'
 method: probed
 source: https://docs.monite.com/llms.txt
 status: live
-description: >-
-  Monite's llms.txt instructs AI clients (Claude Code, Cursor, etc.) to connect to the MCP
-  server at https://docs.monite.com/_mcp/server. It is a Fern-hosted documentation MCP server
-  (serverInfo name "fern-docs-mcp-server" 1.0.0) exposing a single documentation search tool.
-  It does NOT expose Monite Partner API operations; no official MCP server for the Monite API
-  itself was found (web search returned nothing Monite-specific).
+description: Monite's llms.txt instructs AI clients (Claude Code, Cursor, etc.) to connect to the MCP
+  server at https://docs.monite.com/_mcp/server. It is a Fern-hosted documentation MCP server (serverInfo
+  name "fern-docs-mcp-server" 1.0.0) exposing a single documentation search tool. It does NOT expose Monite
+  Partner API operations; no official MCP server for the Monite API itself was found (web search returned
+  nothing Monite-specific).
 deployment:
   mode: remote
   endpoint: https://docs.monite.com/_mcp/server
@@ -19,14 +18,51 @@ deployment:
   verified: probed
 probe:
   date: '2026-10-09'
-  initialize: {http_status: 200, content_type: text/event-stream, protocolVersion: '2025-06-18', serverInfo: {name: fern-docs-mcp-server, version: 1.0.0}}
-  tools_list: {http_status: 200, tool_count: 1}
+  initialize:
+    http_status: 200
+    content_type: text/event-stream
+    protocolVersion: '2025-06-18'
+    serverInfo:
+      name: fern-docs-mcp-server
+      version: 1.0.0
+  tools_list:
+    http_status: 200
+    tool_count: 1
 tools:
 - name: searchDocs
-  description: Search the documentation at https://docs.monite.com. Returns relevant doc passages with source URLs.
+  description: Search the documentation at https://docs.monite.com. Returns relevant doc passages with
+    source URLs.
   inputSchema:
-    properties: [query, topK]
+    properties:
+    - query
+    - topK
   source: live tools/list
 api_mcp_server:
   found: false
-  note: No MCP server exposing Monite Partner API (payables, receivables, counterparts...) operations was found.
+  note: No MCP server exposing Monite Partner API (payables, receivables, counterparts...) operations
+    was found.
+tool_quality:
+  tool_count: 1
+  tokens_total: 146
+  tokens_per_tool_median: 146
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 2
+  params_undescribed: 0
+  params_described_pct: 100.0
+  tools_with_undescribed_params: 0
+  tools_annotated: 1
+  annotated_pct: 100.0
+  state_changing_unhinted: []
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/monite-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.

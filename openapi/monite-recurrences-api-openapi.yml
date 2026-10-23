@@ -1219,3 +1219,9 @@ components:
 x-refined-from:
 - monite-openapi-2023-09-01.json
 - monite-openapi-2024-05-25.json
+x-provenance:
+  method: harvested
+  publisher: Monite
+  source: https://docs.monite.com/_fern-files/docs.monite.com/9686796bddc2d6efcf41e03253cf6e254160c84d38eba4e3711f47d24e80402d/apis/v2024-05-25/openapi/2024-05-25.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
